@@ -58,7 +58,7 @@ total: total
 
 };
 
-await fetch("/order", {
+await fetch("/orders", {
 
 method:"POST",
 headers:{
