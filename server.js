@@ -80,3 +80,9 @@ db.run(
 app.listen(3000, ()=>{
 console.log("SERVER: http://localhost:3000");
 });
+
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+    console.log("Server działa na porcie " + PORT);
+});
