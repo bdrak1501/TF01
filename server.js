@@ -1,71 +1,66 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
+const fs = require("fs");
 
 const app = express();
 
 app.use(cors());
 app.use(bodyParser.json());
 
-const Database = require("better-sqlite3");
-const db = new Database("shop.db");
+const FILE = "orders.json";
 
-/* BAZA */
-db.prepare(`
-CREATE TABLE IF NOT EXISTS orders (
-id INTEGER PRIMARY KEY AUTOINCREMENT,
-name TEXT,
-email TEXT,
-phone TEXT,
-address TEXT,
-products TEXT,
-total INTEGER,
-status TEXT,
-date TEXT
-)
-`).run();
+/* jeśli nie ma pliku → utwórz */
+if (!fs.existsSync(FILE)) {
+    fs.writeFileSync(FILE, "[]");
+}
+
+/* pomocnicze */
+function getOrders() {
+    return JSON.parse(fs.readFileSync(FILE));
+}
+
+function saveOrders(data) {
+    fs.writeFileSync(FILE, JSON.stringify(data, null, 2));
+}
 
 /* NOWE ZAMÓWIENIE */
 app.post("/order", (req, res) => {
 
+    const orders = getOrders();
     const o = req.body;
 
-    const stmt = db.prepare(`
-    INSERT INTO orders
-    (name,email,phone,address,products,total,status,date)
-    VALUES (?,?,?,?,?,?,?,?)
-    `);
+    const newOrder = {
+        id: Date.now(),
+        ...o,
+        status: "Nowe",
+        date: new Date().toLocaleString()
+    };
 
-    const info = stmt.run(
-        o.name,
-        o.email,
-        o.phone,
-        o.address,
-        JSON.stringify(o.products),
-        o.total,
-        "Nowe",
-        new Date().toLocaleString()
-    );
+    orders.push(newOrder);
+    saveOrders(orders);
 
-    res.json({ success: true, id: info.lastInsertRowid });
+    res.json({ success: true, id: newOrder.id });
 });
 
 /* POBIERZ */
 app.get("/orders", (req, res) => {
-
-    const rows = db.prepare("SELECT * FROM orders ORDER BY id DESC").all();
-    res.json(rows);
-
+    res.json(getOrders());
 });
 
 /* STATUS */
 app.post("/status", (req, res) => {
 
-    db.prepare("UPDATE orders SET status=? WHERE id=?")
-    .run(req.body.status, req.body.id);
+    const orders = getOrders();
+
+    const order = orders.find(o => o.id == req.body.id);
+    if (order) {
+        order.status = req.body.status;
+    }
+
+    saveOrders(orders);
 
     res.json({ success: true });
-
 });
 
 /* START */
