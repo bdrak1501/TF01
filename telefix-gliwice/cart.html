@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+
+<meta charset="UTF-8">
+<title>Koszyk – TeleFix</title>
+
+<link rel="stylesheet" href="style.css">
+
+<style>
+
+.cart-container{
+max-width:900px;
+margin:120px auto;
+padding:20px;
+}
+
+.cart-item{
+display:flex;
+gap:20px;
+align-items:center;
+background:#fff;
+padding:20px;
+border-radius:20px;
+margin-bottom:20px;
+box-shadow:0 5px 20px rgba(0,0,0,.05);
+}
+
+.cart-item img{
+width:80px;
+}
+
+.checkout-btn{
+background:#111;
+color:#fff;
+border:none;
+padding:16px 30px;
+border-radius:30px;
+font-size:16px;
+cursor:pointer;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="cart-container">
+
+<h1>Koszyk</h1>
+
+<div id="cart-items"></div>
+
+<h2 id="total"></h2>
+
+<button class="checkout-btn">
+Przejdź do płatności
+</button>
+
+</div>
+
+<script>
+
+let cart =
+JSON.parse(localStorage.getItem("cart")) || [];
+
+const container =
+document.getElementById("cart-items");
+
+let total = 0;
+
+cart.forEach((item,index)=>{
+
+const price =
+parseInt(item.price.replace(/\D/g,""));
+
+total += price;
+
+container.innerHTML += `
+<div class="cart-item">
+
+<img src="produkty/${item.image}">
+
+<div>
+<h3>${item.name}</h3>
+
+<p>
+${item.memory} •
+${item.condition} •
+Bateria ${item.battery}
+</p>
+
+<p><strong>${item.price}</strong></p>
+
+<button onclick="removeItem(${index})">
+Usuń
+</button>
+
+</div>
+
+</div>
+`;
+
+});
+
+document.getElementById("total")
+textContent = "Razem: " +
+total.toLocaleString("pl-PL") + " zł";
+
+
+function removeItem(i){
+
+cart.splice(i,1);
+
+localStorage.setItem(
+"cart",
+JSON.stringify(cart)
+);
+
+location.reload();
+
+}
+
+</script>
+
+</body>
+</html>

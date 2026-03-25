@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>iPhone 16 Pro – TeleFix</title>
+
+<link rel="stylesheet" href="../style.css">
+
+<style>
+
+/* ===== PRODUCT PAGE ===== */
+
+.product-wrapper{
+    margin:110px auto 20px auto;
+    max-width:1200px;
+    padding:20px;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:80px;
+}
+
+/* GALERIA */
+
+.product-gallery{
+    background:#fff;
+    padding:40px;
+    border-radius:30px;
+    box-shadow:0 20px 40px rgba(0,0,0,0.05);
+    text-align:center;
+}
+
+.product-gallery img{
+    margin-top: 20%;
+    width:100%;
+    max-width:450px;
+}
+
+/* INFO */
+
+.product-info h1{
+    font-size:42px;
+    margin-bottom:20px;
+}
+
+.product-price{
+    font-size:34px;
+    font-weight:800;
+    margin:20px 0;
+}
+
+/* CTA */
+
+.cta-btn{
+    background:#111;
+    color:#fff;
+    border:none;
+    padding:16px 40px;
+    border-radius:40px;
+    font-size:18px;
+    cursor:pointer;
+    transition:.3s;
+}
+
+.cta-btn:hover{
+    transform:translateY(-3px);
+}
+
+/* SPEC TABLE */
+
+.specs{
+    max-width:1200px;
+    margin:60px auto 120px auto;
+    background:#fff;
+    padding:40px;
+    border-radius:30px;
+    clear:both;
+}
+
+
+.specs table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+.specs td{
+    padding:14px;
+    border-bottom:1px solid #eee;
+}
+
+/* RESPONSIVE */
+
+@media(max-width:900px){
+    .product-wrapper{
+        grid-template-columns:1fr;
+    }
+}
+
+/* ===== VARIANTS ===== */
+
+.variant{
+    margin-top:18px;
+}
+
+.variant-title{
+    font-weight:700;
+    margin-bottom:8px;
+}
+
+.variant-options{
+    display:flex;
+    gap:14px;
+    flex-wrap:wrap;
+}
+
+
+/* OPIS STANÓW */
+
+.condition-box{
+    max-width:500px;
+}
+
+.condition-box{
+    max-width:440px;
+    margin-top:12px;
+    padding:12px 16px 12px 18px;
+    border-radius:12px;
+    background:#fbfcff;
+    border:1px solid #e9edf5;
+
+    font-size:13.5px;
+    line-height:1.45;
+    color:#222;
+
+    position:relative;
+    transition:.2s;
+
+    box-shadow:0 4px 10px rgba(0,0,0,.03);
+}
+
+
+.condition-box::before{
+    content:"";
+    position:absolute;
+    left:0;
+    top:10px;
+    bottom:10px;
+    width:3px;
+    border-radius:10px;
+    background:#0f0f0f;
+}
+
+
+
+
+
+/* KOLOR */
+
+.color-option{
+    width:70px;
+    height:70px;
+    border-radius:50%;   /* KLUCZOWE */
+    overflow:hidden;
+    cursor:pointer;
+    border:2px solid transparent;
+    transition:.25s;
+    position:relative;
+}
+
+.color-option img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+
+
+/* PAMIĘĆ / STAN */
+
+.memory-option{
+    padding:7px 14px;
+    font-size:13.5px;
+    border-radius:8px;
+}
+
+
+.memory-option{
+    padding:10px 18px;
+    border-radius:10px;
+    border:2px solid #e5e5e5;
+    cursor:pointer;
+    font-weight:600;
+    transition:.25s;
+}
+
+.memory-option:hover{
+    border-color:#111;
+}
+
+.memory-option.active{
+    border-color:#292929;
+}
+
+/* NIEDOSTĘPNE */
+
+.disabled{
+    opacity:.45;
+    cursor:not-allowed;
+}
+
+/* przekreślenie */
+
+/* każdy wariant musi być relative */
+.color-option,
+.memory-option{
+    position:relative;
+}
+
+/* przekreślenie */
+.disabled::after{
+    content:"";
+    position:absolute;
+    inset:0;              /* zamiast width 140% */
+    margin:auto;
+    width:100%;
+    height:2px;
+    background:#ff3b30;
+    transform:rotate(-35deg);
+    pointer-events:none;  /* 🔥 NAJWAŻNIEJSZE */
+}
+
+.color-option.active{
+    border:3px solid #0a0a0a;
+    transform:scale(.99);
+}
+
+.disabled{
+    opacity:.35;
+    filter:grayscale(100%);
+}
+
+.color-option:not(.disabled):hover,
+.memory-option:not(.disabled):hover{
+    transform:scale(1.07);
+    border-color:#000000;
+}
+
+
+
+/* fix dla textowych */
+
+.memory-option.disabled{
+    position:relative;
+}
+
+/* ===== BENEFITS FINAL PREMIUM ===== */
+
+.benefits{
+    max-width:1200px;
+    margin:50px auto 80px auto;
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    gap:48px;
+    text-align:center;
+}
+
+/* ===== BENEFIT SOFT BACKGROUND ===== */
+
+.benefit{
+    padding:18px 12px 16px 12px;
+    border-radius:14px;
+
+    background:#fff;
+
+    box-shadow:
+        0 1px 0 rgba(0,0,0,0.04),
+        0 8px 20px rgba(0,0,0,0.03);
+
+    transition:all .25s ease;
+}
+
+.benefit:hover{
+    transform:translateY(-2px);
+    box-shadow:
+        0 1px 0 rgba(0,0,0,0.05),
+        0 14px 28px rgba(0,0,0,0.05);
+}
+
+/* białe kółko */
+
+.benefit-icon{
+    width:44px;
+    height:44px;
+    margin:0 auto 12px auto;
+
+    background:#fff;
+    border-radius:50%;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    box-shadow:
+        0 6px 18px rgba(0,0,0,0.06),
+        0 1px 0 rgba(0,0,0,0.04);
+
+    transition:all .25s ease;
+}
+
+.benefit-icon svg{
+    width:20px;
+    height:20px;
+    stroke:#111;
+    stroke-width:1.7;
+}
+
+.benefit:hover .benefit-icon{
+    transform:translateY(-3px);
+    box-shadow:
+        0 12px 28px rgba(0,0,0,0.08),
+        0 2px 0 rgba(0,0,0,0.04);
+}
+
+.benefit p{
+    font-size:13.5px;
+    color:#666;
+    margin:0;
+    line-height:1.4;
+}
+
+.benefit strong{
+    display:block;
+    color:#111;
+    font-weight:600;
+    margin-top:2px;
+}
+
+/* mobile */
+
+@media(max-width:900px){
+    .benefits{
+        grid-template-columns:repeat(2,1fr);
+        gap:32px;
+    }
+}
+
+.cart-icon{
+
+display:flex;
+align-items:center;
+gap:8px;
+
+font-size:38px;
+text-decoration:none;
+color:#111;
+font-weight:600;
+
+padding:22px 14px;
+border-radius:30px;
+margin-bottom: 5px  ;
+
+
+transition:.25s;
+
+}
+
+.cart-icon:hover{
+transform:translateY(-2px);
+box-shadow:0 10px 22px rgba(0,0,0,.12);
+}
+
+#cart-count{
+
+background:#111;
+color:#fff;
+
+padding:15px 10px;
+border-radius:20px;
+
+font-size:29px;
+font-weight:700;
+
+}
+
+.added-animation{
+animation:cartPulse .4s ease;
+}
+
+@keyframes cartPulse{
+0%{transform:scale(1)}
+50%{transform:scale(1.3)}
+100%{transform:scale(1)}
+}
+
+#cart-count{
+background:#111;
+color:#fff;
+padding:3px 8px;
+border-radius:20px;
+font-size:17px;
+margin-left:4px;
+
+.added-animation{
+animation:cartPulse .4s ease;
+}
+
+@keyframes cartPulse{
+0%{transform:scale(1)}
+50%{transform:scale(1.3)}
+100%{transform:scale(1)}
+}
+}
+
+.hero-inner{
+display:flex;
+align-items:center;
+justify-content:space-between;
+}
+
+/* POPUP */
+
+#cart-popup{
+
+position:fixed;
+inset:0;
+
+background:rgba(0,0,0,.35);
+
+display:flex;
+align-items:center;
+justify-content:center;
+
+opacity:0;
+pointer-events:none;
+
+transition:.3s;
+
+z-index:2000;
+
+}
+
+#cart-popup.open{
+opacity:1;
+pointer-events:auto;
+}
+
+.popup-box{
+
+background:#fff;
+
+padding:30px 40px;
+
+border-radius:20px;
+
+box-shadow:0 20px 60px rgba(0,0,0,.2);
+
+text-align:center;
+
+}
+
+.popup-box h3{
+margin-bottom:20px;
+font-size:20px;
+}
+
+.popup-buttons{
+display:flex;
+gap:14px;
+justify-content:center;
+}
+
+.popup-buttons button,
+.popup-buttons a{
+
+padding:12px 20px;
+
+border-radius:30px;
+
+border:none;
+
+cursor:pointer;
+
+font-weight:600;
+
+text-decoration:none;
+
+}
+
+#continue-shopping{
+
+background:#eee;
+
+}
+
+.go-cart{
+
+background:#111;
+color:#fff;
+
+}
+</style>
+</head>
+
+<body>
+
+
+<!-- HEADER skopiuj ze swojej strony -->
+<header class="hero-header">
+    <div class="hero-inner">
+
+<a href="../index.html" class="logo">
+<img src="../telefix-logo.png">
+</a>
+
+<a href="../cart.html" class="cart-icon">
+🛒 <span id="cart-count">0</span>
+</a>
+
+</div>
+    </div>
+</header>
+
+
+<!-- PRODUKT -->
+
+<section class="product-wrapper">
+
+    <div class="product-gallery">
+        <img src="13PRO.png" alt="iPhone 16 Pro">
+    </div>
+
+
+    <div class="product-info">
+
+        <h1>iPhone 16 Pro</h1>
+
+        <p id="dynamic-desc">
+    iPhone 16 Pro • 256 GB • Dobry • Bateria 90–94%<br>
+        </p>
+
+
+        <div class="product-price" id="price">
+        4699 zł
+        </div>
+
+        <button class="cta-btn" onclick="addToCart()">
+         Dodaj do koszyka
+    </button>
+
+    <!-- WARIANTY -->
+
+<div class="variant">
+
+    <p class="variant-title">Kolor:</p>
+
+    <div class="variant-options">
+
+        <div class="color-option active">
+            <img src="../iphone-green.png">
+        </div>
+
+        <div class="color-option">
+            <img src="../iphone-orange.png">
+        </div>
+
+        <!-- NIEDOSTĘPNY -->
+        <div class="color-option disabled">
+            <img src="../iphone-purple.png">
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<div class="variant">
+
+    <p class="variant-title">Pamięć:</p>
+
+    <div class="variant-options">
+
+       <div class="memory-option active" data-label="256 GB" data-price="200">256 GB</div>
+        <div class="memory-option disabled" data-label="512 GB" data-price="400">512 GB</div>
+        <div class="memory-option disabled" data-label="1 TB" data-price="900">1 TB</div>
+
+    </div>
+
+</div>
+
+<div class="variant">
+
+    <p class="variant-title">Kondycja baterii:</p>
+
+    <div class="variant-options">
+
+        <div class="memory-option" data-label="85–89%" data-price="-150">85–89%</div>
+        <div class="memory-option active" data-label="90–94%" data-price="0">90–94%</div>
+        <div class="memory-option" data-label="95–100%" data-price="120">95–100%</div>
+
+    </div>
+
+</div>
+
+
+
+
+<div class="variant">
+
+    <p class="variant-title">Stan:</p>
+
+    <div class="variant-options">
+
+        <div class="memory-option active" data-desc="Widoczne drobne rysy na obudowie lub ekranie. Telefon w 100% sprawny technicznie." data-label="Dobry" data-price="0">
+            Dobry
+        </div>
+
+        <div class="memory-option" data-desc="Minimalne ślady użytkowania, praktycznie niewidoczne na pierwszy rzut oka." data-label="Bardzo dobry" data-price="100">
+            Bardzo dobry
+        </div>
+
+        <div class="memory-option" data-desc="Wygląda jak nowy – brak rys, idealny wizualnie i technicznie." data-label="Jak nowy" data-price="110">
+            Jak nowy
+        </div>
+
+    </div>
+
+    <!-- OPIS -->
+    <div class="condition-box">
+        Widoczne drobne rysy na obudowie lub ekranie. Telefon w 100% sprawny technicznie.
+    </div>
+
+</div>
+
+</div>
+</section> 
+
+
+<section class="benefits">
+
+    <div class="benefit">
+        <div class="benefit-icon">
+            <!-- Truck -->
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <rect x="1" y="3" width="15" height="13"></rect>
+                <path d="M16 8h4l3 3v5h-7z"></path>
+                <circle cx="5.5" cy="18.5" r="2"></circle>
+                <circle cx="18.5" cy="18.5" r="2"></circle>
+            </svg>
+        </div>
+        <p>Szybka wysyłka<br><strong>24h</strong></p>
+    </div>
+
+    <div class="benefit">
+        <div class="benefit-icon">
+            <!-- Shield -->
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M12 2l8 4v6c0 5-3.5 9-8 10-4.5-1-8-5-8-10V6z"></path>
+            </svg>
+        </div>
+        <p>Gwarancja<br><strong>TeleFix</strong></p>
+    </div>
+
+    <div class="benefit">
+        <div class="benefit-icon">
+            <!-- Return -->
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <polyline points="9 14 4 9 9 4"></polyline>
+                <path d="M20 20v-7a4 4 0 0 0-4-4H4"></path>
+            </svg>
+        </div>
+        <p>14 dni<br><strong>na zwrot</strong></p>
+    </div>
+
+    <div class="benefit">
+        <div class="benefit-icon">
+            <!-- Lock -->
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <rect x="3" y="11" width="18" height="10" rx="2"></rect>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            </svg>
+        </div>
+        <p>Bezpieczne<br><strong>płatności</strong></p>
+    </div>
+
+    <div class="benefit">
+        <div class="benefit-icon">
+            <!-- Star -->
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <polygon points="12 2 15 9 22 9 17 14 19 21 12 17 5 21 7 14 2 9 9 9"></polygon>
+            </svg>
+        </div>
+        <p>Sprawdzony<br><strong>sprzęt</strong></p>
+    </div>
+
+</section>
+
+
+<!-- SPECYFIKACJA -->
+
+<section class="specs">
+
+<h2>Dane techniczne</h2>
+
+<table>
+
+<tr>
+<td>Stan</td>
+<td>Używany</td>
+</tr>
+
+<tr>
+<td>Pamięć</td>
+<td>256 GB</td>
+</tr>
+
+<tr>
+<td>Ekran</td>
+<td>6.3" OLED</td>
+</tr>
+
+<tr>
+<td>Face ID</td>
+<td>Tak</td>
+</tr>
+
+<tr>
+<td>5G</td>
+<td>Tak</td>
+</tr>
+
+</table>
+
+</section>
+
+
+<div id="cart-popup">
+
+<div class="popup-box">
+
+<h3>Produkt dodany do koszyka</h3>
+
+<div class="popup-buttons">
+
+<button id="continue-shopping">
+Kontynuuj zakupy
+</button>
+
+<a href="../cart.html" class="go-cart">
+Przejdź do koszyka
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+</body>
+</html>
+
+
+<script>
+const basePrice = 4699;
+function updatePrice(){
+
+    let total = basePrice;
+
+    // każda aktywna opcja z ceną
+    document.querySelectorAll('.memory-option.active').forEach(option => {
+
+        const extra = parseInt(option.dataset.price || 0);
+        total += extra;
+
+    });
+
+    document.getElementById('price').textContent =
+        total.toLocaleString('pl-PL') + ' zł';
+}
+
+document.querySelectorAll('.variant-options').forEach(group => {
+
+    group.addEventListener('click', e => {
+
+        const option = e.target.closest(
+            '.color-option, .memory-option'
+        );
+
+        if(!option || option.classList.contains('disabled')) return;
+
+        group.querySelectorAll(
+            '.color-option, .memory-option'
+        ).forEach(el => el.classList.remove('active'));
+
+        option.classList.add('active');
+        updateDescription();
+        updatePrice();
+
+        // 🔥 ZMIANA OPISU STANU
+        if(option.dataset.desc){
+            document.querySelector('.condition-box')
+                .textContent = option.dataset.desc;
+        }
+
+    });
+
+});
+
+function updateDescription(){
+
+    const memory =
+        document.querySelector('[data-label].active')?.dataset.label;
+
+    const battery =
+        document.querySelectorAll('.variant')[2]
+        .querySelector('.active')?.dataset.label;
+
+    const condition =
+        document.querySelectorAll('.variant')[3]
+        .querySelector('.active')?.dataset.label;
+
+    document.getElementById('dynamic-desc').innerHTML = `
+        iPhone 16 Pro • ${memory} • ${condition} • Bateria ${battery}<br>
+    `;
+}
+
+updateDescription();
+updatePrice();
+
+
+function addToCart(){
+
+const name = "iPhone 16 Pro";
+
+const price =
+document.getElementById("price").textContent;
+
+const memory =
+document.querySelectorAll('.variant')[1]
+.querySelector('.active')?.dataset.label;
+
+const battery =
+document.querySelectorAll('.variant')[2]
+.querySelector('.active')?.dataset.label;
+
+const condition =
+document.querySelectorAll('.variant')[3]
+.querySelector('.active')?.dataset.label;
+
+const image = "13PRO.png";
+
+let cart =
+JSON.parse(localStorage.getItem("cart")) || [];
+
+cart.push({
+name,
+price,
+memory,
+battery,
+condition,
+image
+});
+
+localStorage.setItem("cart", JSON.stringify(cart));
+
+alert("Produkt dodany do koszyka");
+
+}
+
+
+function updateCartCount(){
+
+const cart =
+JSON.parse(localStorage.getItem("cart")) || [];
+
+const el = document.getElementById("cart-count");
+
+if(el){
+el.textContent = cart.length;
+}
+
+}
+
+updateCartCount();
+
+
+function addToCart(){
+
+const name = "iPhone 16 Pro";
+
+const price =
+document.getElementById("price").textContent;
+
+const memory =
+document.querySelectorAll('.variant')[1]
+.querySelector('.active')?.dataset.label;
+
+const battery =
+document.querySelectorAll('.variant')[2]
+.querySelector('.active')?.dataset.label;
+
+const condition =
+document.querySelectorAll('.variant')[3]
+.querySelector('.active')?.dataset.label;
+
+const image = "13PRO.png";
+
+let cart =
+JSON.parse(localStorage.getItem("cart")) || [];
+
+cart.push({
+name,
+price,
+memory,
+battery,
+condition,
+image
+});
+
+localStorage.setItem("cart", JSON.stringify(cart));
+
+updateCartCount();
+
+document.getElementById("cart-count")
+.classList.add("added-animation");
+
+setTimeout(()=>{
+document.getElementById("cart-count")
+.classList.remove("added-animation");
+},400);
+
+popup.classList.add("open");
+}
+
+const popup =
+document.getElementById("cart-popup");
+
+const continueBtn =
+document.getElementById("continue-shopping");
+
+continueBtn.addEventListener("click", ()=>{
+
+popup.classList.remove("open");
+
+});
+
+
+</script>
