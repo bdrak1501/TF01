@@ -8,6 +8,8 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
+app.use(express.static("telefix-gliwice"));
+
 const FILE = "orders.json";
 
 /* jeśli nie ma pliku → utwórz */
