@@ -58,7 +58,7 @@ total: total
 
 };
 
-await fetch("http://localhost:3000/order", {
+await fetch("/order", {
 
 method:"POST",
 headers:{
