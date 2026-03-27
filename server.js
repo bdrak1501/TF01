@@ -3,6 +3,9 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const fs = require("fs");
 
+const Stripe = require("stripe");
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+
 const app = express();
 
 app.use(cors());
@@ -70,4 +73,31 @@ const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
     console.log("Server działa na porcie " + PORT);
+});
+
+app.post("/create-checkout-session", async (req, res) => {
+
+    const { products, total } = req.body;
+
+    const session = await stripe.checkout.sessions.create({
+        payment_method_types: ["card"],
+
+        line_items: products.map(p => ({
+            price_data: {
+                currency: "pln",
+                product_data: {
+                    name: p.name,
+                },
+                unit_amount: parseInt(p.price.replace(/\D/g,"")) * 100,
+            },
+            quantity: 1,
+        })),
+
+        mode: "payment",
+
+        success_url: "https://telefix.onrender.com/success.html",
+        cancel_url: "https://telefix.onrender.com/cancel.html",
+    });
+
+    res.json({ url: session.url });
 });
