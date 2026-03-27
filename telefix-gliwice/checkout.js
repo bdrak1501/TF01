@@ -47,29 +47,34 @@ document.getElementById("order-total")
 async function placeOrder(){
 
 const order = {
-
 name: document.getElementById("name").value,
 email: document.getElementById("email").value,
 phone: document.getElementById("phone").value,
 address: document.getElementById("address").value,
-
 products: cart,
 total: total
-
 };
 
+// zapis zamówienia
 await fetch("/order", {
-
 method:"POST",
 headers:{
 "Content-Type":"application/json"
 },
 body: JSON.stringify(order)
-
 });
 
-localStorage.removeItem("cart");
+// PRZEKIEROWANIE DO PŁATNOŚCI
+const res = await fetch("/create-checkout-session", {
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body: JSON.stringify(order)
+});
 
-window.location.href="thankyou.html";
+const data = await res.json();
+
+window.location.href = data.url;
 
 }
