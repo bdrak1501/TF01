@@ -36,7 +36,7 @@ margin-top:10px;
 
 async function load(){
 
-const res = await fetch("http://localhost:3000/orders");
+const res = await fetch("/orders");
 const data = await res.json();
 
 const container = document.getElementById("orders");
@@ -78,7 +78,7 @@ ${o.address}
 
 async function changeStatus(id,status){
 
-await fetch("http://localhost:3000/status",{
+await fetch("/status",{
 
 method:"POST",
 headers:{
