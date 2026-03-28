@@ -45,6 +45,8 @@ container.innerHTML="";
 
 data.forEach(o=>{
 
+const paid = o.payment_status === "Opłacone";
+
 container.innerHTML += `
 
 <div class="order">
@@ -52,26 +54,24 @@ container.innerHTML += `
 <h3>#${o.id}</h3>
 
 <p>
-${o.name}<br>
-${o.email}<br>
-${o.phone}<br>
-${o.address}
-
+<strong>${o.name}</strong><br>
+📧 ${o.email}<br>
+📞 ${o.phone}<br>
+📍 ${o.address}
 </p>
 
 <p>
-Email: ${o.email}<br>
-Kwota: ${o.total} zł<br>
-Status: ${o.status}<br>
-Płatność: ${o.payment_status}<br>
-Data: ${o.date}
+💰 Kwota: <strong>${o.total} zł</strong><br>
+📦 Status: ${o.status}<br>
+💳 Płatność: 
+<span style="
+color:${paid ? 'green' : 'red'};
+font-weight:bold;
+">
+${paid ? "OPŁACONE ✅" : "NIEOPŁACONE ❌"}
+</span><br>
+🕒 Data: ${o.date}
 </p>
-
-data
-.filter(o => o.status === "Opłacone")
-.forEach(...)
-
-<p><strong>${o.total} zł</strong></p>
 
 <select onchange="changeStatus(${o.id},this.value)">
 
@@ -92,19 +92,19 @@ data
 async function changeStatus(id,status){
 
 await fetch("/status",{
-
 method:"POST",
 headers:{
 "Content-Type":"application/json"
 },
 body: JSON.stringify({id,status})
-
 });
+
+// 🔥 odśwież po zmianie
+load();
 
 }
 
 load();
-
 
 </script>
 
