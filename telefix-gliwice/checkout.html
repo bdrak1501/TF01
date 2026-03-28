@@ -9,22 +9,33 @@
 
 <style>
 
+*{
+    box-sizing:border-box;
+}
+
+    body{
+    margin:0;
+    font-family: 'Poppins', sans-serif;
+
+    background:#f5f7fb; /* lekko szare tło jak na nowoczesnych stronach */
+}
+
 .checkout-wrapper{
+    max-width:1100px;
+    margin:140px auto 80px;
 
-max-width:1100px;
-margin:120px auto;
+    padding:0 20px;
 
-display:grid;
-grid-template-columns:1fr 420px;
+    display:grid;
+    grid-template-columns:1fr 420px;
 
-gap:40px;
-
+    gap:40px;
 }
 
 .checkout-form{
 
 background:#fff;
-padding:40px;
+ padding:40px 60px 40px 50px;
 border-radius:25px;
 
 box-shadow:0 15px 40px rgba(0,0,0,.08);
@@ -34,12 +45,10 @@ box-shadow:0 15px 40px rgba(0,0,0,.08);
 .checkout-form input{
 
 width:100%;
-padding:12px;
 
 border-radius:10px;
 border:1px solid #ddd;
 
-margin-bottom:14px;
 
 }
 
@@ -72,16 +81,58 @@ margin-top:20px;
 }
 
 .cart-product{
+    display:flex;
+    gap:14px;
+    margin-bottom:16px;
 
-display:flex;
-gap:14px;
-margin-bottom:16px;
+    align-items:center;
+}
 
+.cart-product div{
+    font-size:14px;
 }
 
 .cart-product img{
-width:60px;
-border-radius:8px;
+    width:60px;
+    height:60px;
+
+    object-fit:cover; /* 🔥 KLUCZ */
+    border-radius:10px;
+}
+
+.checkout-form,
+.checkout-summary{
+    background:#fff;
+    padding:40px;
+    border-radius:25px;
+
+    box-shadow:0 20px 60px rgba(0,0,0,.06);
+
+    transition:.3s;
+}
+
+.checkout-form:hover,
+.checkout-summary:hover{
+    transform:translateY(-3px);
+}
+
+.checkout-form input{
+    width:100%;
+    padding:14px;
+
+    border-radius:12px;
+    border:1px solid #e5e7eb;
+
+    margin-bottom:14px;
+
+    transition:.2s;
+}
+
+.checkout-form input:focus{
+    border-color:#111;
+    outline:none;
+
+    box-shadow:0 0 0 2px rgba(0,0,0,.05);
 }
 
 </style>
