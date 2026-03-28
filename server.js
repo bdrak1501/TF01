@@ -99,5 +99,7 @@ app.post("/create-checkout-session", async (req, res) => {
         cancel_url: "https://telefix.onrender.com/cancel.html",
     });
 
-    res.json({ url: session.url });
+    stripe.redirectToCheckout({
+    sessionId: data.id
+});
 });
