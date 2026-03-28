@@ -9,7 +9,13 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 const app = express();
 
 app.use(cors());
-app.use(bodyParser.json());
+app.use((req, res, next) => {
+    if (req.originalUrl === "/webhook") {
+        next();
+    } else {
+        bodyParser.json()(req, res, next);
+    }
+});
 
 app.use(express.static("telefix-gliwice"));
 
@@ -68,13 +74,6 @@ app.post("/status", (req, res) => {
     res.json({ success: true });
 });
 
-/* START */
-const PORT = process.env.PORT || 3000;
-
-app.listen(PORT, () => {
-    console.log("Server działa na porcie " + PORT);
-});
-
 app.post("/create-checkout-session", async (req, res) => {
 
     const { products, total } = req.body;
@@ -93,11 +92,68 @@ app.post("/create-checkout-session", async (req, res) => {
             quantity: 1,
         })),
 
-        mode: "payment",
+metadata: {
+    cart: JSON.stringify(products)
+},
+customer_email: "test@test.pl",
+
+mode: "payment",
 
         success_url: "https://telefix.onrender.com/success.html",
         cancel_url: "https://telefix.onrender.com/cancel.html",
     });
 
     res.json({ url: session.url });
+});
+
+app.post("/webhook", express.raw({type: 'application/json'}), (req, res) => {
+
+    const sig = req.headers['stripe-signature'];
+
+    let event;
+
+    try {
+        event = stripe.webhooks.constructEvent(
+            req.body,
+            sig,
+            process.env.STRIPE_WEBHOOK_SECRET
+        );
+    } catch (err) {
+        console.log("Webhook error:", err.message);
+        return res.sendStatus(400);
+    }
+
+    if (event.type === "checkout.session.completed") {
+
+        const session = event.data.object;
+
+        const cart = JSON.parse(session.metadata.cart || "[]");
+
+        const orders = getOrders();
+
+       const newOrder = {
+    id: Date.now(),
+    email: session.customer_details.email,
+    total: session.amount_total / 100,
+    products: cart, // 🔥 TO JEST KLUCZ
+    status: "Opłacone",
+    payment_status: session.payment_status,
+    stripe_id: session.id,
+    date: new Date().toLocaleString()
+};
+
+        orders.push(newOrder);
+        saveOrders(orders);
+
+        console.log("✅ NOWE OPŁACONE ZAMÓWIENIE");
+    }
+
+    res.json({ received: true });
+});
+
+/* START */
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+    console.log("Server działa na porcie " + PORT);
 });

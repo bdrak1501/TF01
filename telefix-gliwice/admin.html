@@ -56,7 +56,20 @@ ${o.name}<br>
 ${o.email}<br>
 ${o.phone}<br>
 ${o.address}
+
 </p>
+
+<p>
+Email: ${o.email}<br>
+Kwota: ${o.total} zł<br>
+Status: ${o.status}<br>
+Płatność: ${o.payment_status}<br>
+Data: ${o.date}
+</p>
+
+data
+.filter(o => o.status === "Opłacone")
+.forEach(...)
 
 <p><strong>${o.total} zł</strong></p>
 
@@ -91,6 +104,7 @@ body: JSON.stringify({id,status})
 }
 
 load();
+
 
 </script>
 
