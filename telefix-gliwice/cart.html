@@ -135,9 +135,8 @@ container.innerHTML += `
 
 });
 
-document.getElementById("total")
-textContent = "Razem: " +
-total.toLocaleString("pl-PL") + " zł";
+document.getElementById("total").textContent =
+    "Razem: " + total.toLocaleString("pl-PL") + " zł";
 
 
 function removeItem(i){
