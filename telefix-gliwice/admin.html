@@ -3,6 +3,8 @@
 <head>
 <title>Panel TeleFix</title>
 
+
+
 <style>
 body{
 font-family:Arial;
@@ -33,6 +35,10 @@ margin-top:10px;
 <div id="orders"></div>
 
 <script>
+
+    if(localStorage.getItem("admin") !== "true"){
+    window.location.href = "/login.html";
+}
 
 async function load(){
 

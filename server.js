@@ -157,3 +157,18 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log("Server działa na porcie " + PORT);
 });
+
+app.post("/login", (req, res) => {
+
+    const { login, password } = req.body;
+
+    if(
+        login === process.env.ADMIN_LOGIN &&
+        password === process.env.ADMIN_PASSWORD
+    ){
+        res.json({ success: true });
+    } else {
+        res.json({ success: false });
+    }
+
+});

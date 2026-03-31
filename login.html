@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h2>Logowanie admina</h2>
+
+<input id="login" placeholder="login"><br><br>
+<input id="pass" type="password" placeholder="hasło"><br><br>
+
+<button onclick="login()">Zaloguj</button>
+
+<script>
+async function login(){
+
+const res = await fetch("/login",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body: JSON.stringify({
+login: document.getElementById("login").value,
+password: document.getElementById("pass").value
+})
+});
+
+const data = await res.json();
+
+if(data.success){
+localStorage.setItem("admin","true");
+window.location.href="/admin.html";
+}else{
+alert("Błędne dane");
+}
+
+}
+</script>
+
+</body>
+</html>
