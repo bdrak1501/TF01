@@ -8,6 +8,19 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 const app = express();
 
+
+
+
+const nodemailer = require("nodemailer");
+
+const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
+    }
+});
+
 app.use(cors());
 app.use((req, res, next) => {
     if (req.originalUrl === "/webhook") {
@@ -95,7 +108,6 @@ app.post("/create-checkout-session", async (req, res) => {
 metadata: {
     cart: JSON.stringify(products)
 },
-customer_email: "test@test.pl",
 
 mode: "payment",
 
@@ -106,7 +118,7 @@ mode: "payment",
     res.json({ url: session.url });
 });
 
-app.post("/webhook", express.raw({type: 'application/json'}), (req, res) => {
+app.post("/webhook", express.raw({type: 'application/json'}), async (req, res) => {
 
     const sig = req.headers['stripe-signature'];
 
@@ -125,28 +137,48 @@ app.post("/webhook", express.raw({type: 'application/json'}), (req, res) => {
 
     if (event.type === "checkout.session.completed") {
 
-        const session = event.data.object;
+    const session = event.data.object;
 
-        const cart = JSON.parse(session.metadata.cart || "[]");
-
-        const orders = getOrders();
-
-       const newOrder = {
-    id: Date.now(),
-    email: session.customer_details.email,
-    total: session.amount_total / 100,
-    products: cart, // 🔥 TO JEST KLUCZ
-    status: "Opłacone",
-    payment_status: session.payment_status,
-    stripe_id: session.id,
-    date: new Date().toLocaleString()
-};
-
-        orders.push(newOrder);
-        saveOrders(orders);
-
-        console.log("✅ NOWE OPŁACONE ZAMÓWIENIE");
+    let cart = [];
+    try{
+        cart = JSON.parse(session.metadata.cart || "[]");
+    }catch(e){
+        console.log("Cart parse error");
     }
+
+    const orders = getOrders();
+
+    const newOrder = {
+        id: Date.now(),
+        email: session.customer_details?.email || "brak",
+        total: session.amount_total / 100,
+        products: cart,
+        status: "Opłacone",
+        payment_status: session.payment_status,
+        stripe_id: session.id,
+        date: new Date().toLocaleString()
+    };
+
+    orders.push(newOrder);
+    saveOrders(orders);
+
+    try {
+        await transporter.sendMail({
+            from: "TeleFix <twojmail@gmail.com>",
+            to: session.customer_details?.email,
+            subject: "Zamówienie opłacone ✅",
+            html: `
+                <h2>Dziękujemy za zakup!</h2>
+                <p>Kwota: ${session.amount_total / 100} zł</p>
+                <p>ID zamówienia: ${session.id}</p>
+            `
+        });
+    } catch(e){
+        console.log("Mail error:", e);
+    }
+
+    console.log("✅ NOWE OPŁACONE ZAMÓWIENIE");
+}
 
     res.json({ received: true });
 });
@@ -172,3 +204,4 @@ app.post("/login", (req, res) => {
     }
 
 });
+
