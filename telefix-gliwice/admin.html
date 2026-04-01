@@ -3,8 +3,6 @@
 <head>
 <title>Panel TeleFix</title>
 
-
-
 <style>
 body{
 font-family:Arial;
@@ -24,6 +22,12 @@ border-radius:15px;
 select{
 margin-top:10px;
 }
+
+.logout{
+margin-bottom:20px;
+padding:10px 20px;
+cursor:pointer;
+}
 </style>
 
 </head>
@@ -32,12 +36,21 @@ margin-top:10px;
 
 <h1>Zamówienia</h1>
 
+<button class="logout" onclick="logout()">Wyloguj</button>
+
 <div id="orders"></div>
 
 <script>
 
-    if(localStorage.getItem("admin") !== "true"){
+// 🔐 zabezpieczenie
+if(localStorage.getItem("admin") !== "true"){
     window.location.href = "/login.html";
+}
+
+// 🔓 logout
+function logout(){
+    localStorage.removeItem("admin");
+    window.location.href="/login.html";
 }
 
 async function load(){
@@ -49,9 +62,10 @@ const container = document.getElementById("orders");
 
 container.innerHTML="";
 
-data.forEach(o=>{
+// 🔥 sortowanie od najnowszych
+data.reverse().forEach(o=>{
 
-const paid = o.payment_status === "Opłacone";
+const paid = o.payment_status === "paid";
 
 container.innerHTML += `
 
@@ -60,10 +74,10 @@ container.innerHTML += `
 <h3>#${o.id}</h3>
 
 <p>
-<strong>${o.name}</strong><br>
-📧 ${o.email}<br>
-📞 ${o.phone}<br>
-📍 ${o.address}
+<strong>${o.name || "Klient Stripe"}</strong><br>
+📧 ${o.email || "-"}<br>
+📞 ${o.phone || "-"}<br>
+📍 ${o.address || "-"}
 </p>
 
 <p>
@@ -105,7 +119,6 @@ headers:{
 body: JSON.stringify({id,status})
 });
 
-// 🔥 odśwież po zmianie
 load();
 
 }
