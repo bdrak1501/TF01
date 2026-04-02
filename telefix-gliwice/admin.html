@@ -29,7 +29,6 @@ padding:10px 20px;
 cursor:pointer;
 }
 </style>
-
 </head>
 
 <body>
@@ -48,7 +47,6 @@ if(!token){
     window.location.href = "/login.html";
 }
 
-// 🔓 logout
 function logout(){
     localStorage.removeItem("token");
     window.location.href="/login.html";
@@ -56,24 +54,27 @@ function logout(){
 
 async function load(){
 
+try{
+
 const res = await fetch("/orders", {
     headers: {
         Authorization: token
     }
 });
+
 const data = await res.json();
 
-const container = document.getElementById("orders");
+if(!Array.isArray(data)){
+    console.error("Błąd API:", data);
+    return;
+}
 
+const container = document.getElementById("orders");
 container.innerHTML="";
 
-// 🔥 sortowanie od najnowszych
 data.reverse().forEach(o=>{
 
-const paid = o.payment_status === "paid";
-
 container.innerHTML += `
-
 <div class="order">
 
 <h3>#${o.id}</h3>
@@ -84,9 +85,9 @@ container.innerHTML += `
 </p>
 
 <p>
-💰 <strong>${o.total} zł</strong><br>
-📦 Status: ${o.status}<br>
-💳 ${o.payment_status}
+💰 <strong>${o.total || 0} zł</strong><br>
+📦 Status: ${o.status || "Nowe"}<br>
+💳 ${o.payment_status || "Opłacone"}
 </p>
 
 <div style="margin-top:10px;">
@@ -94,24 +95,26 @@ container.innerHTML += `
 
 ${(o.products || []).map(p => `
 <div style="margin-top:5px;padding:5px;border-bottom:1px solid #ddd;">
-📱 ${p.name} | ${p.memory} | ${p.condition}
+📱 ${p.name} | ${p.memory || "-"} | ${p.condition || "-"}
 </div>
 `).join("")}
 
 </div>
 
 <select onchange="changeStatus(${o.id},this.value)">
-
 <option ${o.status==="Nowe"?"selected":""}>Nowe</option>
 <option ${o.status==="W realizacji"?"selected":""}>W realizacji</option>
 <option ${o.status==="Wysłane"?"selected":""}>Wysłane</option>
-
 </select>
 
 </div>
 `;
 
 });
+
+}catch(err){
+    console.error("LOAD ERROR:", err);
+}
 
 }
 
