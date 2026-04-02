@@ -118,9 +118,9 @@ app.post("/login", (req, res) => {
 app.get("/orders", auth, (req, res) => {
     const orders = getOrders().map(o => ({
         ...o,
-        email: safeDecrypt(o.email),
-        name: safeDecrypt(o.name),
-        address: safeJsonDecrypt(o.address)
+        email: decrypt(o.email),
+        name: decrypt(o.name),
+        address: JsonDecrypt(o.address)
     }));
 
     res.json(orders);
