@@ -68,12 +68,26 @@ app.post("/order", (req, res) => {
 });
 
 /* POBIERZ */
-app.get("/orders", (req, res) => {
-    res.json(getOrders());
+app.get("/orders", auth, (req, res) => {
+
+    const orders = getOrders().map(o => ({
+        ...o,
+        email: safeDecrypt(o.email),
+        name: safeDecrypt(o.name),
+        address: (() => {
+    try{
+        return JSON.parse(decrypt(o.address));
+    }catch{
+        return {};
+    }
+})()
+    }));
+
+    res.json(orders);
 });
 
 /* STATUS */
-app.post("/status", (req, res) => {
+app.post("/status", auth, (req, res) => {
 
     const orders = getOrders();
 
@@ -149,15 +163,17 @@ app.post("/webhook", express.raw({type: 'application/json'}), async (req, res) =
     const orders = getOrders();
 
     const newOrder = {
-        id: Date.now(),
-        email: session.customer_details?.email || "brak",
-        total: session.amount_total / 100,
-        products: cart,
-        status: "Opłacone",
-        payment_status: session.payment_status,
-        stripe_id: session.id,
-        date: new Date().toLocaleString()
-    };
+    id: Date.now(),
+    email: encrypt(session.customer_details.email || ""),
+    name: encrypt(session.customer_details.name || ""),
+    address: encrypt(JSON.stringify(session.customer_details.address || {})),
+    total: session.amount_total / 100,
+    products: cart,
+    status: "Opłacone",
+    payment_status: session.payment_status,
+    stripe_id: session.id,
+    date: new Date().toLocaleString()
+};
 
     orders.push(newOrder);
     saveOrders(orders);
@@ -190,6 +206,10 @@ app.listen(PORT, () => {
     console.log("Server działa na porcie " + PORT);
 });
 
+const crypto = require("crypto");
+
+let ADMIN_TOKENS = [];
+
 app.post("/login", (req, res) => {
 
     const { login, password } = req.body;
@@ -198,10 +218,65 @@ app.post("/login", (req, res) => {
         login === process.env.ADMIN_LOGIN &&
         password === process.env.ADMIN_PASSWORD
     ){
-        res.json({ success: true });
+        ADMIN_TOKEN = crypto.randomBytes(48).toString("hex");
+ADMIN_TOKENS.push(token);
+
+        res.json({ success: true, token: ADMIN_TOKEN });
     } else {
-        res.json({ success: false });
+        res.status(401).json({ success: false });
     }
 
 });
 
+function auth(req,res,next){
+
+    const token = req.headers.authorization;
+
+  if(!token || !ADMIN_TOKENS.includes(token)){
+    return res.status(401).json({error:"brak dostępu"});
+}
+
+    next();
+}
+
+const algorithm = "aes-256-ctr";
+const key = Buffer.from(process.env.ENCRYPT_KEY);
+
+function encrypt(text){
+    const iv = crypto.randomBytes(16);
+    const cipher = crypto.createCipheriv(algorithm, key, iv);
+
+    const encrypted = Buffer.concat([
+        cipher.update(text),
+        cipher.final()
+    ]);
+
+    return iv.toString("hex") + ":" + encrypted.toString("hex");
+}
+
+function decrypt(hash){
+    const [ivHex, contentHex] = hash.split(":");
+
+    const iv = Buffer.from(ivHex, "hex");
+    const content = Buffer.from(contentHex, "hex");
+
+    const decipher = crypto.createDecipheriv(algorithm, key, iv);
+
+    const decrypted = Buffer.concat([
+        decipher.update(content),
+        decipher.final()
+    ]);
+
+    return decrypted.toString();
+}
+
+
+function safeDecrypt(val){
+    try{
+        return decrypt(val);
+    }catch(e){
+        return "";
+    }
+}
+
+let loginAttempts = {};

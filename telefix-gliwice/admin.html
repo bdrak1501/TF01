@@ -42,20 +42,25 @@ cursor:pointer;
 
 <script>
 
-// 🔐 zabezpieczenie
-if(localStorage.getItem("admin") !== "true"){
+const token = localStorage.getItem("token");
+
+if(!token){
     window.location.href = "/login.html";
 }
 
 // 🔓 logout
 function logout(){
-    localStorage.removeItem("admin");
+    localStorage.removeItem("token");
     window.location.href="/login.html";
 }
 
 async function load(){
 
-const res = await fetch("/orders");
+const res = await fetch("/orders", {
+    headers: {
+        Authorization: token
+    }
+});
 const data = await res.json();
 
 const container = document.getElementById("orders");
@@ -76,22 +81,24 @@ container.innerHTML += `
 <p>
 <strong>${o.name || "Klient Stripe"}</strong><br>
 📧 ${o.email || "-"}<br>
-📞 ${o.phone || "-"}<br>
-📍 ${o.address || "-"}
 </p>
 
 <p>
-💰 Kwota: <strong>${o.total} zł</strong><br>
+💰 <strong>${o.total} zł</strong><br>
 📦 Status: ${o.status}<br>
-💳 Płatność: 
-<span style="
-color:${paid ? 'green' : 'red'};
-font-weight:bold;
-">
-${paid ? "OPŁACONE ✅" : "NIEOPŁACONE ❌"}
-</span><br>
-🕒 Data: ${o.date}
+💳 ${o.payment_status}
 </p>
+
+<div style="margin-top:10px;">
+<strong>Produkty:</strong><br>
+
+${(o.products || []).map(p => `
+<div style="margin-top:5px;padding:5px;border-bottom:1px solid #ddd;">
+📱 ${p.name} | ${p.memory} | ${p.condition}
+</div>
+`).join("")}
+
+</div>
 
 <select onchange="changeStatus(${o.id},this.value)">
 
@@ -102,7 +109,6 @@ ${paid ? "OPŁACONE ✅" : "NIEOPŁACONE ❌"}
 </select>
 
 </div>
-
 `;
 
 });
@@ -114,7 +120,8 @@ async function changeStatus(id,status){
 await fetch("/status",{
 method:"POST",
 headers:{
-"Content-Type":"application/json"
+    "Content-Type":"application/json",
+    Authorization: token
 },
 body: JSON.stringify({id,status})
 });

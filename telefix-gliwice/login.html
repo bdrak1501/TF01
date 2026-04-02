@@ -24,12 +24,24 @@ password: document.getElementById("pass").value
 const data = await res.json();
 
 if(data.success){
-localStorage.setItem("admin","true");
+localStorage.setItem("token", data.token);
 window.location.href="/admin.html";
 }else{
 alert("Błędne dane");
 }
 
+}
+
+const ip = req.ip;
+
+if(loginAttempts[ip] > 10){
+    return res.status(429).json({error:"Za dużo prób"});
+}
+
+if(correct){
+    loginAttempts[ip] = 0;
+} else {
+    loginAttempts[ip] = (loginAttempts[ip] || 0) + 1;
 }
 </script>
 
