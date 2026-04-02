@@ -69,6 +69,8 @@ app.use(express.static("telefix-gliwice"));
 function auth(req, res, next) {
     const token = req.headers.authorization;
 
+    console.log("TOKEN Z FRONTU:", token);
+
     if (token !== "admin123") {
         return res.status(401).json({ error: "brak dostępu" });
     }
