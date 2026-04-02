@@ -114,7 +114,7 @@ app.get("/orders", auth, (req, res) => {
         ...o,
         email: decrypt(o.email),
         name: decrypt(o.name),
-        address: address: safeJsonDecrypt(o.address)
+        address: safeJsonDecrypt(o.address)
     }));
 
     res.json(orders);
