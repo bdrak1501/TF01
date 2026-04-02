@@ -57,15 +57,13 @@ async function load(){
 try{
 
 const res = await fetch("/orders", {
-    headers: {
-        Authorization: token
-    }
+    headers: { Authorization: token }
 });
 
 const data = await res.json();
 
 if(!Array.isArray(data)){
-    console.error("Błąd API:", data);
+    console.error("API ERROR:", data);
     return;
 }
 
@@ -73,6 +71,12 @@ const container = document.getElementById("orders");
 container.innerHTML="";
 
 data.reverse().forEach(o=>{
+
+const products = (o.products || []).map(p => `
+<div style="margin-top:5px;padding:5px;border-bottom:1px solid #ddd;">
+📱 ${p.name || "-"} | ${p.memory || "-"} | ${p.condition || "-"}
+</div>
+`).join("");
 
 container.innerHTML += `
 <div class="order">
@@ -87,18 +91,12 @@ container.innerHTML += `
 <p>
 💰 <strong>${o.total || 0} zł</strong><br>
 📦 Status: ${o.status || "Nowe"}<br>
-💳 ${o.payment_status || "Opłacone"}
+💳 ${o.payment_status || "paid"}
 </p>
 
 <div style="margin-top:10px;">
 <strong>Produkty:</strong><br>
-
-${(o.products || []).map(p => `
-<div style="margin-top:5px;padding:5px;border-bottom:1px solid #ddd;">
-📱 ${p.name} | ${p.memory || "-"} | ${p.condition || "-"}
-</div>
-`).join("")}
-
+${products}
 </div>
 
 <select onchange="changeStatus(${o.id},this.value)">
@@ -112,8 +110,8 @@ ${(o.products || []).map(p => `
 
 });
 
-}catch(err){
-    console.error("LOAD ERROR:", err);
+}catch(e){
+console.error("LOAD ERROR", e);
 }
 
 }
@@ -123,14 +121,13 @@ async function changeStatus(id,status){
 await fetch("/status",{
 method:"POST",
 headers:{
-    "Content-Type":"application/json",
-    Authorization: token
+"Content-Type":"application/json",
+Authorization: token
 },
 body: JSON.stringify({id,status})
 });
 
 load();
-
 }
 
 load();

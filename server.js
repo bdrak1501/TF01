@@ -11,12 +11,15 @@ const nodemailer = require("nodemailer");
 
 const app = express();
 
-let loginAttempts = {};
-let ADMIN_TOKENS = [];
+/* =======================
+   PERSISTENT STORAGE
+======================= */
 
 const FILE = "orders.json";
+const TOKENS_FILE = "tokens.json";
 
 if (!fs.existsSync(FILE)) fs.writeFileSync(FILE, "[]");
+if (!fs.existsSync(TOKENS_FILE)) fs.writeFileSync(TOKENS_FILE, "[]");
 
 function getOrders() {
     return JSON.parse(fs.readFileSync(FILE));
@@ -26,7 +29,18 @@ function saveOrders(data) {
     fs.writeFileSync(FILE, JSON.stringify(data, null, 2));
 }
 
-/* EMAIL */
+function getTokens() {
+    return JSON.parse(fs.readFileSync(TOKENS_FILE));
+}
+
+function saveTokens(data) {
+    fs.writeFileSync(TOKENS_FILE, JSON.stringify(data, null, 2));
+}
+
+/* =======================
+   EMAIL
+======================= */
+
 const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
@@ -35,7 +49,10 @@ const transporter = nodemailer.createTransport({
     }
 });
 
-/* MIDDLEWARE */
+/* =======================
+   MIDDLEWARE
+======================= */
+
 app.use(cors());
 
 app.use((req, res, next) => {
@@ -45,18 +62,27 @@ app.use((req, res, next) => {
 
 app.use(express.static("telefix-gliwice"));
 
-/* AUTH */
+/* =======================
+   AUTH
+======================= */
+
 function auth(req, res, next) {
     const token = req.headers.authorization;
+    const tokens = getTokens();
 
-    if (!token || !ADMIN_TOKENS.includes(token)) {
+    if (!token || !tokens.includes(token)) {
         return res.status(401).json({ error: "brak dostępu" });
     }
 
     next();
 }
 
-/* LOGIN */
+/* =======================
+   LOGIN
+======================= */
+
+let loginAttempts = {};
+
 app.post("/login", (req, res) => {
     const { login, password } = req.body;
     const ip = req.ip || "unknown";
@@ -72,16 +98,23 @@ app.post("/login", (req, res) => {
         loginAttempts[ip] = 0;
 
         const token = crypto.randomBytes(48).toString("hex");
-        ADMIN_TOKENS.push(token);
+
+        const tokens = getTokens();
+        tokens.push(token);
+        saveTokens(tokens);
 
         return res.json({ success: true, token });
     }
 
     loginAttempts[ip] = (loginAttempts[ip] || 0) + 1;
+
     return res.status(401).json({ success: false });
 });
 
-/* ORDERS */
+/* =======================
+   ORDERS
+======================= */
+
 app.get("/orders", auth, (req, res) => {
     const orders = getOrders().map(o => ({
         ...o,
@@ -104,7 +137,10 @@ app.post("/status", auth, (req, res) => {
     res.json({ success: true });
 });
 
-/* STRIPE CHECKOUT */
+/* =======================
+   STRIPE
+======================= */
+
 app.post("/create-checkout-session", async (req, res) => {
     const { products } = req.body;
 
@@ -135,8 +171,12 @@ app.post("/create-checkout-session", async (req, res) => {
     res.json({ url: session.url });
 });
 
-/* WEBHOOK */
+/* =======================
+   WEBHOOK
+======================= */
+
 app.post("/webhook", bodyParser.raw({ type: "application/json" }), async (req, res) => {
+
     const sig = req.headers["stripe-signature"];
 
     let event;
@@ -153,6 +193,7 @@ app.post("/webhook", bodyParser.raw({ type: "application/json" }), async (req, r
     }
 
     if (event.type === "checkout.session.completed") {
+
         const session = event.data.object;
 
         let cart = [];
@@ -198,7 +239,10 @@ app.post("/webhook", bodyParser.raw({ type: "application/json" }), async (req, r
     res.json({ received: true });
 });
 
-/* CRYPTO */
+/* =======================
+   CRYPTO
+======================= */
+
 const algorithm = "aes-256-ctr";
 const key = Buffer.from(process.env.ENCRYPT_KEY, "hex");
 
@@ -241,7 +285,10 @@ function safeJsonDecrypt(val) {
     }
 }
 
-/* START */
+/* =======================
+   START
+======================= */
+
 app.listen(process.env.PORT || 3000, () => {
     console.log("Server działa 🚀");
 });
