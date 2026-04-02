@@ -8,6 +8,8 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 const app = express();
 
+let loginAttempts = {};
+
 
 
 
@@ -213,16 +215,25 @@ let ADMIN_TOKENS = [];
 app.post("/login", (req, res) => {
 
     const { login, password } = req.body;
+    const ip = req.ip;
+
+    if(loginAttempts[ip] > 10){
+        return res.status(429).json({error:"Za dużo prób"});
+    }
 
     if(
         login === process.env.ADMIN_LOGIN &&
         password === process.env.ADMIN_PASSWORD
     ){
-        ADMIN_TOKEN = crypto.randomBytes(48).toString("hex");
-ADMIN_TOKENS.push(token);
+        loginAttempts[ip] = 0;
 
-        res.json({ success: true, token: ADMIN_TOKEN });
+        const token = crypto.randomBytes(48).toString("hex");
+        ADMIN_TOKENS.push(token);
+
+        res.json({ success: true, token });
     } else {
+        loginAttempts[ip] = (loginAttempts[ip] || 0) + 1;
+
         res.status(401).json({ success: false });
     }
 
@@ -277,18 +288,4 @@ function safeDecrypt(val){
     }catch(e){
         return "";
     }
-}
-
-let loginAttempts = {};
-
-const ip = req.ip;
-
-if(loginAttempts[ip] > 10){
-    return res.status(429).json({error:"Za dużo prób"});
-}
-
-if(correct){
-    loginAttempts[ip] = 0;
-} else {
-    loginAttempts[ip] = (loginAttempts[ip] || 0) + 1;
 }
