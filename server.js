@@ -68,9 +68,8 @@ app.use(express.static("telefix-gliwice"));
 
 function auth(req, res, next) {
     const token = req.headers.authorization;
-    const tokens = getTokens();
 
-    if (!token || !tokens.includes(token)) {
+    if (token !== "admin123") {
         return res.status(401).json({ error: "brak dostępu" });
     }
 
@@ -84,29 +83,15 @@ function auth(req, res, next) {
 let loginAttempts = {};
 
 app.post("/login", (req, res) => {
-    const { login, password } = req.body;
-    const ip = req.ip || "unknown";
 
-    if ((loginAttempts[ip] || 0) > 10) {
-        return res.status(429).json({ error: "Za dużo prób" });
-    }
+    const { login, password } = req.body;
 
     if (
         login === process.env.ADMIN_LOGIN &&
         password === process.env.ADMIN_PASSWORD
     ) {
-        loginAttempts[ip] = 0;
-
-        const token = crypto.randomBytes(48).toString("hex");
-
-        const tokens = getTokens();
-        tokens.push(token);
-        saveTokens(tokens);
-
-        return res.json({ success: true, token });
+        return res.json({ success: true, token: "admin123" });
     }
-
-    loginAttempts[ip] = (loginAttempts[ip] || 0) + 1;
 
     return res.status(401).json({ success: false });
 });
