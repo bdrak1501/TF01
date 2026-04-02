@@ -280,3 +280,15 @@ function safeDecrypt(val){
 }
 
 let loginAttempts = {};
+
+const ip = req.ip;
+
+if(loginAttempts[ip] > 10){
+    return res.status(429).json({error:"Za dużo prób"});
+}
+
+if(correct){
+    loginAttempts[ip] = 0;
+} else {
+    loginAttempts[ip] = (loginAttempts[ip] || 0) + 1;
+}

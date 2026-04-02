@@ -1,48 +1,99 @@
 <!DOCTYPE html>
-<html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<title>Logowanie – TeleFix</title>
+
+<style>
+body{
+    font-family:Arial;
+    background:#111;
+    color:#fff;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+}
+
+.box{
+    background:#1c1c1c;
+    padding:40px;
+    border-radius:20px;
+    width:300px;
+    text-align:center;
+}
+
+input{
+    width:100%;
+    padding:12px;
+    margin-bottom:15px;
+    border:none;
+    border-radius:10px;
+}
+
+button{
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:10px;
+    background:#fff;
+    cursor:pointer;
+}
+</style>
+
+</head>
+
 <body>
 
-<h2>Logowanie admina</h2>
+<div class="box">
 
-<input id="login" placeholder="login"><br><br>
-<input id="pass" type="password" placeholder="hasło"><br><br>
+<h2>Panel admina</h2>
+
+<input id="loginInput" placeholder="Login">
+<input id="passInput" type="password" placeholder="Hasło">
 
 <button onclick="login()">Zaloguj</button>
 
+</div>
+
 <script>
+
 async function login(){
 
-const res = await fetch("/login",{
-method:"POST",
-headers:{"Content-Type":"application/json"},
-body: JSON.stringify({
-login: document.getElementById("login").value,
-password: document.getElementById("pass").value
-})
-});
+    const loginVal = document.getElementById("loginInput").value;
+    const passVal = document.getElementById("passInput").value;
 
-const data = await res.json();
+    try{
 
-if(data.success){
-localStorage.setItem("token", data.token);
-window.location.href="/admin.html";
-}else{
-alert("Błędne dane");
+        const res = await fetch("/login",{
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json"
+            },
+            body: JSON.stringify({
+                login: loginVal,
+                password: passVal
+            })
+        });
+
+        const data = await res.json();
+
+        if(!data.success){
+            alert("Błędne dane");
+            return;
+        }
+
+        localStorage.setItem("token", data.token);
+
+        window.location.href = "/admin.html";
+
+    }catch(e){
+        alert("Błąd połączenia z serwerem");
+        console.log(e);
+    }
+
 }
 
-}
-
-const ip = req.ip;
-
-if(loginAttempts[ip] > 10){
-    return res.status(429).json({error:"Za dużo prób"});
-}
-
-if(correct){
-    loginAttempts[ip] = 0;
-} else {
-    loginAttempts[ip] = (loginAttempts[ip] || 0) + 1;
-}
 </script>
 
 </body>
