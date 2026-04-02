@@ -59,7 +59,9 @@ async function load(){
 try{
 
 const res = await fetch("/orders", {
-    headers: { Authorization: token }
+    headers: { 
+    Authorization: "Bearer " + token 
+}
 });
 
 const data = await res.json();

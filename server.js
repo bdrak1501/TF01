@@ -67,9 +67,16 @@ app.use(express.static("telefix-gliwice"));
 ======================= */
 
 function auth(req, res, next) {
-    const token = req.headers.authorization;
 
-    console.log("TOKEN Z FRONTU:", token);
+    const header = req.headers.authorization;
+
+    console.log("HEADER:", header);
+
+    if (!header) {
+        return res.status(401).json({ error: "brak dostępu" });
+    }
+
+    const token = header.replace("Bearer ", "");
 
     if (token !== "admin123") {
         return res.status(401).json({ error: "brak dostępu" });
@@ -107,7 +114,7 @@ app.get("/orders", auth, (req, res) => {
         ...o,
         email: decrypt(o.email),
         name: decrypt(o.name),
-        address: JsonDecrypt(o.address)
+        address: address: safeJsonDecrypt(o.address)
     }));
 
     res.json(orders);
