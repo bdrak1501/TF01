@@ -1,157 +1,187 @@
 <!DOCTYPE html>
-<html>
+<html lang="pl">
 <head>
-<title>Panel TeleFix</title>
+    <meta charset="UTF-8">
+    <title>Panel TeleFix – Zamówienia</title>
 
-<style>
-body{
-font-family:Arial;
-background:#111;
-color:#fff;
-padding:40px;
-}
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #111;
+            color: #fff;
+            padding: 40px;
+        }
 
-.order{
-background:#fff;
-color:#000;
-padding:20px;
-margin-bottom:20px;
-border-radius:15px;
-}
+        .order {
+            background: #fff;
+            color: #000;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
 
-select{
-margin-top:10px;
-}
+        select {
+            margin-top: 10px;
+            padding: 8px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
 
-.logout{
-margin-bottom:20px;
-padding:10px 20px;
-cursor:pointer;
-}
-</style>
+        .logout {
+            margin-bottom: 20px;
+            padding: 10px 20px;
+            cursor: pointer;
+            background: #ff4444;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+
+        .product-item {
+            margin-top: 5px;
+            padding: 8px;
+            border-bottom: 1px solid #eee;
+            font-size: 0.9em;
+        }
+
+        .order h3 {
+            margin-top: 0;
+            color: #333;
+            font-size: 1.1em;
+            word-break: break-all;
+        }
+    </style>
 </head>
 
 <body>
 
-<h1>Zamówienia</h1>
+    <h1>📦 Panel Zamówień</h1>
 
-<button class="logout" onclick="logout()">Wyloguj</button>
+    <button class="logout" onclick="logout()">Wyloguj</button>
 
-<div id="orders"></div>
+    <div id="orders">Ładowanie zamówień...</div>
 
-<script>
+    <script>
+        const token = localStorage.getItem("token");
 
-const token = localStorage.getItem("token");
+        // 🔐 Sprawdzanie logowania
+        if (!token) {
+            window.location.href = "/login.html";
+        }
 
-// 🔐 sprawdzanie logowania
-if(!token){
-    window.location.href = "/login.html";
-}
+        // 🔓 Logout
+        function logout() {
+            localStorage.removeItem("token");
+            window.location.href = "/login.html";
+        }
 
-// 🔓 logout
-function logout(){
-    localStorage.removeItem("token");
-    window.location.href="/login.html";
-}
+        async function load() {
+            try {
+                const res = await fetch("/orders", {
+                    headers: {
+                        "Authorization": token
+                    }
+                });
 
-console.log("TOKEN:", token);
+                if (res.status === 401) {
+                    alert("Sesja wygasła - zaloguj się ponownie");
+                    logout();
+                    return;
+                }
 
-async function load(){
+                const data = await res.json();
 
-try{
+                if (!Array.isArray(data)) {
+                    console.error("API ERROR:", data);
+                    document.getElementById("orders").innerHTML = "Błąd pobierania danych.";
+                    return;
+                }
 
-// ✅ POPRAWNY ENDPOINT
-const res = await fetch("/orders", {
-    headers: { 
-        Authorization: token // ❗ BEZ Bearer
-    }
-});
+                const container = document.getElementById("orders");
+                container.innerHTML = "";
 
-// ❗ jeśli brak dostępu → wyloguj
-if(res.status === 401){
-    alert("Sesja wygasła - zaloguj się ponownie");
-    logout();
-    return;
-}
+                if (data.length === 0) {
+                    container.innerHTML = "<h3>Brak zamówień w bazie.</h3>";
+                    return;
+                }
 
-const data = await res.json();
+                // Wyświetlamy od najnowszych
+                data.forEach(o => {
+                    // Mapowanie produktów
+                    const productsHtml = (o.products || []).map(p => `
+                        <div class="product-item">
+                            📱 <strong>${p.name || "Produkt"}</strong> | ${p.memory || "-"} | ${p.condition || "-"}
+                        </div>
+                    `).join("");
 
-// ❗ zabezpieczenie
-if(!Array.isArray(data)){
-    console.error("API ERROR:", data);
-    return;
-}
+                    // Używamy o._id (z MongoDB) lub o.id (stare dane)
+                    const orderId = o._id || o.id;
 
-const container = document.getElementById("orders");
-container.innerHTML="";
+                    container.innerHTML += `
+                        <div class="order">
+                            <h3>ID: #${orderId}</h3>
+                            <p style="font-size: 0.85em; color: #666;">Data: ${o.date || 'Brak daty'}</p>
 
-// 🔥 najnowsze na górze
-data.reverse().forEach(o=>{
+                            <p>
+                                👤 <strong>${o.name || "Klient Stripe"}</strong><br>
+                                📧 ${o.email || "-"}<br>
+                            </p>
 
-const products = (o.products || []).map(p => `
-<div style="margin-top:5px;padding:5px;border-bottom:1px solid #ddd;">
-📱 ${p.name || "-"} | ${p.memory || "-"} | ${p.condition || "-"}
-</div>
-`).join("");
+                            <p>
+                                💰 Kwota: <strong>${o.total || 0} zł</strong><br>
+                                📦 Status: <strong>${o.status || "Opłacone"}</strong>
+                            </p>
 
-container.innerHTML += `
-<div class="order">
+                            <div style="margin: 15px 0; background: #f9f9f9; padding: 10px; border-radius: 10px;">
+                                <strong>Zamówione produkty:</strong><br>
+                                ${productsHtml || "Brak danych o produktach"}
+                            </div>
 
-<h3>#${o.id}</h3>
+                            <label>Zmień status:</label><br>
+                            <select onchange="changeStatus('${orderId}', this.value)">
+                                <option value="Opłacone" ${o.status === "Opłacone" ? "selected" : ""}>Opłacone</option>
+                                <option value="W realizacji" ${o.status === "W realizacji" ? "selected" : ""}>W realizacji</option>
+                                <option value="Wysłane" ${o.status === "Wysłane" ? "selected" : ""}>Wysłane</option>
+                                <option value="Zakończone" ${o.status === "Zakończone" ? "selected" : ""}>Zakończone</option>
+                            </select>
+                        </div>
+                    `;
+                });
 
-<p>
-<strong>${o.name || "Klient Stripe"}</strong><br>
-📧 ${o.email || "-"}<br>
-</p>
+            } catch (e) {
+                console.error("LOAD ERROR", e);
+                document.getElementById("orders").innerHTML = "Błąd połączenia z serwerem.";
+            }
+        }
 
-<p>
-💰 <strong>${o.total || 0} zł</strong><br>
-📦 Status: ${o.status || "Nowe"}<br>
-💳 ${o.payment_status || "Opłacone"}
-</p>
+        // 🔄 Zmiana statusu
+        async function changeStatus(id, status) {
+            try {
+                const res = await fetch("/status", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": token
+                    },
+                    body: JSON.stringify({ id, status })
+                });
 
-<div style="margin-top:10px;">
-<strong>Produkty:</strong><br>
-${products}
-</div>
+                if (res.ok) {
+                    console.log("Status zaktualizowany");
+                    load(); // Odśwież listę
+                } else {
+                    alert("Błąd podczas zmiany statusu");
+                }
+            } catch (err) {
+                console.error("Status update error:", err);
+            }
+        }
 
-<select onchange="changeStatus(${o.id},this.value)">
-<option ${o.status==="Nowe"?"selected":""}>Nowe</option>
-<option ${o.status==="W realizacji"?"selected":""}>W realizacji</option>
-<option ${o.status==="Wysłane"?"selected":""}>Wysłane</option>
-</select>
-
-</div>
-`;
-
-});
-
-}catch(e){
-console.error("LOAD ERROR", e);
-}
-
-}
-
-// 🔄 zmiana statusu
-async function changeStatus(id,status){
-
-await fetch("/status",{
-method:"POST",
-headers:{
-"Content-Type":"application/json",
-Authorization: token // ❗ BEZ Bearer
-},
-body: JSON.stringify({id,status})
-});
-
-load();
-
-}
-
-// 🚀 start
-load();
-
-</script>
+        // 🚀 Start
+        load();
+    </script>
 
 </body>
 </html>
