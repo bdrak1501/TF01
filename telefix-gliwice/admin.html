@@ -58,7 +58,7 @@ async function load(){
 
 try{
 
-const res = await fetch("/orders", {
+const res = await fetch("/create-checkout-session", {
     headers: { 
     Authorization: "Bearer " + token 
 }

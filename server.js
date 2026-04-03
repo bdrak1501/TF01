@@ -70,8 +70,6 @@ function auth(req, res, next) {
 
     const header = req.headers.authorization;
 
-    console.log("HEADER:", header);
-
     if (!header) {
         return res.status(401).json({ error: "brak dostępu" });
     }
@@ -112,11 +110,19 @@ app.post("/login", (req, res) => {
 app.get("/orders", auth, (req, res) => {
     const orders = getOrders().map(o => ({
         ...o,
-        email: decrypt(o.email),
-        name: decrypt(o.name),
+        email: safedecrypt(o.email),
+        name: safedecrypt(o.name),
         address: safeJsonDecrypt(o.address)
     }));
 
+function safeDecrypt(val){
+    try{
+        return decrypt(val);
+    }catch(e){
+        return val || "";
+    }
+}
+    
     res.json(orders);
 });
 
