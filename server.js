@@ -68,15 +68,9 @@ app.use(express.static("telefix-gliwice"));
 
 function auth(req, res, next) {
 
-    const header = req.headers.authorization;
+    const token = req.headers.authorization;
 
-    if (!header) {
-        return res.status(401).json({ error: "brak dostępu" });
-    }
-
-    const token = header.replace("Bearer ", "");
-
-    if (token !== "admin123") {
+    if(token !== process.env.ADMIN_PASSWORD){
         return res.status(401).json({ error: "brak dostępu" });
     }
 
@@ -93,14 +87,14 @@ app.post("/login", (req, res) => {
 
     const { login, password } = req.body;
 
-    if (
+    if(
         login === process.env.ADMIN_LOGIN &&
         password === process.env.ADMIN_PASSWORD
-    ) {
-        return res.json({ success: true, token: "admin123" });
+    ){
+        return res.json({ success: true, token: password });
     }
 
-    return res.status(401).json({ success: false });
+    res.status(401).json({ success: false });
 });
 
 /* =======================
