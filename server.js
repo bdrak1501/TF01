@@ -16,7 +16,7 @@ mongoose.connect(process.env.MONGODB_URI)
     .then(() => console.log("Połączono z MongoDB Atlas ✅"))
     .catch(err => console.error("Błąd połączenia z bazą:", err));
 
-// Schemat zamówienia
+// Definicja modelu zamówienia
 const orderSchema = new mongoose.Schema({
     email: String,
     name: String,
@@ -34,6 +34,7 @@ const Order = mongoose.model("Order", orderSchema);
    CRYPTO HELPERS
 ======================= */
 const algorithm = "aes-256-ctr";
+// Klucz musi mieć 64 znaki hex (32 bajty)
 const key = Buffer.from(process.env.ENCRYPT_KEY || "0".repeat(64), "hex");
 
 function encrypt(text) {
@@ -53,11 +54,22 @@ function decrypt(hash) {
         const decipher = crypto.createDecipheriv(algorithm, key, iv);
         const decrypted = Buffer.concat([decipher.update(content), decipher.final()]);
         return decrypted.toString();
-    } catch (e) { return hash; }
+    } catch (e) {
+        return hash;
+    }
+}
+
+function safeJsonDecrypt(val) {
+    try {
+        const decrypted = decrypt(val);
+        return JSON.parse(decrypted);
+    } catch {
+        return {};
+    }
 }
 
 /* =======================
-   MIDDLEWARE & AUTH
+   MIDDLEWARE
 ======================= */
 app.use(cors());
 app.use((req, res, next) => {
@@ -85,16 +97,15 @@ app.post("/login", (req, res) => {
     res.status(401).json({ success: false });
 });
 
-// Pobieranie zamówień z bazy (z deszyfrowaniem)
 app.get("/orders", auth, async (req, res) => {
     try {
         const orders = await Order.find().sort({ _id: -1 });
         const decryptedOrders = orders.map(o => ({
             ...o._doc,
-            id: o._id,
+            id: o._id, // Mapujemy MongoDB _id na id dla Twojego frontu
             email: decrypt(o.email),
             name: decrypt(o.name),
-            address: o.address.includes(":") ? JSON.parse(decrypt(o.address)) : o.address
+            address: safeJsonDecrypt(o.address)
         }));
         res.json(decryptedOrders);
     } catch (err) {
@@ -102,7 +113,6 @@ app.get("/orders", auth, async (req, res) => {
     }
 });
 
-// Aktualizacja statusu w bazie
 app.post("/status", auth, async (req, res) => {
     try {
         await Order.findByIdAndUpdate(req.body.id, { status: req.body.status });
@@ -117,23 +127,28 @@ app.post("/status", auth, async (req, res) => {
 ======================= */
 
 app.post("/create-checkout-session", async (req, res) => {
-    const { products } = req.body;
-    const session = await stripe.checkout.sessions.create({
-        payment_method_types: ["card"],
-        mode: "payment",
-        line_items: products.map(p => ({
-            price_data: {
-                currency: "pln",
-                product_data: { name: p.name },
-                unit_amount: parseInt(p.price.replace(/\D/g, "")) * 100
-            },
-            quantity: 1
-        })),
-        metadata: { cart: JSON.stringify(products) },
-        success_url: "https://telefix.onrender.com/success.html",
-        cancel_url: "https://telefix.onrender.com/cancel.html",
-    });
-    res.json({ url: session.url });
+    try {
+        const { products } = req.body;
+        const session = await stripe.checkout.sessions.create({
+            payment_method_types: ["card"],
+            mode: "payment",
+            billing_address_collection: "required",
+            line_items: products.map(p => ({
+                price_data: {
+                    currency: "pln",
+                    product_data: { name: p.name },
+                    unit_amount: parseInt(p.price.replace(/\D/g, "")) * 100
+                },
+                quantity: 1
+            })),
+            metadata: { cart: JSON.stringify(products) },
+            success_url: "https://telefix.onrender.com/success.html",
+            cancel_url: "https://telefix.onrender.com/cancel.html",
+        });
+        res.json({ url: session.url });
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
 });
 
 app.post("/webhook", bodyParser.raw({ type: "application/json" }), async (req, res) => {
@@ -141,21 +156,28 @@ app.post("/webhook", bodyParser.raw({ type: "application/json" }), async (req, r
     let event;
     try {
         event = stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SECRET);
-    } catch (err) { return res.sendStatus(400); }
+    } catch (err) {
+        return res.sendStatus(400);
+    }
 
     if (event.type === "checkout.session.completed") {
         const session = event.data.object;
+        const customer = session.customer_details || {};
+
         const newOrder = new Order({
-            email: encrypt(session.customer_details.email || ""),
-            name: encrypt(session.customer_details.name || ""),
-            address: encrypt(JSON.stringify(session.customer_details.address || {})),
+            email: encrypt(customer.email || ""),
+            name: encrypt(customer.name || ""),
+            address: encrypt(JSON.stringify(customer.address || {})),
             total: session.amount_total / 100,
             products: JSON.parse(session.metadata.cart || "[]"),
             stripe_id: session.id
         });
+
         await newOrder.save();
     }
     res.json({ received: true });
 });
 
-app.listen(process.env.PORT || 3000, () => console.log("Server działa 🚀"));
+app.listen(process.env.PORT || 3000, () => {
+    console.log("Server działa 🚀");
+});
