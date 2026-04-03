@@ -43,10 +43,12 @@ cursor:pointer;
 
 const token = localStorage.getItem("token");
 
+// 🔐 sprawdzanie logowania
 if(!token){
     window.location.href = "/login.html";
 }
 
+// 🔓 logout
 function logout(){
     localStorage.removeItem("token");
     window.location.href="/login.html";
@@ -58,14 +60,23 @@ async function load(){
 
 try{
 
-const res = await fetch("/create-checkout-session", {
+// ✅ POPRAWNY ENDPOINT
+const res = await fetch("/orders", {
     headers: { 
-    Authorization: "Bearer " + token 
-}
+        Authorization: token // ❗ BEZ Bearer
+    }
 });
+
+// ❗ jeśli brak dostępu → wyloguj
+if(res.status === 401){
+    alert("Sesja wygasła - zaloguj się ponownie");
+    logout();
+    return;
+}
 
 const data = await res.json();
 
+// ❗ zabezpieczenie
 if(!Array.isArray(data)){
     console.error("API ERROR:", data);
     return;
@@ -74,6 +85,7 @@ if(!Array.isArray(data)){
 const container = document.getElementById("orders");
 container.innerHTML="";
 
+// 🔥 najnowsze na górze
 data.reverse().forEach(o=>{
 
 const products = (o.products || []).map(p => `
@@ -95,7 +107,7 @@ container.innerHTML += `
 <p>
 💰 <strong>${o.total || 0} zł</strong><br>
 📦 Status: ${o.status || "Nowe"}<br>
-💳 ${o.payment_status || "paid"}
+💳 ${o.payment_status || "Opłacone"}
 </p>
 
 <div style="margin-top:10px;">
@@ -104,7 +116,7 @@ ${products}
 </div>
 
 <select onchange="changeStatus(${o.id},this.value)">
-<option ${o.status==="Opłacone"?"selected":""}>Opłacone</option>
+<option ${o.status==="Nowe"?"selected":""}>Nowe</option>
 <option ${o.status==="W realizacji"?"selected":""}>W realizacji</option>
 <option ${o.status==="Wysłane"?"selected":""}>Wysłane</option>
 </select>
@@ -120,20 +132,23 @@ console.error("LOAD ERROR", e);
 
 }
 
+// 🔄 zmiana statusu
 async function changeStatus(id,status){
 
 await fetch("/status",{
 method:"POST",
 headers:{
 "Content-Type":"application/json",
-Authorization: "Bearer " + token
+Authorization: token // ❗ BEZ Bearer
 },
 body: JSON.stringify({id,status})
 });
 
 load();
+
 }
 
+// 🚀 start
 load();
 
 </script>
