@@ -73,16 +73,16 @@ function safeJsonDecrypt(val) {
    EMAIL CONFIGURATION (OSTATECZNA PRÓBA)
 ======================= */
 const transporter = nodemailer.createTransport({
-    service: 'gmail', // Nodemailer sam dobierze porty i hosta
+    service: 'gmail',
     auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS
     },
     tls: {
+        // To pomaga ominąć błędy certyfikatów na niektórych serwerach
         rejectUnauthorized: false
     }
 });
-
 async function sendEmail(to, subject, text) {
     try {
         await transporter.sendMail({
