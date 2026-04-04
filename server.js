@@ -67,20 +67,21 @@ function safeJsonDecrypt(val) {
 }
 
 /* =======================
-   EMAIL CONFIGURATION
+   EMAIL CONFIGURATION (POPRAWIONA)
 ======================= */
 const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
-    port: 465,
-    secure: true, // Używamy SSL dla portu 465
+    port: 587, // Zmiana z 465 na 587
+    secure: false, // Dla portu 587 musi być false
     auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS
     },
     tls: {
-        // To pomaga uniknąć błędów na serwerach zewnętrznych (Render)
-        rejectUnauthorized: false
-    }
+        rejectUnauthorized: false, // Ignorowanie błędów certyfikatów na Renderze
+        minVersion: "TLSv1.2"      // Wymagana wersja przez Google
+    },
+    connectionTimeout: 10000 // 10 sekund na połączenie
 });
 
 
@@ -226,7 +227,6 @@ app.post("/webhook", bodyParser.raw({ type: "application/json" }), async (req, r
 
         await newOrder.save();
 
-        // Potwierdzenie dla klienta od razu po zakupie
         const subject = "Otrzymaliśmy Twoje zamówienie – TeleFix Gliwice";
         const message = `Cześć ${customer.name || ''}!\n\nDziękujemy za zakupy. Twoje zamówienie zostało opłacone. Powiadomimy Cię osobnym mailem, gdy wyślemy paczkę!`;
         await sendEmail(customer.email, subject, message);
