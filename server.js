@@ -67,22 +67,23 @@ function safeJsonDecrypt(val) {
 }
 
 /* =======================
-   EMAIL CONFIGURATION (NAPRAWIONA)
+   EMAIL CONFIGURATION (ZOPTYMALIZOWANA DLA RENDER)
 ======================= */
 const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
-    port: 465, // Zmiana z 587 na 465
-    secure: true, // Dla portu 465 musi być true
+    port: 465,         // Zmieniono na 465 dla stabilnego SSL
+    secure: true,       // Port 465 wymaga secure: true
     auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS
     },
     tls: {
-        rejectUnauthorized: false
+        rejectUnauthorized: false, // Zapobiega błędom certyfikatów na serwerach proxy
+        minVersion: "TLSv1.2"
     },
-    // Zwiększamy timeout, aby dać serwerowi więcej czasu na połączenie
-    connectionTimeout: 10000, 
-    greetingTimeout: 10000
+    connectionTimeout: 15000, // Zwiększono timeout do 15s dla Render
+    greetingTimeout: 15000,
+    socketTimeout: 20000
 });
 
 async function sendEmail(to, subject, text) {
@@ -150,13 +151,10 @@ app.post("/status", auth, async (req, res) => {
         const order = await Order.findById(id);
         if (!order) return res.status(404).json({ error: "Nie znaleziono zamówienia" });
 
-        // najpierw aktualizujemy bazę
         await Order.findByIdAndUpdate(id, { status });
         
-        // Odpowiadamy do admina OD RAZU, żeby panel nie wisiał
         res.json({ success: true });
 
-        // Wysyłamy maila "w tle"
         const clientEmail = decrypt(order.email);
         let subject = "";
         let message = "";
@@ -170,7 +168,6 @@ app.post("/status", auth, async (req, res) => {
         }
 
         if (subject && message) {
-            // Nie używamy 'await' tutaj, żeby błąd maila nie zabił całego procesu
             sendEmail(clientEmail, subject, message).catch(e => console.log("Błąd maila w tle:", e.message));
         }
     } catch (err) {
@@ -178,9 +175,6 @@ app.post("/status", auth, async (req, res) => {
         if (!res.headersSent) res.status(500).json({ error: "Błąd serwera" });
     }
 });
-
-
-
 
 /* =======================
    STRIPE & WEBHOOK
@@ -237,7 +231,9 @@ app.post("/webhook", bodyParser.raw({ type: "application/json" }), async (req, r
 
         const subject = "Otrzymaliśmy Twoje zamówienie – TeleFix Gliwice";
         const message = `Cześć ${customer.name || ''}!\n\nDziękujemy za zakupy. Twoje zamówienie zostało opłacone. Powiadomimy Cię osobnym mailem, gdy wyślemy paczkę!`;
-        await sendEmail(customer.email, subject, message);
+        
+        // Ważne: Wywołujemy sendEmail bez blokowania webhooka
+        sendEmail(customer.email, subject, message).catch(e => console.log("Błąd maila w webhooku:", e.message));
     }
     res.json({ received: true });
 });
