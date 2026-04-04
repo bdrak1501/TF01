@@ -72,15 +72,17 @@ function safeJsonDecrypt(val) {
 const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
     port: 465, // Zmiana z 587 na 465
-    secure: true, // Zmiana z false na true dla portu 465
+    secure: true, // Dla portu 465 musi być true
     auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS
     },
     tls: {
-        // To pomaga, jeśli serwer ma problem z certyfikatami
         rejectUnauthorized: false
-    }
+    },
+    // Zwiększamy timeout, aby dać serwerowi więcej czasu na połączenie
+    connectionTimeout: 10000, 
+    greetingTimeout: 10000
 });
 
 async function sendEmail(to, subject, text) {
