@@ -72,7 +72,8 @@ function safeJsonDecrypt(val) {
 const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
     port: 587,
-    secure: false, // Port 587 musi mieć false
+    secure: false, 
+    requireTLS: true, // Wymuś STARTTLS
     auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS
@@ -81,7 +82,7 @@ const transporter = nodemailer.createTransport({
         rejectUnauthorized: false,
         minVersion: "TLSv1.2"
     },
-    connectionTimeout: 5000 // 5 sekund na próbę
+    connectionTimeout: 10000 // 10 sekund
 });
 
 async function sendEmail(to, subject, text) {
