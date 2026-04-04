@@ -16,7 +16,6 @@ mongoose.connect(process.env.MONGODB_URI)
     .then(() => console.log("Połączono z MongoDB Atlas ✅"))
     .catch(err => console.error("Błąd połączenia z bazą:", err));
 
-// Definicja modelu zamówienia
 const orderSchema = new mongoose.Schema({
     email: String,
     name: String,
@@ -34,7 +33,6 @@ const Order = mongoose.model("Order", orderSchema);
    CRYPTO HELPERS
 ======================= */
 const algorithm = "aes-256-ctr";
-// Klucz musi mieć 64 znaki hex (32 bajty)
 const key = Buffer.from(process.env.ENCRYPT_KEY || "0".repeat(64), "hex");
 
 function encrypt(text) {
@@ -65,6 +63,31 @@ function safeJsonDecrypt(val) {
         return JSON.parse(decrypted);
     } catch {
         return {};
+    }
+}
+
+/* =======================
+   EMAIL CONFIGURATION
+======================= */
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
+    }
+});
+
+async function sendEmail(to, subject, text) {
+    try {
+        await transporter.sendMail({
+            from: `"TeleFix Gliwice" <${process.env.EMAIL_USER}>`,
+            to,
+            subject,
+            text
+        });
+        console.log(`E-mail wysłany do: ${to}`);
+    } catch (err) {
+        console.error("Błąd wysyłki e-mail:", err);
     }
 }
 
@@ -102,7 +125,7 @@ app.get("/orders", auth, async (req, res) => {
         const orders = await Order.find().sort({ _id: -1 });
         const decryptedOrders = orders.map(o => ({
             ...o._doc,
-            id: o._id, // Mapujemy MongoDB _id na id dla Twojego frontu
+            id: o._id,
             email: decrypt(o.email),
             name: decrypt(o.name),
             address: safeJsonDecrypt(o.address)
@@ -116,39 +139,32 @@ app.get("/orders", auth, async (req, res) => {
 app.post("/status", auth, async (req, res) => {
     try {
         const { id, status } = req.body;
-        
-        // Pobieramy zamówienie, żeby znać e-mail klienta
         const order = await Order.findById(id);
         if (!order) return res.status(404).json({ error: "Nie znaleziono zamówienia" });
 
-        // Aktualizujemy status w bazie
         await Order.findByIdAndUpdate(id, { status });
 
-        // Przygotowanie e-maila
         const clientEmail = decrypt(order.email);
         let subject = "";
         let message = "";
 
         if (status === "Wysłane") {
             subject = "Twoja paczka z TeleFix jest już w drodze! 📦";
-            message = `Dobra wiadomość! Twoje zamówienie o numerze #${id} zostało właśnie wysłane. Spodziewaj się kuriera wkrótce!`;
+            message = `Dobra wiadomość! Twoje zamówienie #${id} zostało wysłane. Powinieneś je otrzymać w ciągu 2 dni roboczych.`;
         } else if (status === "Zakończone") {
             subject = "Zamówienie zrealizowane – dziękujemy!";
-            message = `Twoje zamówienie #${id} zostało sfinalizowane. Mamy nadzieję, że sprzęt będzie służył bez zarzutu!`;
+            message = `Twoje zamówienie #${id} zostało sfinalizowane. Dziękujemy za zaufanie i zapraszamy ponownie!`;
         }
 
-        // Wysyłamy e-mail tylko jeśli status to "Wysłane" lub "Zakończone"
         if (subject && message) {
             await sendEmail(clientEmail, subject, message);
         }
 
         res.json({ success: true });
     } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: "Błąd aktualizacji lub wysyłki e-mail" });
+        res.status(500).json({ error: "Błąd aktualizacji lub wysyłki" });
     }
 });
-
 
 /* =======================
    STRIPE & WEBHOOK
@@ -202,12 +218,11 @@ app.post("/webhook", bodyParser.raw({ type: "application/json" }), async (req, r
         });
 
         await newOrder.save();
-        // Po zapisie w bazie wysyłamy potwierdzenie do klienta
-const clientEmail = customer.email;
-const subject = "Otrzymaliśmy Twoje zamówienie – TeleFix Gliwice";
-const message = `Cześć ${customer.name || ''}!\n\nDziękujemy za zakupy w TeleFix. Twoje zamówienie zostało opłacone i przekazane do realizacji. Powiadomimy Cię, gdy paczka wyruszy w drogę!`;
 
-await sendEmail(clientEmail, subject, message);
+        // Potwierdzenie dla klienta od razu po zakupie
+        const subject = "Otrzymaliśmy Twoje zamówienie – TeleFix Gliwice";
+        const message = `Cześć ${customer.name || ''}!\n\nDziękujemy za zakupy. Twoje zamówienie zostało opłacone. Powiadomimy Cię osobnym mailem, gdy wyślemy paczkę!`;
+        await sendEmail(customer.email, subject, message);
     }
     res.json({ received: true });
 });
@@ -215,29 +230,3 @@ await sendEmail(clientEmail, subject, message);
 app.listen(process.env.PORT || 3000, () => {
     console.log("Server działa 🚀");
 });
-
-/* =======================
-   EMAIL CONFIGURATION
-======================= */
-const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-        user: process.env.EMAIL_USER, // Twój adres Gmail
-        pass: process.env.EMAIL_PASS  // Hasło aplikacji Gmail (16 znaków)
-    }
-});
-
-// Funkcja pomocnicza do wysyłki
-async function sendEmail(to, subject, text) {
-    try {
-        await transporter.sendMail({
-            from: `"TeleFix Gliwice" <${process.env.EMAIL_USER}>`,
-            to,
-            subject,
-            text
-        });
-        console.log(`E-mail wysłany do: ${to} [${subject}]`);
-    } catch (err) {
-        console.error("Błąd wysyłki e-mail:", err);
-    }
-}
