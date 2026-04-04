@@ -19,7 +19,6 @@
             margin-bottom: 20px;
             border-radius: 15px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            position: relative;
         }
 
         select {
@@ -27,8 +26,6 @@
             padding: 8px;
             border-radius: 5px;
             cursor: pointer;
-            width: 100%;
-            max-width: 200px;
         }
 
         .logout {
@@ -40,23 +37,6 @@
             border: none;
             border-radius: 8px;
             font-weight: bold;
-        }
-
-        .delete-btn {
-            margin-top: 20px;
-            padding: 10px;
-            background: #dc3545;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            width: 100%;
-            font-weight: bold;
-            transition: 0.3s;
-        }
-
-        .delete-btn:hover {
-            background: #a71d2a;
         }
 
         .product-item {
@@ -127,13 +107,16 @@
                     return;
                 }
 
+                // Wyświetlamy od najnowszych
                 data.forEach(o => {
+                    // Mapowanie produktów
                     const productsHtml = (o.products || []).map(p => `
                         <div class="product-item">
                             📱 <strong>${p.name || "Produkt"}</strong> | ${p.memory || "-"} | ${p.condition || "-"}
                         </div>
                     `).join("");
 
+                    // Używamy o._id (z MongoDB) lub o.id (stare dane)
                     const orderId = o._id || o.id;
 
                     container.innerHTML += `
@@ -163,10 +146,6 @@
                                 <option value="Wysłane" ${o.status === "Wysłane" ? "selected" : ""}>Wysłane</option>
                                 <option value="Zakończone" ${o.status === "Zakończone" ? "selected" : ""}>Zakończone</option>
                             </select>
-
-                            <button class="delete-btn" onclick="deleteOrder('${orderId}')">
-                                Usuń zamówienie 🗑️
-                            </button>
                         </div>
                     `;
                 });
@@ -191,38 +170,12 @@
 
                 if (res.ok) {
                     console.log("Status zaktualizowany");
-                    load(); 
+                    load(); // Odśwież listę
                 } else {
                     alert("Błąd podczas zmiany statusu");
                 }
             } catch (err) {
                 console.error("Status update error:", err);
-            }
-        }
-
-        // 🗑️ Usuwanie zamówienia
-        async function deleteOrder(id) {
-            if (!confirm("Czy na pewno chcesz usunąć to zamówienie? Tej operacji nie można cofnąć.")) {
-                return;
-            }
-
-            try {
-                const res = await fetch(`/orders/${id}`, {
-                    method: "DELETE",
-                    headers: {
-                        "Authorization": token
-                    }
-                });
-
-                if (res.ok) {
-                    alert("Zamówienie zostało usunięte.");
-                    load(); // Odśwież listę po usunięciu
-                } else {
-                    alert("Błąd podczas usuwania zamówienia.");
-                }
-            } catch (err) {
-                console.error("Delete error:", err);
-                alert("Błąd połączenia z serwerem.");
             }
         }
 

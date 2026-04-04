@@ -72,8 +72,7 @@ function safeJsonDecrypt(val) {
 const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
     port: 587,
-    secure: false, 
-    requireTLS: true, // Wymuś STARTTLS
+    secure: false, // Port 587 musi mieć false
     auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS
@@ -82,7 +81,7 @@ const transporter = nodemailer.createTransport({
         rejectUnauthorized: false,
         minVersion: "TLSv1.2"
     },
-    connectionTimeout: 10000 // 10 sekund
+    connectionTimeout: 5000 // 5 sekund na próbę
 });
 
 async function sendEmail(to, subject, text) {
@@ -178,21 +177,6 @@ app.post("/status", auth, async (req, res) => {
         if (!res.headersSent) res.status(500).json({ error: "Błąd serwera" });
     }
 });
-
-
-
-// 🗑️ Usuwanie zamówienia
-app.delete("/orders/:id", auth, async (req, res) => {
-    try {
-        const { id } = req.params;
-        await Order.findByIdAndDelete(id);
-        res.json({ success: true });
-    } catch (err) {
-        console.error("Błąd podczas usuwania:", err);
-        res.status(500).json({ error: "Błąd serwera podczas usuwania" });
-    }
-});
-
 
 
 /* =======================
