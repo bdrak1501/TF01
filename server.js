@@ -67,21 +67,20 @@ function safeJsonDecrypt(val) {
 }
 
 /* =======================
-   EMAIL CONFIGURATION (POPRAWIONA)
+   EMAIL CONFIGURATION (NAPRAWIONA)
 ======================= */
 const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
-    port: 587,
-    secure: false, // Port 587 musi mieć false
+    port: 465, // Zmiana z 587 na 465
+    secure: true, // Zmiana z false na true dla portu 465
     auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS
     },
     tls: {
-        rejectUnauthorized: false,
-        minVersion: "TLSv1.2"
-    },
-    connectionTimeout: 5000 // 5 sekund na próbę
+        // To pomaga, jeśli serwer ma problem z certyfikatami
+        rejectUnauthorized: false
+    }
 });
 
 async function sendEmail(to, subject, text) {
@@ -177,6 +176,8 @@ app.post("/status", auth, async (req, res) => {
         if (!res.headersSent) res.status(500).json({ error: "Błąd serwera" });
     }
 });
+
+
 
 
 /* =======================
