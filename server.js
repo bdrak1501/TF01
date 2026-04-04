@@ -115,12 +115,40 @@ app.get("/orders", auth, async (req, res) => {
 
 app.post("/status", auth, async (req, res) => {
     try {
-        await Order.findByIdAndUpdate(req.body.id, { status: req.body.status });
+        const { id, status } = req.body;
+        
+        // Pobieramy zamówienie, żeby znać e-mail klienta
+        const order = await Order.findById(id);
+        if (!order) return res.status(404).json({ error: "Nie znaleziono zamówienia" });
+
+        // Aktualizujemy status w bazie
+        await Order.findByIdAndUpdate(id, { status });
+
+        // Przygotowanie e-maila
+        const clientEmail = decrypt(order.email);
+        let subject = "";
+        let message = "";
+
+        if (status === "Wysłane") {
+            subject = "Twoja paczka z TeleFix jest już w drodze! 📦";
+            message = `Dobra wiadomość! Twoje zamówienie o numerze #${id} zostało właśnie wysłane. Spodziewaj się kuriera wkrótce!`;
+        } else if (status === "Zakończone") {
+            subject = "Zamówienie zrealizowane – dziękujemy!";
+            message = `Twoje zamówienie #${id} zostało sfinalizowane. Mamy nadzieję, że sprzęt będzie służył bez zarzutu!`;
+        }
+
+        // Wysyłamy e-mail tylko jeśli status to "Wysłane" lub "Zakończone"
+        if (subject && message) {
+            await sendEmail(clientEmail, subject, message);
+        }
+
         res.json({ success: true });
     } catch (err) {
-        res.status(500).json({ error: "Błąd aktualizacji" });
+        console.error(err);
+        res.status(500).json({ error: "Błąd aktualizacji lub wysyłki e-mail" });
     }
 });
+
 
 /* =======================
    STRIPE & WEBHOOK
@@ -174,6 +202,12 @@ app.post("/webhook", bodyParser.raw({ type: "application/json" }), async (req, r
         });
 
         await newOrder.save();
+        // Po zapisie w bazie wysyłamy potwierdzenie do klienta
+const clientEmail = customer.email;
+const subject = "Otrzymaliśmy Twoje zamówienie – TeleFix Gliwice";
+const message = `Cześć ${customer.name || ''}!\n\nDziękujemy za zakupy w TeleFix. Twoje zamówienie zostało opłacone i przekazane do realizacji. Powiadomimy Cię, gdy paczka wyruszy w drogę!`;
+
+await sendEmail(clientEmail, subject, message);
     }
     res.json({ received: true });
 });
@@ -181,3 +215,29 @@ app.post("/webhook", bodyParser.raw({ type: "application/json" }), async (req, r
 app.listen(process.env.PORT || 3000, () => {
     console.log("Server działa 🚀");
 });
+
+/* =======================
+   EMAIL CONFIGURATION
+======================= */
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: process.env.EMAIL_USER, // Twój adres Gmail
+        pass: process.env.EMAIL_PASS  // Hasło aplikacji Gmail (16 znaków)
+    }
+});
+
+// Funkcja pomocnicza do wysyłki
+async function sendEmail(to, subject, text) {
+    try {
+        await transporter.sendMail({
+            from: `"TeleFix Gliwice" <${process.env.EMAIL_USER}>`,
+            to,
+            subject,
+            text
+        });
+        console.log(`E-mail wysłany do: ${to} [${subject}]`);
+    } catch (err) {
+        console.error("Błąd wysyłki e-mail:", err);
+    }
+}
