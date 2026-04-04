@@ -178,6 +178,22 @@ app.post("/status", auth, async (req, res) => {
     }
 });
 
+
+
+// 🗑️ Usuwanie zamówienia
+app.delete("/orders/:id", auth, async (req, res) => {
+    try {
+        const { id } = req.params;
+        await Order.findByIdAndDelete(id);
+        res.json({ success: true });
+    } catch (err) {
+        console.error("Błąd podczas usuwania:", err);
+        res.status(500).json({ error: "Błąd serwera podczas usuwania" });
+    }
+});
+
+
+
 /* =======================
    STRIPE & WEBHOOK
 ======================= */
