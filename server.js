@@ -71,19 +71,18 @@ function safeJsonDecrypt(val) {
 ======================= */
 const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
-    port: 587, // Zmiana z 465 na 587
-    secure: false, // Dla portu 587 musi być false
+    port: 587,
+    secure: false, // Port 587 musi mieć false
     auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS
     },
     tls: {
-        rejectUnauthorized: false, // Ignorowanie błędów certyfikatów na Renderze
-        minVersion: "TLSv1.2"      // Wymagana wersja przez Google
+        rejectUnauthorized: false,
+        minVersion: "TLSv1.2"
     },
-    connectionTimeout: 10000 // 10 sekund na połączenie
+    connectionTimeout: 5000 // 5 sekund na próbę
 });
-
 
 async function sendEmail(to, subject, text) {
     try {
@@ -150,27 +149,32 @@ app.post("/status", auth, async (req, res) => {
         const order = await Order.findById(id);
         if (!order) return res.status(404).json({ error: "Nie znaleziono zamówienia" });
 
+        // najpierw aktualizujemy bazę
         await Order.findByIdAndUpdate(id, { status });
+        
+        // Odpowiadamy do admina OD RAZU, żeby panel nie wisiał
+        res.json({ success: true });
 
+        // Wysyłamy maila "w tle"
         const clientEmail = decrypt(order.email);
         let subject = "";
         let message = "";
 
         if (status === "Wysłane") {
             subject = "Twoja paczka z TeleFix jest już w drodze! 📦";
-            message = `Dobra wiadomość! Twoje zamówienie #${id} zostało wysłane. Powinieneś je otrzymać w ciągu 2 dni roboczych.`;
+            message = `Dobra wiadomość! Twoje zamówienie #${id} zostało wysłane.`;
         } else if (status === "Zakończone") {
             subject = "Zamówienie zrealizowane – dziękujemy!";
-            message = `Twoje zamówienie #${id} zostało sfinalizowane. Dziękujemy za zaufanie i zapraszamy ponownie!`;
+            message = `Twoje zamówienie #${id} zostało zakończone. Zapraszamy ponownie!`;
         }
 
         if (subject && message) {
-            await sendEmail(clientEmail, subject, message);
+            // Nie używamy 'await' tutaj, żeby błąd maila nie zabił całego procesu
+            sendEmail(clientEmail, subject, message).catch(e => console.log("Błąd maila w tle:", e.message));
         }
-
-        res.json({ success: true });
     } catch (err) {
-        res.status(500).json({ error: "Błąd aktualizacji lub wysyłki" });
+        console.error(err);
+        if (!res.headersSent) res.status(500).json({ error: "Błąd serwera" });
     }
 });
 
