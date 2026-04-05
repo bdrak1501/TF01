@@ -1,176 +1,270 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout – TeleFix</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 
-<meta charset="UTF-8">
-<title>Checkout – TeleFix</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background: #f5f7fb;
+            color: #111;
+        }
 
-<link rel="stylesheet" href="style.css">
+        .checkout-wrapper {
+            max-width: 1100px;
+            margin: 100px auto 80px;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: 1fr 420px;
+            gap: 40px;
+        }
 
-<style>
+        @media (max-width: 900px) {
+            .checkout-wrapper { grid-template-columns: 1fr; margin-top: 40px; }
+        }
 
-*{
-    box-sizing:border-box;
-}
+        .checkout-form, .checkout-summary {
+            background: #fff;
+            padding: 40px;
+            border-radius: 25px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.06);
+        }
 
-    body{
-    margin:0;
-    font-family: 'Poppins', sans-serif;
+        h2, h3 { margin-top: 0; margin-bottom: 25px; }
 
-    background:#f5f7fb; /* lekko szare tło jak na nowoczesnych stronach */
-}
+        /* Delivery Options Styles */
+        .delivery-options {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 30px;
+        }
 
-.checkout-wrapper{
-    max-width:1100px;
-    margin:140px auto 80px;
+        .delivery-card {
+            border: 2px solid #f0f0f0;
+            border-radius: 15px;
+            padding: 15px 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.3s;
+            background: #fff;
+        }
 
-    padding:0 20px;
+        .delivery-card:hover { border-color: #111; transform: translateY(-2px); }
+        .delivery-card.active {
+            border-color: #111;
+            background: #fafafa;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
 
-    display:grid;
-    grid-template-columns:1fr 420px;
+        .delivery-card span {
+            font-size: 12px;
+            font-weight: 600;
+            display: block;
+            margin-top: 5px;
+        }
 
-    gap:40px;
-}
+        .info-box {
+            background: #eef2ff;
+            padding: 15px;
+            border-radius: 12px;
+            border-left: 4px solid #111;
+            margin-bottom: 25px;
+            font-size: 14px;
+            line-height: 1.5;
+            display: none;
+        }
 
-.checkout-form{
+        /* Form Inputs */
+        .input-group { margin-bottom: 15px; }
+        input {
+            width: 100%;
+            padding: 14px;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+            font-family: inherit;
+            transition: 0.2s;
+        }
+        input:focus {
+            border-color: #111;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(0,0,0,0.05);
+        }
 
-background:#fff;
- padding:40px 60px 40px 50px;
-border-radius:25px;
+        /* Summary Styles */
+        .cart-product {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+            align-items: center;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .cart-product img {
+            width: 65px; height: 65px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+        .cart-product div { font-size: 13px; flex: 1; }
+        .cart-product strong { display: block; font-size: 14px; margin-bottom: 2px; }
 
-box-shadow:0 15px 40px rgba(0,0,0,.08);
-
-}
-
-.checkout-form input{
-
-width:100%;
-
-border-radius:10px;
-border:1px solid #ddd;
-
-
-}
-
-.checkout-summary{
-
-background:#fff;
-padding:30px;
-border-radius:25px;
-
-box-shadow:0 15px 40px rgba(0,0,0,.08);
-
-}
-
-.order-btn{
-
-width:100%;
-background:#111;
-color:#fff;
-
-border:none;
-padding:16px;
-
-border-radius:30px;
-
-font-size:16px;
-cursor:pointer;
-
-margin-top:20px;
-
-}
-
-.cart-product{
-    display:flex;
-    gap:14px;
-    margin-bottom:16px;
-
-    align-items:center;
-}
-
-.cart-product div{
-    font-size:14px;
-}
-
-.cart-product img{
-    width:60px;
-    height:60px;
-
-    object-fit:cover; /* 🔥 KLUCZ */
-    border-radius:10px;
-}
-
-.checkout-form,
-.checkout-summary{
-    background:#fff;
-    padding:40px;
-    border-radius:25px;
-
-    box-shadow:0 20px 60px rgba(0,0,0,.06);
-
-    transition:.3s;
-}
-
-.checkout-form:hover,
-.checkout-summary:hover{
-    transform:translateY(-3px);
-}
-
-.checkout-form input{
-    width:100%;
-    padding:14px;
-
-    border-radius:12px;
-    border:1px solid #e5e7eb;
-
-    margin-bottom:14px;
-
-    transition:.2s;
-}
-
-.checkout-form input:focus{
-    border-color:#111;
-    outline:none;
-
-    box-shadow:0 0 0 2px rgba(0,0,0,.05);
-}
-
-</style>
-
+        .order-btn {
+            width: 100%;
+            background: #111;
+            color: #fff;
+            border: none;
+            padding: 18px;
+            border-radius: 35px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: 0.3s;
+        }
+        .order-btn:hover { background: #333; transform: scale(1.02); }
+    </style>
 </head>
-
 <body>
 
 <div class="checkout-wrapper">
+    <div class="checkout-form">
+        <h2>Metoda dostawy</h2>
+        <div class="delivery-options">
+            <div class="delivery-card active" onclick="selectDelivery('inpost')">
+                <span>📦 InPost</span>
+            </div>
+            <div class="delivery-card" onclick="selectDelivery('pobranie')">
+                <span>🚚 Pobranie</span>
+            </div>
+            <div class="delivery-card" onclick="selectDelivery('odbior')">
+                <span>🏠 Odbiór</span>
+            </div>
+        </div>
 
-<div class="checkout-form">
+        <div id="delivery-info" class="info-box"></div>
 
-<h2>Dane zamówienia</h2>
+        <div id="form-fields">
+            <h2>Dane kontaktowe</h2>
+            <div class="input-group"><input id="name" placeholder="Imię i nazwisko"></div>
+            <div class="input-group"><input id="email" type="email" placeholder="Adres e-mail"></div>
+            <div class="input-group"><input id="phone" type="tel" placeholder="Numer telefonu"></div>
+            <div class="input-group" id="address-container">
+                <input id="address" placeholder="Adres dostawy lub kod Paczkomatu">
+            </div>
+        </div>
+    </div>
 
-<input id="name" placeholder="Imię i nazwisko">
-<input id="email" placeholder="Email">
-<input id="phone" placeholder="Telefon">
-<input id="address" placeholder="Adres dostawy">
-
+    <div class="checkout-summary">
+        <h3>Twoje zamówienie</h3>
+        <div id="order-products"></div>
+        <h3 id="order-total" style="margin-top: 20px; border-top: 2px solid #111; pt: 15px;">Razem: 0 zł</h3>
+        <button class="order-btn" onclick="placeOrder()">Złóż zamówienie i zapłać</button>
+    </div>
 </div>
 
-<div class="checkout-summary">
+<script>
+    // 🛒 ŁADOWANIE KOSZYKA
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+    const container = document.getElementById("order-products");
+    let total = 0;
 
-<h3>Twoje zamówienie</h3>
+    function renderCart() {
+        container.innerHTML = "";
+        total = 0;
+        cart.forEach(product => {
+            const price = parseInt(product.price.replace(/\D/g, ""));
+            total += price;
+            container.innerHTML += `
+                <div class="cart-product">
+                    <img src="produkty/${product.image}">
+                    <div>
+                        <strong>${product.name}</strong>
+                        <span>${product.memory} • ${product.condition}</span><br>
+                        <span>${product.price}</span>
+                    </div>
+                </div>
+            `;
+        });
+        document.getElementById("order-total").textContent = `Razem: ${total.toLocaleString("pl-PL")} zł`;
+    }
 
-<div id="order-products"></div>
+    // 🚚 LOGIKA DOSTAWY
+    let selectedMethod = 'inpost';
+    const infoBox = document.getElementById('delivery-info');
+    const addressContainer = document.getElementById('address-container');
+    const orderBtn = document.querySelector('.order-btn');
 
-<h3 id="order-total"></h3>
+    function selectDelivery(method) {
+        selectedMethod = method;
+        document.querySelectorAll('.delivery-card').forEach(card => card.classList.remove('active'));
+        event.currentTarget.classList.add('active');
 
-<button class="order-btn" onclick="placeOrder()">
-Złóż zamówienie
-</button>
+        infoBox.style.display = 'block';
+        addressContainer.style.display = 'block';
+        orderBtn.innerText = "Złóż zamówienie i zapłać";
 
-</div>
+        if (method === 'odbior') {
+            infoBox.innerHTML = "📍 <strong>Punkt odbioru:</strong> Gliwice, ul. Przykład 12. Płatność na miejscu (karta/gotówka).";
+            addressContainer.style.display = 'none';
+            orderBtn.innerText = "Rezerwuję i odbieram";
+        } else if (method === 'pobranie') {
+            infoBox.innerHTML = "🚚 <strong>Płatność u kuriera:</strong> Zapłacisz przy odbiorze. Koszt dostawy (+15 zł) zostanie doliczony.";
+            orderBtn.innerText = "Zamawiam z obowiązkiem zapłaty";
+        } else {
+            infoBox.innerHTML = "📦 <strong>InPost:</strong> Wysyłka do Paczkomatu lub pod wskazany adres domowy.";
+        }
+    }
 
-</div>
+    // 🚀 WYŚLIJ ZAMÓWIENIE
+    async function placeOrder() {
+        const name = document.getElementById("name").value;
+        const email = document.getElementById("email").value;
+        const phone = document.getElementById("phone").value;
+        const address = selectedMethod === 'odbior' ? "Odbiór osobisty" : document.getElementById("address").value;
 
-<script src="checkout.js"></script>
+        if (!name || !email || !phone || (!address && selectedMethod !== 'odbior')) {
+            alert("Proszę uzupełnić wszystkie pola danych.");
+            return;
+        }
+
+        const orderData = { name, email, phone, address, products: cart, total, method: selectedMethod };
+
+        try {
+            // Rezerwacje (Odbiór/Pobranie) idą inną drogą niż Stripe
+            const endpoint = (selectedMethod === 'inpost') ? "/create-checkout-session" : "/create-manual-order";
+            
+            const res = await fetch(endpoint, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(orderData)
+            });
+
+            const data = await res.json();
+
+            if (selectedMethod === 'inpost' && data.url) {
+                window.location.href = data.url;
+            } else if (res.ok) {
+                localStorage.removeItem("cart");
+                window.location.href = "/success.html";
+            } else {
+                alert("Błąd serwera. Spróbuj ponownie.");
+            }
+        } catch (e) {
+            console.error(e);
+            alert("Błąd połączenia.");
+        }
+    }
+
+    // Inicjalizacja
+    renderCart();
+    selectDelivery('inpost');
+</script>
 
 </body>
 </html>
