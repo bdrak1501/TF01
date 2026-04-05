@@ -1,9 +1,9 @@
-// 🛒 Ładowanie koszyka z localStorage
+// 🛒 Inicjalizacja koszyka i elementów DOM
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
 const container = document.getElementById("order-products");
 let total = 0;
 
-// Renderowanie produktów w podsumowaniu
+// Funkcja renderująca produkty w podsumowaniu
 function renderCart() {
     if (!container) return;
     container.innerHTML = "";
@@ -31,18 +31,16 @@ function renderCart() {
     document.getElementById("order-total").textContent = `Razem: ${total.toLocaleString("pl-PL")} zł`;
 }
 
-// 🚚 Logika wyboru dostawy
+// 🚚 Logika wyboru metody dostawy
 let selectedMethod = 'inpost';
 
 function selectDelivery(method) {
     selectedMethod = method;
 
-    // Aktualizacja wyglądu kafelków
+    // Aktualizacja wizualna kafelków wyboru
     document.querySelectorAll('.delivery-card').forEach(card => {
         card.classList.remove('active');
-        // Sprawdzamy czy tekst kafelka zawiera nazwę metody (uproszczone)
-        if (card.innerText.toLowerCase().includes(method.toLowerCase()) || 
-            (method === 'inpost' && card.innerText.includes('InPost'))) {
+        if (card.innerText.toLowerCase().includes(method.toLowerCase())) {
             card.classList.add('active');
         }
     });
@@ -51,39 +49,40 @@ function selectDelivery(method) {
     const addressContainer = document.getElementById('address-container');
     const orderBtn = document.querySelector('.order-btn');
 
-    // Reset domyślny
+    // Domyślne ustawienia widoku
     infoBox.style.display = 'block';
     addressContainer.style.display = 'block';
     orderBtn.innerText = "Złóż zamówienie i zapłać";
 
+    // Dopasowanie interfejsu do wybranej metody
     if (method === 'odbior') {
-        infoBox.innerHTML = "📍 <strong>Odbiór osobisty:</strong> Gliwice, ul. Przykład 12. Płatność gotówką lub kartą przy odbiorze. Zapraszamy po otrzymaniu potwierdzenia.";
+        infoBox.innerHTML = "📍 <strong>Odbiór osobisty:</strong> Gliwice, ul. Przykład 12. Płatność gotówką lub kartą na miejscu.";
         addressContainer.style.display = 'none';
         orderBtn.innerText = "Rezerwuję i odbieram";
     } else if (method === 'pobranie') {
-        infoBox.innerHTML = "🚚 <strong>Wysyłka za pobraniem:</strong> Zapłacisz kurierowi przy odbiorze paczki. Koszt dostawy (+15 zł) doliczony do kwoty.";
+        infoBox.innerHTML = "🚚 <strong>Za pobraniem:</strong> Zapłacisz kurierowi przy odbiorze. Koszt dostawy zostanie doliczony.";
         orderBtn.innerText = "Zamawiam z obowiązkiem zapłaty";
     } else {
-        infoBox.innerHTML = "📦 <strong>Paczkomat / Kurier:</strong> Bezpieczna płatność online przez Stripe. Podaj adres lub kod paczkomatu.";
+        infoBox.innerHTML = "📦 <strong>InPost:</strong> Bezpieczna płatność online. Podaj adres domowy lub kod Paczkomatu.";
         orderBtn.innerText = "Złóż zamówienie i zapłać";
     }
 }
 
-// 🚀 Finalizacja zamówienia
+// 🚀 Funkcja finalizująca zamówienie
 async function placeOrder() {
     const name = document.getElementById("name").value;
     const email = document.getElementById("email").value;
     const phone = document.getElementById("phone").value;
     const address = selectedMethod === 'odbior' ? "Odbiór osobisty" : document.getElementById("address").value;
 
-    // Walidacja
+    // Walidacja pól
     if (!name || !email || !phone || (selectedMethod !== 'odbior' && !address)) {
-        alert("Proszę wypełnić wszystkie pola formularza.");
+        alert("Proszę uzupełnić wszystkie dane.");
         return;
     }
 
     if (cart.length === 0) {
-        alert("Twój koszyk jest pusty.");
+        alert("Koszyk jest pusty.");
         return;
     }
 
@@ -98,7 +97,7 @@ async function placeOrder() {
     };
 
     try {
-        // Wybór bramki: Stripe dla InPost, manualny zapis dla reszty
+        // Wybór punktu końcowego API w zależności od metody
         const endpoint = (selectedMethod === 'inpost') ? "/create-checkout-session" : "/create-manual-order";
 
         const res = await fetch(endpoint, {
@@ -110,10 +109,10 @@ async function placeOrder() {
         const data = await res.json();
 
         if (selectedMethod === 'inpost' && data.url) {
-            // Przekierowanie do płatności Stripe
+            // Przekierowanie do bramki Stripe
             window.location.href = data.url;
         } else if (res.ok) {
-            // Sukces dla odbioru/pobrania
+            // Sukces dla metod manualnych (Odbiór/Pobranie)
             localStorage.removeItem("cart");
             window.location.href = "/success.html";
         } else {
@@ -125,8 +124,11 @@ async function placeOrder() {
     }
 }
 
-// Inicjalizacja przy starcie
+// Inicjalizacja skryptu po załadowaniu strony
 document.addEventListener("DOMContentLoaded", () => {
     renderCart();
-    selectDelivery('inpost');
+    // Domyślnie ustawiamy InPost, jeśli element istnieje
+    if (document.querySelector('.delivery-card')) {
+        selectDelivery('inpost');
+    }
 });
