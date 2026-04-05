@@ -1,9 +1,9 @@
-// 🛒 Inicjalizacja koszyka i elementów DOM
+// 🛒 Inicjalizacja koszyka
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
 const container = document.getElementById("order-products");
 let total = 0;
 
-// Funkcja renderująca produkty w podsumowaniu
+// Funkcja wyświetlająca produkty
 function renderCart() {
     if (!container) return;
     container.innerHTML = "";
@@ -31,13 +31,13 @@ function renderCart() {
     document.getElementById("order-total").textContent = `Razem: ${total.toLocaleString("pl-PL")} zł`;
 }
 
-// 🚚 Logika wyboru metody dostawy
+// 🚚 Wybór metody dostawy
 let selectedMethod = 'inpost';
 
 function selectDelivery(method) {
     selectedMethod = method;
 
-    // Aktualizacja wizualna kafelków wyboru
+    // Aktualizacja wyglądu przycisków
     document.querySelectorAll('.delivery-card').forEach(card => {
         card.classList.remove('active');
         if (card.innerText.toLowerCase().includes(method.toLowerCase())) {
@@ -49,40 +49,31 @@ function selectDelivery(method) {
     const addressContainer = document.getElementById('address-container');
     const orderBtn = document.querySelector('.order-btn');
 
-    // Domyślne ustawienia widoku
     infoBox.style.display = 'block';
     addressContainer.style.display = 'block';
-    orderBtn.innerText = "Złóż zamówienie i zapłać";
 
-    // Dopasowanie interfejsu do wybranej metody
     if (method === 'odbior') {
-        infoBox.innerHTML = "📍 <strong>Odbiór osobisty:</strong> Gliwice, ul. Przykład 12. Płatność gotówką lub kartą na miejscu.";
+        infoBox.innerHTML = "📍 <strong>Odbiór osobisty:</strong> Gliwice, ul. Przykład 12. Płatność na miejscu.";
         addressContainer.style.display = 'none';
         orderBtn.innerText = "Rezerwuję i odbieram";
     } else if (method === 'pobranie') {
-        infoBox.innerHTML = "🚚 <strong>Za pobraniem:</strong> Zapłacisz kurierowi przy odbiorze. Koszt dostawy zostanie doliczony.";
+        infoBox.innerHTML = "🚚 <strong>Za pobraniem:</strong> Zapłacisz kurierowi przy odbiorze paczki.";
         orderBtn.innerText = "Zamawiam z obowiązkiem zapłaty";
     } else {
-        infoBox.innerHTML = "📦 <strong>InPost:</strong> Bezpieczna płatność online. Podaj adres domowy lub kod Paczkomatu.";
+        infoBox.innerHTML = "📦 <strong>InPost:</strong> Bezpieczna płatność online przez Stripe.";
         orderBtn.innerText = "Złóż zamówienie i zapłać";
     }
 }
 
-// 🚀 Funkcja finalizująca zamówienie
+// 🚀 GŁÓWNA FUNKCJA - Obsługa Stripe i zamówień manualnych
 async function placeOrder() {
     const name = document.getElementById("name").value;
     const email = document.getElementById("email").value;
     const phone = document.getElementById("phone").value;
     const address = selectedMethod === 'odbior' ? "Odbiór osobisty" : document.getElementById("address").value;
 
-    // Walidacja pól
     if (!name || !email || !phone || (selectedMethod !== 'odbior' && !address)) {
         alert("Proszę uzupełnić wszystkie dane.");
-        return;
-    }
-
-    if (cart.length === 0) {
-        alert("Koszyk jest pusty.");
         return;
     }
 
@@ -97,38 +88,45 @@ async function placeOrder() {
     };
 
     try {
-        // Wybór punktu końcowego API w zależności od metody
-        const endpoint = (selectedMethod === 'inpost') ? "/create-checkout-session" : "/create-manual-order";
+        // Jeśli InPost -> idziemy do Stripe
+        if (selectedMethod === 'inpost') {
+            const res = await fetch("/create-checkout-session", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(orderData)
+            });
+            const data = await res.json();
+            
+            if (data.url) {
+                localStorage.removeItem("cart"); // Czyścimy koszyk przed płatnością
+                window.location.href = data.url; // PRZEKIEROWANIE DO STRIPE
+            } else {
+                alert("Błąd Stripe: " + data.error);
+            }
+        } 
+        // Jeśli Odbiór/Pobranie -> wysyłamy do zwykłej bazy
+        else {
+            const res = await fetch("/create-manual-order", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(orderData)
+            });
 
-        const res = await fetch(endpoint, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(orderData)
-        });
-
-        const data = await res.json();
-
-        if (selectedMethod === 'inpost' && data.url) {
-            // Przekierowanie do bramki Stripe
-            window.location.href = data.url;
-        } else if (res.ok) {
-            // Sukces dla metod manualnych (Odbiór/Pobranie)
-            localStorage.removeItem("cart");
-            window.location.href = "/success.html";
-        } else {
-            alert("Błąd: " + (data.error || "Nie udało się złożyć zamówienia."));
+            if (res.ok) {
+                localStorage.removeItem("cart");
+                window.location.href = "/success.html";
+            } else {
+                alert("Wystąpił błąd przy składaniu zamówienia.");
+            }
         }
     } catch (err) {
-        console.error("Order Error:", err);
+        console.error("Błąd:", err);
         alert("Błąd połączenia z serwerem.");
     }
 }
 
-// Inicjalizacja skryptu po załadowaniu strony
+// Start
 document.addEventListener("DOMContentLoaded", () => {
     renderCart();
-    // Domyślnie ustawiamy InPost, jeśli element istnieje
-    if (document.querySelector('.delivery-card')) {
-        selectDelivery('inpost');
-    }
+    selectDelivery('inpost');
 });
