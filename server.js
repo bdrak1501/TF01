@@ -19,11 +19,11 @@ mongoose.connect(process.env.MONGODB_URI)
 const orderSchema = new mongoose.Schema({
     email: String,
     name: String,
-    phone: String, // Dodane
+    phone: String,
     address: String,
     total: Number,
     products: Array,
-    method: String, // Dodane (inpost/pobranie/odbior)
+    method: String,
     status: { type: String, default: "Nowe" },
     stripe_id: String,
     date: { type: String, default: () => new Date().toLocaleString() }
@@ -59,20 +59,8 @@ function decrypt(hash) {
     }
 }
 
-function safeJsonDecrypt(val) {
-    try {
-        const decrypted = decrypt(val);
-        return JSON.parse(decrypted);
-    } catch {
-        return {};
-    }
-}
-
 /* =======================
-   EMAIL CONFIGURATION (ZOPTYMALIZOWANA DLA RENDER)
-======================= */
-/* =======================
-   EMAIL CONFIGURATION (OSTATECZNA PRÓBA)
+   EMAIL CONFIGURATION
 ======================= */
 const transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -81,10 +69,10 @@ const transporter = nodemailer.createTransport({
         pass: process.env.EMAIL_PASS
     },
     tls: {
-        // To pomaga ominąć błędy certyfikatów na niektórych serwerach
         rejectUnauthorized: false
     }
 });
+
 async function sendEmail(to, subject, text) {
     try {
         await transporter.sendMail({
@@ -128,7 +116,6 @@ app.post("/login", (req, res) => {
     res.status(401).json({ success: false });
 });
 
-// 3. Zaktualizuj trasę GET /orders, aby deszyfrować telefon
 app.get("/orders", auth, async (req, res) => {
     try {
         const orders = await Order.find().sort({ _id: -1 });
@@ -137,8 +124,8 @@ app.get("/orders", auth, async (req, res) => {
             id: o._id,
             email: decrypt(o.email),
             name: decrypt(o.name),
-            phone: decrypt(o.phone), // Deszyfrowanie telefonu
-            address: decrypt(o.address) // Proste deszyfrowanie (jeśli to string)
+            phone: decrypt(o.phone),
+            address: decrypt(o.address)
         }));
         res.json(decryptedOrders);
     } catch (err) {
@@ -153,7 +140,6 @@ app.post("/status", auth, async (req, res) => {
         if (!order) return res.status(404).json({ error: "Nie znaleziono zamówienia" });
 
         await Order.findByIdAndUpdate(id, { status });
-        
         res.json({ success: true });
 
         const clientEmail = decrypt(order.email);
@@ -183,11 +169,11 @@ app.post("/status", auth, async (req, res) => {
 
 app.post("/create-checkout-session", async (req, res) => {
     try {
-        const { products } = req.body;
+        const { products, name, phone, address } = req.body; 
+
         const session = await stripe.checkout.sessions.create({
             payment_method_types: ["card"],
             mode: "payment",
-            billing_address_collection: "required",
             line_items: products.map(p => ({
                 price_data: {
                     currency: "pln",
@@ -196,7 +182,12 @@ app.post("/create-checkout-session", async (req, res) => {
                 },
                 quantity: 1
             })),
-            metadata: { cart: JSON.stringify(products) },
+            metadata: { 
+                cart: JSON.stringify(products),
+                client_name: name,
+                client_phone: phone,
+                client_address: address
+            },
             success_url: "https://telefix.onrender.com/success.html",
             cancel_url: "https://telefix.onrender.com/cancel.html",
         });
@@ -209,39 +200,44 @@ app.post("/create-checkout-session", async (req, res) => {
 app.post("/webhook", bodyParser.raw({ type: "application/json" }), async (req, res) => {
     const sig = req.headers["stripe-signature"];
     let event;
+
     try {
         event = stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SECRET);
     } catch (err) {
-        return res.sendStatus(400);
+        console.error("Webhook Error:", err.message);
+        return res.status(400).send(`Webhook Error: ${err.message}`);
     }
 
     if (event.type === "checkout.session.completed") {
         const session = event.data.object;
-        const customer = session.customer_details || {};
+        const meta = session.metadata;
 
         const newOrder = new Order({
-            email: encrypt(customer.email || ""),
-            name: encrypt(customer.name || ""),
-            address: encrypt(JSON.stringify(customer.address || {})),
+            email: encrypt(session.customer_details.email || ""),
+            name: encrypt(meta.client_name || session.customer_details.name),
+            phone: encrypt(meta.client_phone || ""),
+            address: encrypt(meta.client_address || ""), 
             total: session.amount_total / 100,
-            products: JSON.parse(session.metadata.cart || "[]"),
-            stripe_id: session.id
+            products: JSON.parse(meta.cart || "[]"),
+            stripe_id: session.id,
+            method: "inpost",
+            status: "Opłacone"
         });
 
         await newOrder.save();
 
+        const clientEmail = session.customer_details.email;
         const subject = "Otrzymaliśmy Twoje zamówienie – TeleFix Gliwice";
-        const message = `Cześć ${customer.name || ''}!\n\nDziękujemy za zakupy. Twoje zamówienie zostało opłacone. Powiadomimy Cię osobnym mailem, gdy wyślemy paczkę!`;
+        const message = `Cześć ${meta.client_name || ''}!\n\nDziękujemy za zakupy. Twoje zamówienie zostało opłacone. Powiadomimy Cię mailowo o wysyłce!`;
         
-        // Ważne: Wywołujemy sendEmail bez blokowania webhooka
-        sendEmail(customer.email, subject, message).catch(e => console.log("Błąd maila w webhooku:", e.message));
+        sendEmail(clientEmail, subject, message).catch(e => console.log("Błąd maila w webhooku:", e.message));
     }
     res.json({ received: true });
 });
 
 app.post("/create-manual-order", async (req, res) => {
     try {
-        const { name, email, phone, address, products, total, deliveryMethod } = req.body;
+        const { name, email, phone, address, products, total, method } = req.body;
 
         const newOrder = new Order({
             name: encrypt(name),
@@ -250,18 +246,16 @@ app.post("/create-manual-order", async (req, res) => {
             address: encrypt(address),
             total: total,
             products: products,
-            method: deliveryMethod,
-            status: "Oczekuje na wpłatę / Pobranie"
+            method: method || "pobranie/odbiór",
+            status: "Nowe (Manualne)"
         });
 
         await newOrder.save();
         
-        // Opcjonalnie: Wyślij email potwierdzający do klienta
         sendEmail(email, "Zamówienie przyjęte - TeleFix", `Cześć ${name}, Twoje zamówienie zostało zarejestrowane.`);
-
         res.json({ success: true });
     } catch (err) {
-        console.error(err);
+        console.error("Błąd manualnego zamówienia:", err);
         res.status(500).json({ error: "Błąd zapisu zamówienia" });
     }
 });
@@ -269,4 +263,3 @@ app.post("/create-manual-order", async (req, res) => {
 app.listen(process.env.PORT || 3000, () => {
     console.log("Server działa 🚀");
 });
-

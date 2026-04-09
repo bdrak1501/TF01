@@ -2,76 +2,173 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <title>Panel TeleFix – Zamówienia</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel TeleFix – Zarządzanie Zamówieniami</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 
     <style>
+        :root {
+            --bg: #0f172a;
+            --card-bg: #ffffff;
+            --primary: #2563eb;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --accent: #f8fafc;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            background: #111;
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
             color: #fff;
-            padding: 40px;
-        }
-
-        .order {
-            background: #fff;
-            color: #000;
+            margin: 0;
             padding: 20px;
-            margin-bottom: 20px;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
 
-        select {
-            margin-top: 10px;
-            padding: 8px;
-            border-radius: 5px;
-            cursor: pointer;
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
         }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #1e293b;
+            padding-bottom: 20px;
+        }
+
+        h1 { margin: 0; font-size: 1.5rem; letter-spacing: -0.5px; }
 
         .logout {
-            margin-bottom: 20px;
             padding: 10px 20px;
             cursor: pointer;
-            background: #ff4444;
+            background: #ef4444;
             color: white;
             border: none;
             border-radius: 8px;
-            font-weight: bold;
+            font-weight: 600;
+            transition: opacity 0.2s;
+        }
+
+        .logout:hover { opacity: 0.8; }
+
+        .order-card {
+            background: var(--card-bg);
+            color: var(--text-main);
+            padding: 25px;
+            margin-bottom: 25px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            transition: transform 0.2s;
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #f1f5f9;
+            padding-bottom: 15px;
+        }
+
+        .order-id { font-family: monospace; color: var(--primary); font-weight: bold; font-size: 1.1rem; }
+        .order-date { font-size: 0.85rem; color: var(--text-muted); }
+
+        .grid-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-bottom: 20px;
+        }
+
+        .info-box h4 {
+            margin: 0 0 8px 0;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+        }
+
+        .info-content {
+            background: var(--accent);
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .products-list {
+            background: #fdfdfd;
+            border: 1px solid #f1f5f9;
+            border-radius: 12px;
+            padding: 15px;
+            margin: 20px 0;
         }
 
         .product-item {
-            margin-top: 5px;
-            padding: 8px;
-            border-bottom: 1px solid #eee;
-            font-size: 0.9em;
+            padding: 8px 0;
+            border-bottom: 1px solid #f1f5f9;
+            display: flex;
+            justify-content: space-between;
         }
 
-        .order h3 {
-            margin-top: 0;
-            color: #333;
-            font-size: 1.1em;
-            word-break: break-all;
+        .product-item:last-child { border: none; }
+
+        .badge {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .method-badge { background: #dcfce7; color: #166534; }
+        .status-badge { background: #e0e7ff; color: #3730a3; padding: 6px 12px; font-size: 0.85rem; }
+
+        .footer-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px dotted #e2e8f0;
+        }
+
+        .total-price { font-size: 1.2rem; font-weight: 700; color: #0f172a; }
+
+        select {
+            padding: 10px 15px;
+            border-radius: 10px;
+            border: 1px solid #cbd5e1;
+            background: #fff;
+            font-family: inherit;
+            font-weight: 600;
+            outline: none;
+            cursor: pointer;
+        }
+
+        @media (max-width: 600px) {
+            .grid-info { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 
 <body>
 
-    <h1>📦 Panel Zamówień</h1>
+    <div class="container">
+        <header>
+            <h1>📦 Panel TeleFix</h1>
+            <button class="logout" onclick="logout()">Wyloguj</button>
+        </header>
 
-    <button class="logout" onclick="logout()">Wyloguj</button>
-
-    <div id="orders">Ładowanie zamówień...</div>
+        <div id="orders">Ładowanie zamówień...</div>
+    </div>
 
     <script>
         const token = localStorage.getItem("token");
 
-        // 🔐 Sprawdzanie logowania
-        if (!token) {
-            window.location.href = "/login.html";
-        }
+        if (!token) { window.location.href = "/login.html"; }
 
-        // 🔓 Logout
         function logout() {
             localStorage.removeItem("token");
             window.location.href = "/login.html";
@@ -80,95 +177,80 @@
         async function load() {
             try {
                 const res = await fetch("/orders", {
-                    headers: {
-                        "Authorization": token
-                    }
+                    headers: { "Authorization": token }
                 });
 
-                if (res.status === 401) {
-                    alert("Sesja wygasła - zaloguj się ponownie");
-                    logout();
-                    return;
-                }
+                if (res.status === 401) { logout(); return; }
 
                 const data = await res.json();
-
-                if (!Array.isArray(data)) {
-                    console.error("API ERROR:", data);
-                    document.getElementById("orders").innerHTML = "Błąd pobierania danych.";
-                    return;
-                }
-
                 const container = document.getElementById("orders");
                 container.innerHTML = "";
 
                 if (data.length === 0) {
-                    container.innerHTML = "<h3>Brak zamówień w bazie.</h3>";
+                    container.innerHTML = "<h3 style='text-align:center; opacity:0.5;'>Brak zamówień do wyświetlenia</h3>";
                     return;
                 }
 
-                // Wyświetlamy od najnowszych
                 data.forEach(o => {
-                    // Mapowanie produktów
+                    const orderId = o._id || o.id;
                     const productsHtml = (o.products || []).map(p => `
                         <div class="product-item">
-                            📱 <strong>${p.name || "Produkt"}</strong> | ${p.memory || "-"} | ${p.condition || "-"}
+                            <span>📱 <strong>${p.name}</strong> (${p.memory || '-'})</span>
+                            <span style="color: var(--text-muted)">${p.price}</span>
                         </div>
                     `).join("");
 
-                    // Używamy o._id (z MongoDB) lub o.id (stare dane)
-                    const orderId = o._id || o.id;
+                    container.innerHTML += `
+                        <div class="order-card">
+                            <div class="order-header">
+                                <div>
+                                    <div class="order-id">#${orderId.slice(-8).toUpperCase()}</div>
+                                    <div class="order-date">${o.date || 'Data nieznana'}</div>
+                                </div>
+                                <span class="badge status-badge">${o.status || 'Nowe'}</span>
+                            </div>
 
-                    // Fragment kodu wewnątrz data.forEach w admin.html
-container.innerHTML += `
-    <div class="order">
-        <h3>ID: #${orderId}</h3>
-        <p style="font-size: 0.85em; color: #666;">Data: ${o.date || 'Brak daty'}</p>
+                            <div class="grid-info">
+                                <div class="info-box">
+                                    <h4>👤 Klient</h4>
+                                    <div class="info-content">
+                                        <strong>${o.name || "Anonim"}</strong><br>
+                                        📧 ${o.email}<br>
+                                        📞 ${o.phone || "Brak telefonu"}
+                                    </div>
+                                </div>
+                                <div class="info-box">
+                                    <h4>📦 Wysyłka <span class="badge method-badge">${o.method || 'Standard'}</span></h4>
+                                    <div class="info-content">
+                                        ${o.address || "Odbiór osobisty"}
+                                    </div>
+                                </div>
+                            </div>
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-            <div>
-                <strong>👤 Dane klienta:</strong><br>
-                Imię: ${o.name || "-"}<br>
-                E-mail: ${o.email || "-"}<br>
-                Tel: <strong>${o.phone || "Nie podano"}</strong>
-            </div>
-            <div>
-                <strong>📦 Wysyłka (${o.method || "Stripe"}):</strong><br>
-                <span style="background: #fff8e1; padding: 2px 5px; border-radius: 4px; font-family: monospace;">
-                    ${o.address || "Brak adresu"}
-                </span>
-            </div>
-        </div>
+                            <div class="products-list">
+                                ${productsHtml}
+                            </div>
 
-        <p>
-            💰 Kwota: <strong>${o.total || 0} zł</strong><br>
-            📦 Status: <strong>${o.status || "Opłacone"}</strong>
-        </p>
-
-        <div style="margin: 15px 0; background: #f9f9f9; padding: 10px; border-radius: 10px;">
-            <strong>Zamówione produkty:</strong><br>
-            ${productsHtml || "Brak danych o produktach"}
-        </div>
-
-        <label>Zmień status:</label><br>
-        <select onchange="changeStatus('${orderId}', this.value)">
-            <option value="Nowe" ${o.status === "Nowe" ? "selected" : ""}>Nowe</option>
-            <option value="Opłacone" ${o.status === "Opłacone" ? "selected" : ""}>Opłacone</option>
-            <option value="W realizacji" ${o.status === "W realizacji" ? "selected" : ""}>W realizacji</option>
-            <option value="Wysłane" ${o.status === "Wysłane" ? "selected" : ""}>Wysłane</option>
-            <option value="Zakończone" ${o.status === "Zakończone" ? "selected" : ""}>Zakończone</option>
-        </select>
-    </div>
-`;
+                            <div class="footer-actions">
+                                <div class="total-price">${o.total} zł</div>
+                                <select onchange="changeStatus('${orderId}', this.value)">
+                                    <option value="" disabled selected>Zmień status...</option>
+                                    <option value="Nowe">Nowe</option>
+                                    <option value="Opłacone">Opłacone</option>
+                                    <option value="W realizacji">W realizacji</option>
+                                    <option value="Wysłane">Wysłane</option>
+                                    <option value="Zakończone">Zakończone</option>
+                                </select>
+                            </div>
+                        </div>
+                    `;
                 });
 
             } catch (e) {
-                console.error("LOAD ERROR", e);
-                document.getElementById("orders").innerHTML = "Błąd połączenia z serwerem.";
+                document.getElementById("orders").innerHTML = "Błąd połączenia.";
             }
         }
 
-        // 🔄 Zmiana statusu
         async function changeStatus(id, status) {
             try {
                 const res = await fetch("/status", {
@@ -179,21 +261,13 @@ container.innerHTML += `
                     },
                     body: JSON.stringify({ id, status })
                 });
-
-                if (res.ok) {
-                    console.log("Status zaktualizowany");
-                    load(); // Odśwież listę
-                } else {
-                    alert("Błąd podczas zmiany statusu");
-                }
+                if (res.ok) load();
             } catch (err) {
-                console.error("Status update error:", err);
+                alert("Błąd aktualizacji");
             }
         }
 
-        // 🚀 Start
         load();
     </script>
-
 </body>
 </html>
