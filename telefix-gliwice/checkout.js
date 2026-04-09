@@ -77,15 +77,16 @@ async function placeOrder() {
         return;
     }
 
-    const orderData = {
-        name,
-        email,
-        phone,
-        address,
-        products: cart,
-        total: total,
-        deliveryMethod: selectedMethod
-    };
+ // Fragment w checkout.js
+const orderData = {
+    name,
+    email,
+    phone,
+    address,
+    products: cart,
+    total: total,
+    deliveryMethod: selectedMethod // To musi pasować do req.body na serwerze
+};
 
     try {
         // Jeśli InPost -> idziemy do Stripe

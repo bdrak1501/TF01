@@ -19,10 +19,12 @@ mongoose.connect(process.env.MONGODB_URI)
 const orderSchema = new mongoose.Schema({
     email: String,
     name: String,
+    phone: String, // Dodane
     address: String,
     total: Number,
     products: Array,
-    status: { type: String, default: "Opłacone" },
+    method: String, // Dodane (inpost/pobranie/odbior)
+    status: { type: String, default: "Nowe" },
     stripe_id: String,
     date: { type: String, default: () => new Date().toLocaleString() }
 });
@@ -126,6 +128,7 @@ app.post("/login", (req, res) => {
     res.status(401).json({ success: false });
 });
 
+// 3. Zaktualizuj trasę GET /orders, aby deszyfrować telefon
 app.get("/orders", auth, async (req, res) => {
     try {
         const orders = await Order.find().sort({ _id: -1 });
@@ -134,7 +137,8 @@ app.get("/orders", auth, async (req, res) => {
             id: o._id,
             email: decrypt(o.email),
             name: decrypt(o.name),
-            address: safeJsonDecrypt(o.address)
+            phone: decrypt(o.phone), // Deszyfrowanie telefonu
+            address: decrypt(o.address) // Proste deszyfrowanie (jeśli to string)
         }));
         res.json(decryptedOrders);
     } catch (err) {
@@ -235,6 +239,34 @@ app.post("/webhook", bodyParser.raw({ type: "application/json" }), async (req, r
     res.json({ received: true });
 });
 
+app.post("/create-manual-order", async (req, res) => {
+    try {
+        const { name, email, phone, address, products, total, deliveryMethod } = req.body;
+
+        const newOrder = new Order({
+            name: encrypt(name),
+            email: encrypt(email),
+            phone: encrypt(phone),
+            address: encrypt(address),
+            total: total,
+            products: products,
+            method: deliveryMethod,
+            status: "Oczekuje na wpłatę / Pobranie"
+        });
+
+        await newOrder.save();
+        
+        // Opcjonalnie: Wyślij email potwierdzający do klienta
+        sendEmail(email, "Zamówienie przyjęte - TeleFix", `Cześć ${name}, Twoje zamówienie zostało zarejestrowane.`);
+
+        res.json({ success: true });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Błąd zapisu zamówienia" });
+    }
+});
+
 app.listen(process.env.PORT || 3000, () => {
     console.log("Server działa 🚀");
 });
+

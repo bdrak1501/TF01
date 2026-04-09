@@ -119,35 +119,47 @@
                     // Używamy o._id (z MongoDB) lub o.id (stare dane)
                     const orderId = o._id || o.id;
 
-                    container.innerHTML += `
-                        <div class="order">
-                            <h3>ID: #${orderId}</h3>
-                            <p style="font-size: 0.85em; color: #666;">Data: ${o.date || 'Brak daty'}</p>
+                    // Fragment kodu wewnątrz data.forEach w admin.html
+container.innerHTML += `
+    <div class="order">
+        <h3>ID: #${orderId}</h3>
+        <p style="font-size: 0.85em; color: #666;">Data: ${o.date || 'Brak daty'}</p>
 
-                            <p>
-                                👤 <strong>${o.name || "Klient Stripe"}</strong><br>
-                                📧 ${o.email || "-"}<br>
-                            </p>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <div>
+                <strong>👤 Dane klienta:</strong><br>
+                Imię: ${o.name || "-"}<br>
+                E-mail: ${o.email || "-"}<br>
+                Tel: <strong>${o.phone || "Nie podano"}</strong>
+            </div>
+            <div>
+                <strong>📦 Wysyłka (${o.method || "Stripe"}):</strong><br>
+                <span style="background: #fff8e1; padding: 2px 5px; border-radius: 4px; font-family: monospace;">
+                    ${o.address || "Brak adresu"}
+                </span>
+            </div>
+        </div>
 
-                            <p>
-                                💰 Kwota: <strong>${o.total || 0} zł</strong><br>
-                                📦 Status: <strong>${o.status || "Opłacone"}</strong>
-                            </p>
+        <p>
+            💰 Kwota: <strong>${o.total || 0} zł</strong><br>
+            📦 Status: <strong>${o.status || "Opłacone"}</strong>
+        </p>
 
-                            <div style="margin: 15px 0; background: #f9f9f9; padding: 10px; border-radius: 10px;">
-                                <strong>Zamówione produkty:</strong><br>
-                                ${productsHtml || "Brak danych o produktach"}
-                            </div>
+        <div style="margin: 15px 0; background: #f9f9f9; padding: 10px; border-radius: 10px;">
+            <strong>Zamówione produkty:</strong><br>
+            ${productsHtml || "Brak danych o produktach"}
+        </div>
 
-                            <label>Zmień status:</label><br>
-                            <select onchange="changeStatus('${orderId}', this.value)">
-                                <option value="Opłacone" ${o.status === "Opłacone" ? "selected" : ""}>Opłacone</option>
-                                <option value="W realizacji" ${o.status === "W realizacji" ? "selected" : ""}>W realizacji</option>
-                                <option value="Wysłane" ${o.status === "Wysłane" ? "selected" : ""}>Wysłane</option>
-                                <option value="Zakończone" ${o.status === "Zakończone" ? "selected" : ""}>Zakończone</option>
-                            </select>
-                        </div>
-                    `;
+        <label>Zmień status:</label><br>
+        <select onchange="changeStatus('${orderId}', this.value)">
+            <option value="Nowe" ${o.status === "Nowe" ? "selected" : ""}>Nowe</option>
+            <option value="Opłacone" ${o.status === "Opłacone" ? "selected" : ""}>Opłacone</option>
+            <option value="W realizacji" ${o.status === "W realizacji" ? "selected" : ""}>W realizacji</option>
+            <option value="Wysłane" ${o.status === "Wysłane" ? "selected" : ""}>Wysłane</option>
+            <option value="Zakończone" ${o.status === "Zakończone" ? "selected" : ""}>Zakończone</option>
+        </select>
+    </div>
+`;
                 });
 
             } catch (e) {
