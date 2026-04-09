@@ -60,16 +60,18 @@ function decrypt(hash) {
 }
 
 /* =======================
-   EMAIL CONFIGURATION
+   EMAIL CONFIGURATION (ZOPTYMALIZOWANA)
 ======================= */
 const transporter = nodemailer.createTransport({
-    service: 'gmail',
+    host: "smtp.gmail.com",
+    port: 465,
+    secure: true, // true dla portu 465
     auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS
     },
     tls: {
-        rejectUnauthorized: false
+        rejectUnauthorized: false // Pomaga ominąć błędy certyfikatów na Render
     }
 });
 
@@ -81,9 +83,9 @@ async function sendEmail(to, subject, text) {
             subject,
             text
         });
-        console.log(`E-mail wysłany do: ${to}`);
+        console.log(`E-mail wysłany pomyślnie do: ${to}`);
     } catch (err) {
-        console.error("Błąd wysyłki e-mail:", err);
+        console.error("Błąd wysyłki e-mail:", err.message);
     }
 }
 
@@ -212,7 +214,6 @@ app.post("/webhook", bodyParser.raw({ type: "application/json" }), async (req, r
         const session = event.data.object;
         const meta = session.metadata;
 
-        // 1. Tworzymy obiekt zamówienia
         const newOrder = new Order({
             email: encrypt(session.customer_details.email || ""),
             name: encrypt(meta.client_name || session.customer_details.name),
@@ -221,24 +222,19 @@ app.post("/webhook", bodyParser.raw({ type: "application/json" }), async (req, r
             total: session.amount_total / 100,
             products: JSON.parse(meta.cart || "[]"),
             stripe_id: session.id,
-            method: "inpost",
+            method: "Stripe",
             status: "Opłacone"
         });
 
-        // 2. ZAPISUJEMY DO BAZY
         await newOrder.save();
-        console.log("Zamówienie zapisane w bazie.");
 
-        // 3. WYSYŁAMY MAIL (zaraz po zapisie)
+        // WYSYŁKA MAILA PO ZAPISIE DO BAZY
         const clientEmail = session.customer_details.email;
         const subject = "Otrzymaliśmy Twoje zamówienie – TeleFix Gliwice";
-        const message = `Cześć ${meta.client_name || 'Kliencie'}!\n\nDziękujemy za zakupy. Twoje zamówienie zostało opłacone i trafiło do realizacji. Powiadomimy Cię mailowo, gdy wyślemy paczkę!`;
+        const message = `Cześć ${meta.client_name || 'Kliencie'}!\n\nDziękujemy za zakupy. Twoje zamówienie zostało opłacone i trafiło do realizacji.\n\nKwota: ${session.amount_total / 100} zł.\nPozdrawiamy, TeleFix.`;
         
-        // Uruchamiamy wysyłkę bez await, żeby nie blokować odpowiedzi dla Stripe
         sendEmail(clientEmail, subject, message).catch(e => console.log("Błąd maila w webhooku:", e.message));
     }
-
-    // Zawsze odpowiadaj Stripe 200 OK
     res.json({ received: true });
 });
 
@@ -259,12 +255,7 @@ app.post("/create-manual-order", async (req, res) => {
 
         await newOrder.save();
         
-        // Wysyłka maila dla zamówień manualnych
-        const subject = "Zamówienie przyjęte - TeleFix Gliwice";
-        const message = `Cześć ${name}!\n\nTwoje zamówienie zostało zarejestrowane. Wybrana metoda: ${method}.\nBędziemy Cię informować o postępach!`;
-        
-        sendEmail(email, subject, message).catch(e => console.log("Błąd maila manualnego:", e.message));
-
+        sendEmail(email, "Zamówienie przyjęte - TeleFix Gliwice", `Cześć ${name}!\n\nTwoje zamówienie zostało zarejestrowane.`);
         res.json({ success: true });
     } catch (err) {
         console.error("Błąd manualnego zamówienia:", err);
