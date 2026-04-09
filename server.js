@@ -212,6 +212,7 @@ app.post("/webhook", bodyParser.raw({ type: "application/json" }), async (req, r
         const session = event.data.object;
         const meta = session.metadata;
 
+        // 1. Tworzymy obiekt zamówienia
         const newOrder = new Order({
             email: encrypt(session.customer_details.email || ""),
             name: encrypt(meta.client_name || session.customer_details.name),
@@ -224,14 +225,20 @@ app.post("/webhook", bodyParser.raw({ type: "application/json" }), async (req, r
             status: "Opłacone"
         });
 
+        // 2. ZAPISUJEMY DO BAZY
         await newOrder.save();
+        console.log("Zamówienie zapisane w bazie.");
 
+        // 3. WYSYŁAMY MAIL (zaraz po zapisie)
         const clientEmail = session.customer_details.email;
         const subject = "Otrzymaliśmy Twoje zamówienie – TeleFix Gliwice";
-        const message = `Cześć ${meta.client_name || ''}!\n\nDziękujemy za zakupy. Twoje zamówienie zostało opłacone. Powiadomimy Cię mailowo o wysyłce!`;
+        const message = `Cześć ${meta.client_name || 'Kliencie'}!\n\nDziękujemy za zakupy. Twoje zamówienie zostało opłacone i trafiło do realizacji. Powiadomimy Cię mailowo, gdy wyślemy paczkę!`;
         
+        // Uruchamiamy wysyłkę bez await, żeby nie blokować odpowiedzi dla Stripe
         sendEmail(clientEmail, subject, message).catch(e => console.log("Błąd maila w webhooku:", e.message));
     }
+
+    // Zawsze odpowiadaj Stripe 200 OK
     res.json({ received: true });
 });
 
@@ -252,7 +259,12 @@ app.post("/create-manual-order", async (req, res) => {
 
         await newOrder.save();
         
-        sendEmail(email, "Zamówienie przyjęte - TeleFix", `Cześć ${name}, Twoje zamówienie zostało zarejestrowane.`);
+        // Wysyłka maila dla zamówień manualnych
+        const subject = "Zamówienie przyjęte - TeleFix Gliwice";
+        const message = `Cześć ${name}!\n\nTwoje zamówienie zostało zarejestrowane. Wybrana metoda: ${method}.\nBędziemy Cię informować o postępach!`;
+        
+        sendEmail(email, subject, message).catch(e => console.log("Błąd maila manualnego:", e.message));
+
         res.json({ success: true });
     } catch (err) {
         console.error("Błąd manualnego zamówienia:", err);
