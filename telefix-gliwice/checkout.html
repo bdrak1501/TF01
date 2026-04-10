@@ -153,17 +153,27 @@
             <div class="input-group"><input id="name" placeholder="Imię i nazwisko"></div>
             <div class="input-group"><input id="email" type="email" placeholder="Adres e-mail"></div>
             <div class="input-group"><input id="phone" type="tel" placeholder="Numer telefonu"></div>
+            
+            <div id="inpost-fields" style="display: none;">
+                <div class="input-group"><input id="paczkomat" placeholder="Kod Paczkomatu (np. GLI01A)"></div>
+                <div class="input-group" style="display: grid; grid-template-columns: 1fr 2fr; gap: 10px;">
+                    <input id="postcode" placeholder="Kod pocztowy">
+                    <input id="city" placeholder="Miasto">
+                </div>
+            </div>
+
             <div class="input-group" id="address-container">
-                <input id="address" placeholder="Adres dostawy lub kod Paczkomatu">
+                <input id="address" placeholder="Adres dostawy (Ulica, numer, miasto)">
             </div>
         </div>
     </div>
 
-<div class="checkout-summary">
-    <h3>Twoje zamówienie</h3>
-    <div id="order-products"></div>
-    <h3 id="order-total" style="margin-top: 20px;">Razem: 0 zł</h3>
-    <button class="order-btn" onclick="placeOrder()">Złóż zamówienie i zapłać</button>
+    <div class="checkout-summary">
+        <h3>Twoje zamówienie</h3>
+        <div id="order-products"></div>
+        <h3 id="order-total" style="margin-top: 20px;">Razem: 0 zł</h3>
+        <button class="order-btn" onclick="placeOrder()">Złóż zamówienie i zapłać</button>
+    </div>
 </div>
 
 <script>
@@ -196,26 +206,35 @@
     let selectedMethod = 'inpost';
     const infoBox = document.getElementById('delivery-info');
     const addressContainer = document.getElementById('address-container');
+    const inpostFields = document.getElementById('inpost-fields');
     const orderBtn = document.querySelector('.order-btn');
 
     function selectDelivery(method) {
         selectedMethod = method;
         document.querySelectorAll('.delivery-card').forEach(card => card.classList.remove('active'));
-        event.currentTarget.classList.add('active');
+        
+        // Ustawienie aktywnej karty
+        if (event && event.currentTarget) {
+            event.currentTarget.classList.add('active');
+        }
 
         infoBox.style.display = 'block';
-        addressContainer.style.display = 'block';
         orderBtn.innerText = "Złóż zamówienie i zapłać";
+
+        // Reset widoczności pól dodatkowych
+        addressContainer.style.display = 'none';
+        inpostFields.style.display = 'none';
 
         if (method === 'odbior') {
             infoBox.innerHTML = "📍 <strong>Punkt odbioru:</strong> Gliwice, ul. Przykład 12. Płatność na miejscu (karta/gotówka).";
-            addressContainer.style.display = 'none';
             orderBtn.innerText = "Rezerwuję i odbieram";
         } else if (method === 'pobranie') {
-            infoBox.innerHTML = "🚚 <strong>Płatność u kuriera:</strong> Zapłacisz przy odbiorze. Koszt dostawy (+15 zł) zostanie doliczony.";
+            infoBox.innerHTML = "🚚 <strong>Płatność u kuriera:</strong> Zapłacisz przy odbiorze. Podaj dokładny adres dostawy.";
+            addressContainer.style.display = 'block';
             orderBtn.innerText = "Zamawiam z obowiązkiem zapłaty";
         } else {
-            infoBox.innerHTML = "📦 <strong>InPost:</strong> Wysyłka do Paczkomatu lub pod wskazany adres domowy.";
+            infoBox.innerHTML = "📦 <strong>InPost:</strong> Podaj kod paczkomatu oraz swoje miasto. Płatność online Stripe.";
+            inpostFields.style.display = 'block';
         }
     }
 
@@ -224,17 +243,46 @@
         const name = document.getElementById("name").value;
         const email = document.getElementById("email").value;
         const phone = document.getElementById("phone").value;
-        const address = selectedMethod === 'odbior' ? "Odbiór osobisty" : document.getElementById("address").value;
+        
+        let finalAddress = "";
 
-        if (!name || !email || !phone || (!address && selectedMethod !== 'odbior')) {
-            alert("Proszę uzupełnić wszystkie pola danych.");
+        // Logika budowania adresu zależnie od metody
+        if (selectedMethod === 'odbior') {
+            finalAddress = "Odbiór osobisty - Gliwice";
+        } else if (selectedMethod === 'inpost') {
+            const p = document.getElementById("paczkomat").value;
+            const pc = document.getElementById("postcode").value;
+            const c = document.getElementById("city").value;
+            
+            if (!p || !pc || !c) {
+                alert("Proszę podać kod Paczkomatu, kod pocztowy i miasto.");
+                return;
+            }
+            finalAddress = `Paczkomat: ${p}, ${pc} ${c}`;
+        } else {
+            finalAddress = document.getElementById("address").value;
+            if (!finalAddress) {
+                alert("Proszę podać adres do wysyłki pobraniowej.");
+                return;
+            }
+        }
+
+        if (!name || !email || !phone) {
+            alert("Proszę uzupełnić dane kontaktowe.");
             return;
         }
 
-        const orderData = { name, email, phone, address, products: cart, total, method: selectedMethod };
+        const orderData = { 
+            name, 
+            email, 
+            phone, 
+            address: finalAddress, 
+            products: cart, 
+            total, 
+            method: selectedMethod 
+        };
 
         try {
-            // Rezerwacje (Odbiór/Pobranie) idą inną drogą niż Stripe
             const endpoint = (selectedMethod === 'inpost') ? "/create-checkout-session" : "/create-manual-order";
             
             const res = await fetch(endpoint, {
@@ -251,16 +299,17 @@
                 localStorage.removeItem("cart");
                 window.location.href = "/success.html";
             } else {
-                alert("Błąd serwera. Spróbuj ponownie.");
+                alert("Błąd serwera: " + (data.error || "Spróbuj ponownie."));
             }
         } catch (e) {
             console.error(e);
-            alert("Błąd połączenia.");
+            alert("Błąd połączenia z serwerem.");
         }
     }
 
     // Inicjalizacja
     renderCart();
+    // Startujemy domyślnie z InPostem
     selectDelivery('inpost');
 </script>
 

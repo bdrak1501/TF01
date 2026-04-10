@@ -220,11 +220,11 @@
                                     </div>
                                 </div>
                                 <div class="info-box">
-                                    <h4>📦 Wysyłka <span class="badge method-badge">${o.method || 'Standard'}</span></h4>
-                                    <div class="info-content">
-                                        ${o.address || "Odbiór osobisty"}
-                                    </div>
-                                </div>
+        <h4>📦 Wysyłka <span class="badge method-badge">${o.method || 'Standard'}</span></h4>
+        <div class="info-content">
+          ${o.address ? o.address.replace("Paczkomat:", "<strong>Paczkomat:</strong>") : "Odbiór osobisty"}
+                </div>
+                </div>
                             </div>
 
                             <div class="products-list">

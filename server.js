@@ -169,13 +169,15 @@ app.post("/status", auth, async (req, res) => {
    STRIPE & WEBHOOK
 ======================= */
 
+// W server.js podmień endpoint /create-checkout-session
 app.post("/create-checkout-session", async (req, res) => {
     try {
-        const { products, name, phone, address } = req.body; 
+        const { products, name, phone, address, email } = req.body; // Dodano email i address
 
         const session = await stripe.checkout.sessions.create({
             payment_method_types: ["card"],
             mode: "payment",
+            customer_email: email, // Automatycznie wypełni email w Stripe
             line_items: products.map(p => ({
                 price_data: {
                     currency: "pln",
@@ -188,7 +190,7 @@ app.post("/create-checkout-session", async (req, res) => {
                 cart: JSON.stringify(products),
                 client_name: name,
                 client_phone: phone,
-                client_address: address
+                client_address: address // Tutaj trafi nasz ciąg "Paczkomat: GLI01, 44-100 Gliwice"
             },
             success_url: "https://telefix.onrender.com/success.html",
             cancel_url: "https://telefix.onrender.com/cancel.html",
