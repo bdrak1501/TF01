@@ -555,11 +555,11 @@ color:#fff;
 
     <div class="variant-options">
 
-        <div class="color-option active">
+        <div class="color-option active" data-color="Zielony">
             <img src="../iphone-green.png">
         </div>
 
-        <div class="color-option">
+        <div class="color-option" data-color="Pomarańczowy">
             <img src="../iphone-orange.png">
         </div>
 
@@ -828,43 +828,44 @@ updateDescription();
 updatePrice();
 
 
-function addToCart(){
+function addToCart() {
+    const name = "iPhone 16 Pro";
+    const price = document.getElementById("price").textContent;
+    const image = "13PRO.png";
 
-const name = "iPhone 16 Pro";
+    // Pobieranie aktywnych opcji
+    const memory = document.querySelectorAll('.variant')[1].querySelector('.active')?.textContent.trim();
+    const battery = document.querySelectorAll('.variant')[2].querySelector('.active')?.textContent.trim();
+    const condition = document.querySelectorAll('.variant')[3].querySelector('.active')?.textContent.trim();
+    
+    // POBIERANIE KOLORU (Wybieramy aktywny kolor - można dodać atrybut data-color do HTML lub pobrać src obrazka)
+    // Zakładając, że chcesz nazwę koloru, najlepiej dodać data-color w HTML, 
+    // ale na ten moment pobierzemy informację o aktywnym elemencie:
+    const colorElement = document.querySelectorAll('.variant')[0].querySelector('.active');
+    const color = document.querySelectorAll('.variant')[0].querySelector('.active')?.dataset.label;
 
-const price =
-document.getElementById("price").textContent;
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
-const memory =
-document.querySelectorAll('.variant')[1]
-.querySelector('.active')?.dataset.label;
+    cart.push({
+        name,
+        price,
+        memory,
+        battery,
+        condition,
+        color, // Dodajemy kolor do obiektu
+        image
+    });
 
-const battery =
-document.querySelectorAll('.variant')[2]
-.querySelector('.active')?.dataset.label;
+    localStorage.setItem("cart", JSON.stringify(cart));
+    updateCartCount();
 
-const condition =
-document.querySelectorAll('.variant')[3]
-.querySelector('.active')?.dataset.label;
+    // Animacja i popup
+    document.getElementById("cart-count").classList.add("added-animation");
+    setTimeout(() => {
+        document.getElementById("cart-count").classList.remove("added-animation");
+    }, 400);
 
-const image = "13PRO.png";
-
-let cart =
-JSON.parse(localStorage.getItem("cart")) || [];
-
-cart.push({
-name,
-price,
-memory,
-battery,
-condition,
-image
-});
-
-localStorage.setItem("cart", JSON.stringify(cart));
-
-alert("Produkt dodany do koszyka");
-
+    popup.classList.add("open");
 }
 
 
