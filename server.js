@@ -10,17 +10,12 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 const app = express();
 
 /* =======================
-   DATABASE
+   DATABASE CONNECTION (MONGODB)
 ======================= */
 mongoose.connect(process.env.MONGODB_URI)
     .then(() => console.log("Połączono z MongoDB Atlas ✅"))
-    .catch(err => console.error("Błąd połączenia:", err));
+    .catch(err => console.error("Błąd połączenia z bazą:", err));
 
-/* =======================
-   SCHEMAS
-======================= */
-
-// 🛒 ZAMÓWIENIA (SKLEP)
 const orderSchema = new mongoose.Schema({
     email: String,
     name: String,
@@ -31,44 +26,13 @@ const orderSchema = new mongoose.Schema({
     method: String,
     status: { type: String, default: "Nowe" },
     stripe_id: String,
-    source: { type: String, default: "sklep" },
     date: { type: String, default: () => new Date().toLocaleString() }
 });
 
 const Order = mongoose.model("Order", orderSchema);
 
-// 💰 WYCENY (NOWE)
-const quoteSchema = new mongoose.Schema({
-    name: String,
-    phone: String,
-    instagram: String,
-    location: String,
-    notes: String,
-
-    device: {
-        series: String,
-        model: String,
-        memory: String,
-        battery: String,
-        visual: String,
-        damage: String,
-        back: String,
-        faceid: String,
-        components: String,
-        extra: String
-    },
-
-    price: Number,
-    type: String, // dojazd / wysyłka
-    status: { type: String, default: "Nowe" },
-    source: { type: String, default: "wycena" },
-    date: { type: String, default: () => new Date().toLocaleString() }
-});
-
-const Quote = mongoose.model("Quote", quoteSchema);
-
 /* =======================
-   CRYPTO
+   CRYPTO HELPERS
 ======================= */
 const algorithm = "aes-256-ctr";
 const key = Buffer.from(process.env.ENCRYPT_KEY || "0".repeat(64), "hex");
@@ -88,24 +52,27 @@ function decrypt(hash) {
         const iv = Buffer.from(ivHex, "hex");
         const content = Buffer.from(contentHex, "hex");
         const decipher = crypto.createDecipheriv(algorithm, key, iv);
-        return Buffer.concat([decipher.update(content), decipher.final()]).toString();
-    } catch {
+        const decrypted = Buffer.concat([decipher.update(content), decipher.final()]);
+        return decrypted.toString();
+    } catch (e) {
         return hash;
     }
 }
 
 /* =======================
-   EMAIL
+   EMAIL CONFIGURATION (ZOPTYMALIZOWANA)
 ======================= */
 const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
     port: 465,
-    secure: true,
+    secure: true, // true dla portu 465
     auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS
     },
-    tls: { rejectUnauthorized: false }
+    tls: {
+        rejectUnauthorized: false // Pomaga ominąć błędy certyfikatów na Render
+    }
 });
 
 async function sendEmail(to, subject, text) {
@@ -116,8 +83,9 @@ async function sendEmail(to, subject, text) {
             subject,
             text
         });
+        console.log(`E-mail wysłany pomyślnie do: ${to}`);
     } catch (err) {
-        console.error("Mail error:", err.message);
+        console.error("Błąd wysyłki e-mail:", err.message);
     }
 }
 
@@ -139,8 +107,9 @@ function auth(req, res, next) {
 }
 
 /* =======================
-   AUTH
+   ROUTES
 ======================= */
+
 app.post("/login", (req, res) => {
     const { login, password } = req.body;
     if (login === process.env.ADMIN_LOGIN && password === process.env.ADMIN_PASSWORD) {
@@ -149,147 +118,153 @@ app.post("/login", (req, res) => {
     res.status(401).json({ success: false });
 });
 
-/* =======================
-   ORDERS (SKLEP)
-======================= */
 app.get("/orders", auth, async (req, res) => {
-    const orders = await Order.find().sort({ _id: -1 });
-
-    res.json(orders.map(o => ({
-        ...o._doc,
-        id: o._id,
-        email: decrypt(o.email),
-        name: decrypt(o.name),
-        phone: decrypt(o.phone),
-        address: decrypt(o.address)
-    })));
-});
-
-/* =======================
-   QUOTES (WYCENY)
-======================= */
-app.get("/quotes", auth, async (req, res) => {
-    const quotes = await Quote.find().sort({ _id: -1 });
-
-    res.json(quotes.map(q => ({
-        ...q._doc,
-        name: decrypt(q.name),
-        phone: decrypt(q.phone),
-        instagram: decrypt(q.instagram),
-        location: decrypt(q.location),
-        notes: decrypt(q.notes)
-    })));
-});
-
-/* =======================
-   CREATE QUOTE 🔥
-======================= */
-app.post("/create-quote", async (req, res) => {
     try {
-        const d = req.body;
+        const orders = await Order.find().sort({ _id: -1 });
+        const decryptedOrders = orders.map(o => ({
+            ...o._doc,
+            id: o._id,
+            email: decrypt(o.email),
+            name: decrypt(o.name),
+            phone: decrypt(o.phone),
+            address: decrypt(o.address)
+        }));
+        res.json(decryptedOrders);
+    } catch (err) {
+        res.status(500).json({ error: "Błąd bazy danych" });
+    }
+});
 
-        const quote = new Quote({
-            name: encrypt(d.name),
-            phone: encrypt(d.phone),
-            instagram: encrypt(d.instagram),
-            location: encrypt(d.location),
-            notes: encrypt(d.notes),
+app.post("/status", auth, async (req, res) => {
+    try {
+        const { id, status } = req.body;
+        const order = await Order.findById(id);
+        if (!order) return res.status(404).json({ error: "Nie znaleziono zamówienia" });
 
-            device: d.device,
-            price: d.price,
-            type: d.type
-        });
-
-        await quote.save();
-
+        await Order.findByIdAndUpdate(id, { status });
         res.json({ success: true });
+
+        const clientEmail = decrypt(order.email);
+        let subject = "";
+        let message = "";
+
+        if (status === "Wysłane") {
+            subject = "Twoja paczka z TeleFix jest już w drodze! 📦";
+            message = `Dobra wiadomość! Twoje zamówienie #${id} zostało wysłane.`;
+        } else if (status === "Zakończone") {
+            subject = "Zamówienie zrealizowane – dziękujemy!";
+            message = `Twoje zamówienie #${id} zostało zakończone. Zapraszamy ponownie!`;
+        }
+
+        if (subject && message) {
+            sendEmail(clientEmail, subject, message).catch(e => console.log("Błąd maila w tle:", e.message));
+        }
     } catch (err) {
         console.error(err);
-        res.status(500).json({ error: "Błąd zapisu wyceny" });
+        if (!res.headersSent) res.status(500).json({ error: "Błąd serwera" });
     }
 });
 
 /* =======================
-   STATUS
+   STRIPE & WEBHOOK
 ======================= */
-app.post("/status", auth, async (req, res) => {
-    const { id, status } = req.body;
 
-    const order = await Order.findById(id);
-    if (!order) return res.status(404).json({ error: "Nie znaleziono" });
-
-    await Order.findByIdAndUpdate(id, { status });
-
-    const email = decrypt(order.email);
-
-    if (status === "Wysłane") {
-        sendEmail(email, "Paczka w drodze", `Zamówienie #${id} wysłane`);
-    }
-
-    res.json({ success: true });
-});
-
-/* =======================
-   STRIPE
-======================= */
+// W server.js podmień endpoint /create-checkout-session
 app.post("/create-checkout-session", async (req, res) => {
-    const { products, name, phone, address, email } = req.body;
+    try {
+        const { products, name, phone, address, email } = req.body; // Dodano email i address
 
-    const session = await stripe.checkout.sessions.create({
-        payment_method_types: ["card"],
-        mode: "payment",
-        customer_email: email,
-        line_items: products.map(p => ({
-            price_data: {
-                currency: "pln",
-                product_data: { name: p.name },
-                unit_amount: parseInt(p.price.replace(/\D/g, "")) * 100
+        const session = await stripe.checkout.sessions.create({
+            payment_method_types: ["card"],
+            mode: "payment",
+            customer_email: email, // Automatycznie wypełni email w Stripe
+            line_items: products.map(p => ({
+                price_data: {
+                    currency: "pln",
+                    product_data: { name: p.name },
+                    unit_amount: parseInt(p.price.replace(/\D/g, "")) * 100
+                },
+                quantity: 1
+            })),
+            metadata: { 
+                cart: JSON.stringify(products),
+                client_name: name,
+                client_phone: phone,
+                client_address: address // Tutaj trafi nasz ciąg "Paczkomat: GLI01, 44-100 Gliwice"
             },
-            quantity: 1
-        })),
-        metadata: {
-            cart: JSON.stringify(products),
-            client_name: name,
-            client_phone: phone,
-            client_address: address
-        },
-        success_url: "https://telefix.onrender.com/success.html",
-        cancel_url: "https://telefix.onrender.com/cancel.html"
-    });
-
-    res.json({ url: session.url });
+            success_url: "https://telefix.onrender.com/success.html",
+            cancel_url: "https://telefix.onrender.com/cancel.html",
+        });
+        res.json({ url: session.url });
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
 });
 
 app.post("/webhook", bodyParser.raw({ type: "application/json" }), async (req, res) => {
     const sig = req.headers["stripe-signature"];
+    let event;
 
-    const event = stripe.webhooks.constructEvent(
-        req.body,
-        sig,
-        process.env.STRIPE_WEBHOOK_SECRET
-    );
+    try {
+        event = stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SECRET);
+    } catch (err) {
+        console.error("Webhook Error:", err.message);
+        return res.status(400).send(`Webhook Error: ${err.message}`);
+    }
 
     if (event.type === "checkout.session.completed") {
         const session = event.data.object;
         const meta = session.metadata;
 
-        await new Order({
-            email: encrypt(session.customer_details.email),
-            name: encrypt(meta.client_name),
-            phone: encrypt(meta.client_phone),
-            address: encrypt(meta.client_address),
+        const newOrder = new Order({
+            email: encrypt(session.customer_details.email || ""),
+            name: encrypt(meta.client_name || session.customer_details.name),
+            phone: encrypt(meta.client_phone || ""),
+            address: encrypt(meta.client_address || ""), 
             total: session.amount_total / 100,
-            products: JSON.parse(meta.cart),
+            products: JSON.parse(meta.cart || "[]"),
             stripe_id: session.id,
             method: "Stripe",
             status: "Opłacone"
-        }).save();
-    }
+        });
 
+        await newOrder.save();
+
+        // WYSYŁKA MAILA PO ZAPISIE DO BAZY
+        const clientEmail = session.customer_details.email;
+        const subject = "Otrzymaliśmy Twoje zamówienie – TeleFix Gliwice";
+        const message = `Cześć ${meta.client_name || 'Kliencie'}!\n\nDziękujemy za zakupy. Twoje zamówienie zostało opłacone i trafiło do realizacji.\n\nKwota: ${session.amount_total / 100} zł.\nPozdrawiamy, TeleFix.`;
+        
+        sendEmail(clientEmail, subject, message).catch(e => console.log("Błąd maila w webhooku:", e.message));
+    }
     res.json({ received: true });
 });
 
-/* ======================= */
+app.post("/create-manual-order", async (req, res) => {
+    try {
+        const { name, email, phone, address, products, total, method } = req.body;
+
+        const newOrder = new Order({
+            name: encrypt(name),
+            email: encrypt(email),
+            phone: encrypt(phone),
+            address: encrypt(address),
+            total: total,
+            products: products,
+            method: method || "pobranie/odbiór",
+            status: "Nowe (Manualne)"
+        });
+
+        await newOrder.save();
+        
+        sendEmail(email, "Zamówienie przyjęte - TeleFix Gliwice", `Cześć ${name}!\n\nTwoje zamówienie zostało zarejestrowane.`);
+        res.json({ success: true });
+    } catch (err) {
+        console.error("Błąd manualnego zamówienia:", err);
+        res.status(500).json({ error: "Błąd zapisu zamówienia" });
+    }
+});
+
 app.listen(process.env.PORT || 3000, () => {
     console.log("Server działa 🚀");
 });
