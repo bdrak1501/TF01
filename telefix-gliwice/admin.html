@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel TeleFix – Zarządzanie Zamówieniami</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg: #0f172a;
+            --card-bg: #ffffff;
+            --primary: #2563eb;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --accent: #f8fafc;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: #fff;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #1e293b;
+            padding-bottom: 20px;
+        }
+
+        h1 { margin: 0; font-size: 1.5rem; letter-spacing: -0.5px; }
+
+        .logout {
+            padding: 10px 20px;
+            cursor: pointer;
+            background: #ef4444;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: opacity 0.2s;
+        }
+
+        .logout:hover { opacity: 0.8; }
+
+        .order-card {
+            background: var(--card-bg);
+            color: var(--text-main);
+            padding: 25px;
+            margin-bottom: 25px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            transition: transform 0.2s;
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #f1f5f9;
+            padding-bottom: 15px;
+        }
+
+        .order-id { font-family: monospace; color: var(--primary); font-weight: bold; font-size: 1.1rem; }
+        .order-date { font-size: 0.85rem; color: var(--text-muted); }
+
+        .grid-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-bottom: 20px;
+        }
+
+        .info-box h4 {
+            margin: 0 0 8px 0;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+        }
+
+        .info-content {
+            background: var(--accent);
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .products-list {
+            background: #fdfdfd;
+            border: 1px solid #f1f5f9;
+            border-radius: 12px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+
+        .product-item {
+            padding: 8px 0;
+            border-bottom: 1px solid #f1f5f9;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .product-item:last-child { border: none; }
+
+        .badge {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .method-badge { background: #dcfce7; color: #166534; }
+        .status-badge { background: #e0e7ff; color: #3730a3; padding: 6px 12px; font-size: 0.85rem; }
+
+        .footer-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px dotted #e2e8f0;
+        }
+
+        .total-price { font-size: 1.2rem; font-weight: 700; color: #0f172a; }
+
+        select {
+            padding: 10px 15px;
+            border-radius: 10px;
+            border: 1px solid #cbd5e1;
+            background: #fff;
+            font-family: inherit;
+            font-weight: 600;
+            outline: none;
+            cursor: pointer;
+        }
+
+        @media (max-width: 600px) {
+            .grid-info { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <header>
+            <h1>📦 Panel TeleFix</h1>
+            <button class="logout" onclick="logout()">Wyloguj</button>
+        </header>
+
+        <div id="orders">Ładowanie zamówień...</div>
+    </div>
+
+    <script>
+        const token = localStorage.getItem("token");
+
+        if (!token) { window.location.href = "/login.html"; }
+
+        function logout() {
+            localStorage.removeItem("token");
+            window.location.href = "/login.html";
+        }
+
+        async function load() {
+            try {
+                const res = await fetch("/orders", {
+                    headers: { "Authorization": token }
+                });
+
+                if (res.status === 401) { logout(); return; }
+
+                const data = await res.json();
+                const container = document.getElementById("orders");
+                container.innerHTML = "";
+
+                if (data.length === 0) {
+                    container.innerHTML = "<h3 style='text-align:center; opacity:0.5;'>Brak zamówień do wyświetlenia</h3>";
+                    return;
+                }
+
+                data.forEach(o => {
+                    const orderId = o._id || o.id;
+                    // Fragment kodu do podmiany w admin.html (wewnątrz o.products.forEach)
+        const productsHtml = o.products.map(p => `
+    <div style="padding: 10px 0; border-bottom: 1px solid #eee; display: flex; align-items: center; gap: 15px;">
+        <img src="produkty/${p.image}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px;">
+        <div style="flex: 1;">
+            <div style="font-weight: 600; color: #1e293b;">${p.name}</div>
+            <div style="font-size: 12px; color: #64748b; line-height: 1.4;">
+                <span style="display: inline-block; margin-right: 10px;">💾 <strong>Pamięć:</strong> ${p.memory || 'N/D'}</span>
+<span style="display: inline-block; margin-right: 10px;">🎨 <strong>Kolor:</strong> ${p.color || 'N/D'}</span><br>
+<span style="display: inline-block; margin-right: 10px;">🔋 <strong>Bateria:</strong> ${p.battery || 'N/D'}</span>
+<span style="display: inline-block;">✨ <strong>Stan:</strong> ${p.condition || 'N/D'}</span>
+            </div>
+        </div>
+        <div style="font-weight: 600; color: #2563eb;">${p.price}</div>
+    </div>
+                    `).join('');
+
+                    container.innerHTML += `
+                        <div class="order-card">
+                            <div class="order-header">
+                                <div>
+                                    <div class="order-id">#${orderId.slice(-8).toUpperCase()}</div>
+                                    <div class="order-date">${o.date || 'Data nieznana'}</div>
+                                </div>
+                                <span class="badge status-badge">${o.status || 'Nowe'}</span>
+                            </div>
+
+                            <div class="grid-info">
+                                <div class="info-box">
+                                    <h4>👤 Klient</h4>
+                                    <div class="info-content">
+                                        <strong>${o.name || "Anonim"}</strong><br>
+                                        📧 ${o.email}<br>
+                                        📞 ${o.phone || "Brak telefonu"}
+                                    </div>
+                                </div>
+                                <div class="info-box">
+        <h4>📦 Wysyłka <span class="badge method-badge">${o.method || 'Standard'}</span></h4>
+        <div class="info-content">
+          ${o.address ? o.address.replace("Paczkomat:", "<strong>Paczkomat:</strong>") : "Odbiór osobisty"}
+                </div>
+                </div>
+                            </div>
+
+                            <div class="products-list">
+                                ${productsHtml}
+                            </div>
+
+                            <div class="footer-actions">
+                                <div class="total-price">${o.total} zł</div>
+                                <select onchange="changeStatus('${orderId}', this.value)">
+                                    <option value="" disabled selected>Zmień status...</option>
+                                    <option value="Nowe">Nowe</option>
+                                    <option value="Opłacone">Opłacone</option>
+                                    <option value="W realizacji">W realizacji</option>
+                                    <option value="Wysłane">Wysłane</option>
+                                    <option value="Zakończone">Zakończone</option>
+                                </select>
+                            </div>
+                        </div>
+                    `;
+                });
+
+            } catch (e) {
+                document.getElementById("orders").innerHTML = "Błąd połączenia.";
+            }
+        }
+
+        async function changeStatus(id, status) {
+            try {
+                const res = await fetch("/status", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": token
+                    },
+                    body: JSON.stringify({ id, status })
+                });
+                if (res.ok) load();
+            } catch (err) {
+                alert("Błąd aktualizacji");
+            }
+        }
+
+        load();
+    </script>
+</body>
+</html>
