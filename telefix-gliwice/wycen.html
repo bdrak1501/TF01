@@ -1078,7 +1078,111 @@ document.getElementById("submitSilesiaBtn")?.addEventListener("click", () => sub
 document.getElementById("submitShipBtn")?.addEventListener("click", () => submitSkupForm('wysylka'));
 
 
+// =========================================================================
+// 🚀 INTEGRACJA Z SERWEREM (WYSYŁANIE ZGŁOSZEŃ SKUPU DO BAZY I MAILA)
+// =========================================================================
 
+// Funkcja pomocnicza do wysyłania formularza skupu
+async function sendSkupOrder(methodType) {
+    let name, email, phone, address;
+
+    // 1. Pobieramy dane w zależności od wybranej metody (Dojazd lub Wysyłka)
+    if (methodType === 'Dojazd – Śląsk') {
+        name = document.getElementById("clientNameDelivery")?.value.trim();
+        phone = document.getElementById("clientPhoneDelivery")?.value.trim();
+        email = document.getElementById("clientEmailDelivery")?.value.trim();
+        address = document.getElementById("clientAddressDelivery")?.value.trim();
+    } else {
+        name = document.getElementById("clientNameShipping")?.value.trim();
+        phone = document.getElementById("clientPhoneShipping")?.value.trim();
+        email = document.getElementById("clientEmailShipping")?.value.trim();
+        address = document.getElementById("clientAddressShipping")?.value.trim();
+    }
+
+    // Walidacja pól formularza
+    if (!name || !phone || !email || !address) {
+        alert("Proszę uzupełnić wszystkie pola formularza!");
+        return;
+    }
+
+    // 2. Pobieramy dane o wycenianym telefonie z formularza kroków
+    const seriesSelect = document.getElementById("seriesSelect");
+    const seriesText = seriesSelect ? seriesSelect.options[seriesSelect.selectedIndex]?.text : "Nieznana seria";
+    
+    // Pobieramy dane z Twoich zmiennych globalnych (jeśli istnieją) lub bezpieczny fallback
+    const model = typeof selectedModelGlobal !== 'undefined' ? selectedModelGlobal : "Wybrany model";
+    const storage = typeof selectedStorageGlobal !== 'undefined' ? selectedStorageGlobal : "";
+    const condition = typeof selectedConditionGlobal !== 'undefined' ? selectedConditionGlobal : "";
+    
+    // Pobieramy cenę końcową prosto z ekranu podsumowania (Krok 10)
+    const priceText = document.getElementById("finalPriceDisplay")?.textContent || "0";
+    const finalPrice = parseInt(priceText.replace(/\D/g, "")) || 0;
+
+    // 3. Tworzymy obiekt zamówienia pasujący do Twojej bazy w server.js (/create-manual-order)
+    const orderData = {
+        name: name,
+        email: email,
+        phone: phone,
+        address: address,
+        total: finalPrice,
+        method: methodType,
+        // Serwer oczekuje tablicy obiektów w "products"
+        products: [{
+            name: `Skup: ${seriesText} ${model}`,
+            details: `Pojemność: ${storage} | Stan: ${condition}`
+        }]
+    };
+
+    try {
+        // Blokada przycisku na czas wysyłania, żeby klient nie kliknął 10 razy
+        const activeBtn = methodType === 'Dojazd – Śląsk' 
+            ? document.getElementById("submitDeliveryOrderBtn") 
+            : document.getElementById("submitShippingOrderBtn");
+        if (activeBtn) activeBtn.disabled = true;
+
+        // Wysyłamy żądanie na Twój serwer na Renderze (ścieżka względna /)
+        const response = await fetch("/create-manual-order", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(orderData)
+        });
+
+        const data = await response.json();
+
+        if (response.ok || data.success) {
+            alert("Zgłoszenie zostało pomyślnie wysłane! Oczekuj na kontakt z naszej strony.");
+            window.location.href = "index.html"; // Przekierowanie na stronę główną
+        } else {
+            alert("Błąd serwera: " + (data.error || "Nie udało się zapisać zgłoszenia."));
+            if (activeBtn) activeBtn.disabled = false;
+        }
+    } catch (error) {
+        console.error("Błąd połączenia z serwerem:", error);
+        alert("Błąd połączenia z serwerem. Upewnij się, że Twój serwer działa poprawnie.");
+        const activeBtn = methodType === 'Dojazd – Śląsk' ? document.getElementById("submitDeliveryOrderBtn") : document.getElementById("submitShippingOrderBtn");
+        if (activeBtn) activeBtn.disabled = false;
+    }
+}
+
+// 4. Podpinamy nasłuchiwanie pod przyciski po załadowaniu strony
+document.addEventListener("DOMContentLoaded", () => {
+    const deliveryBtn = document.getElementById("submitDeliveryOrderBtn");
+    const shippingBtn = document.getElementById("submitShippingOrderBtn");
+
+    if (deliveryBtn) {
+        deliveryBtn.addEventListener("click", (e) => {
+            e.preventDefault();
+            sendSkupOrder('Dojazd – Śląsk');
+        });
+    }
+
+    if (shippingBtn) {
+        shippingBtn.addEventListener("click", (e) => {
+            e.preventDefault();
+            sendSkupOrder('Wysyłka kurierem / paczkomat');
+        });
+    }
+});
 
 </script>
 
