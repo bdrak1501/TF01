@@ -202,7 +202,7 @@
                         ? `border-left: 6px solid #eab308; background-color: #fefce8;` 
                         : '';
                     
-                    // Generowanie listy produktów/urządzeń
+                    // Generowanie listy produktów/urządzeń (ZINTEGROWANA NOWA WERSJA)
                     const productsHtml = o.products.map(p => {
                         // Jeśli to skup, podstawiamy ikonę telefonu zamiast fizycznego zdjęcia produktu ze sklepu
                         const imageHtml = isSkup
@@ -210,18 +210,26 @@
                             : `<img src="produkty/${p.image}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px;">`;
 
                         return `
-                            <div style="padding: 10px 0; border-bottom: 1px solid #eee; display: flex; align-items: center; gap: 15px;">
-                                ${imageHtml}
-                                <div style="flex: 1;">
-                                    <div style="font-weight: 600; color: #1e293b;">${p.name}</div>
-                                    <div style="font-size: 12px; color: #64748b; line-height: 1.4;">
-                                        <span style="display: inline-block; margin-right: 10px;">💾 <strong>Pamięć:</strong> ${p.memory || 'N/D'}</span>
-                                        ${!isSkup ? `<span style="display: inline-block; margin-right: 10px;">🎨 <strong>Kolor:</strong> ${p.color || 'N/D'}</span><br>` : ''}
-                                        ${!isSkup ? `<span style="display: inline-block; margin-right: 10px;">🔋 <strong>Bateria:</strong> ${p.battery || 'N/D'}</span>` : ''}
-                                        <span style="display: inline-block;">✨ <strong>Stan:</strong> ${p.condition || 'N/D'}</span>
+                            <div style="padding: 10px 0; border-bottom: 1px solid #eee; display: flex; flex-direction: column; gap: 8px;">
+                                <div style="display: flex; align-items: center; gap: 15px;">
+                                    ${imageHtml}
+                                    <div style="flex: 1;">
+                                        <div style="font-weight: 600; color: #1e293b;">${p.name}</div>
+                                        <div style="font-size: 12px; color: #64748b; line-height: 1.4;">
+                                            <span style="display: inline-block; margin-right: 10px;">💾 <strong>Pamięć:</strong> ${p.memory || 'N/D'}</span>
+                                            ${p.color ? `<span style="display: inline-block; margin-right: 10px;">🎨 <strong>Kolor:</strong> ${p.color}</span>` : ''}
+                                            <span style="display: inline-block; margin-right: 10px;">🔋 <strong>Bateria:</strong> ${p.battery || 'N/D'}</span>
+                                            <span style="display: inline-block;">✨ <strong>Stan:</strong> ${p.condition || 'N/D'}</span>
+                                        </div>
                                     </div>
+                                    <div style="font-weight: 600; color: ${isSkup ? '#b45309' : '#2563eb'};">${p.price || (o.total + ' zł')}</div>
                                 </div>
-                                <div style="font-weight: 600; color: ${isSkup ? '#b45309' : '#2563eb'};">${p.price || (o.total + ' zł')}</div>
+                                
+                                ${p.description ? `
+                                    <div style="background: #f8fafc; border-left: 4px solid #eab308; padding: 12px; border-radius: 8px; font-size: 13px; color: #334155; margin-top: 5px; white-space: pre-wrap; line-height: 1.5; font-family: inherit;">
+                                        <strong style="color: #b45309;">📋 Pełna specyfikacja z kalkulatora skupu:</strong><br>${p.description}
+                                    </div>
+                                ` : ''}
                             </div>
                         `;
                     }).join('');

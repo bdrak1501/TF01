@@ -271,7 +271,8 @@ app.listen(process.env.PORT || 3000, () => {
 
 app.post("/create-skup-order", async (req, res) => {
     try {
-        const { name, email, phone, address, deviceModel, storage, condition, estimatedPrice, method } = req.body;
+        // Dodaliśmy odbiór parametrów 'description' oraz 'battery' z żądania HTTP
+        const { name, email, phone, address, deviceModel, storage, condition, estimatedPrice, method, description, battery } = req.body;
 
         // Korzystamy z tego samego modelu Order i wbudowanego szyfrowania danych osobowych
         const newOrder = new Order({
@@ -280,12 +281,14 @@ app.post("/create-skup-order", async (req, res) => {
             phone: encrypt(phone),
             address: encrypt(address),
             total: Number(estimatedPrice) || 0,
-            // Mapujemy specyfikację telefonu tak, by pasowała do struktury tablicy produktów
+            // Mapujemy pełną specyfikację telefonu tak, by idealnie pasowała do struktury tablicy produktów panelu
             products: [{
                 name: deviceModel || "Nieznany model telefonu",
                 memory: storage || "N/D",
                 condition: condition || "N/D",
-                price: `${estimatedPrice} zł`
+                price: `${estimatedPrice} zł`,
+                battery: battery || "N/D",          // <--- Zapisujemy kondycję baterii do podglądu
+                description: description || ""      // <--- Zapisujemy tekstową, pełną specyfikację z kalkulatora
             }],
             method: `SKUP - ${method || "Standard"}`, // Flaga identyfikująca transakcję jako SKUP
             status: "Nowe zgłoszenie"
