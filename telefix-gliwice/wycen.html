@@ -846,7 +846,20 @@ backStep12Btn.addEventListener('click', () => {
   step10.classList.remove('hidden');
 });
 
-// --- FUNKCJA INTEGRACJI Z SERWEREM (ZAPIS DO BAZY I WYSYŁKA MAILA) --- //
+// --- OBSŁUGA KLIKNIĘĆ PRZYCISKÓW FINALIZUJĄCYCH ZGŁOSZENIE --- //
+const sendDeliveryBtn = document.getElementById("sendDeliveryBtn");
+if (sendDeliveryBtn) {
+  sendDeliveryBtn.addEventListener("click", () => {
+    sendSkupOrder('Dojazd – Śląsk');
+  });
+}
+
+const generateLabelBtn = document.getElementById("generateLabelBtn");
+if (generateLabelBtn) {
+  generateLabelBtn.addEventListener("click", () => {
+    sendSkupOrder('Wysyłka');
+  });
+}
 // --- FUNKCJA INTEGRACJI Z SERWEREM (ZAPIS DO BAZY I WYSYŁKA MAILA) --- //
 async function sendSkupOrder(methodType) {
   let name = "", email = "", phone = "", address = "", extraNotes = "";
