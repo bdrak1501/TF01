@@ -845,7 +845,7 @@ backStep12Btn.addEventListener('click', () => {
   step10.classList.remove('hidden');
 });
 
-// --- FUNKCJA INTEGRACJI Z SERWEREM (ZAPIS DO BAZY / WYSYŁKA MAILA) --- //
+// --- FUNKCJA INTEGRACJI Z SERWEREM (ZAPIS DO BAZY I WYSYŁKA MAILA) --- //
 async function sendSkupOrder(methodType) {
   let name, email, phone, address, extraNotes = "";
 
@@ -853,7 +853,6 @@ async function sendSkupOrder(methodType) {
   if (methodType === 'Dojazd – Śląsk') {
     name = document.getElementById("contactName")?.value.trim();
     phone = document.getElementById("contactPhone")?.value.trim();
-    // Dojazd Śląsk nie posiada w HTML pola email, przekazujemy IG jako identyfikator kontaktu
     const instagram = document.getElementById("contactInstagram")?.value.trim();
     email = instagram ? `instagram:${instagram}` : "brak-maila@telefix.pl";
     address = document.getElementById("contactLocation")?.value.trim();
@@ -877,17 +876,47 @@ async function sendSkupOrder(methodType) {
   const priceText = finalPrice?.textContent || "0";
   const calculatedTotal = parseInt(priceText.replace(/\D/g, "")) || 0;
 
-  // 2. Budowanie struktury danych zgodnej z endpointem `/create-manual-order` na serwerze
+  // 2. BUDOWANIE PEŁNEGO OPISU TELEFONU (Wszystkie parametry z kroków 1-9)
+  const builtDetails = `
+Model: iPhone ${userData.model || userData.series}
+Pojemność: ${userData.memory || 'Nie podano'}
+Bateria: ${userData.battery || 'Nie podano'}
+Stan wizualny: ${userData.visual || 'Nie podano'}
+Wyświetlacz: ${userData.damage || 'Nie podano'}
+Tylna szyba: ${userData.back || 'Nie podano'}
+Face ID: ${userData.faceid || 'Nie podano'}
+Inne podzespoły: ${userData.components || 'Nie podano'}
+Uwagi klienta z formularza: ${extraNotes || 'Brak'}
+Dodatkowy opis uszkodzeń: ${userData.extra || 'Brak'}
+  `.trim();
+
+  // 3. Tworzymy obiekt zamówienia wysyłając opis do każdego możliwego pola, 
+  // które Twój backend/admin może brać pod uwagę.
   const orderData = {
     name: name,
     email: email,
     phone: phone,
     address: address,
     total: calculatedTotal,
+    estimatedPrice: calculatedTotal, // Alternatywny klucz dla ceny
     method: methodType,
+    
+    // Pola główne (często używane w panelach admina jako notatki do zamówienia)
+    deviceModel: `iPhone ${userData.model || userData.series}`,
+    deviceDetails: builtDetails,
+    notes: builtDetails,
+    comment: builtDetails,
+    comments: builtDetails,
+    description: builtDetails,
+
+    // Tradycyjna struktura produktów
     products: [{
       name: `Skup: iPhone ${userData.model || userData.series}`,
-      details: `Pamięć: ${userData.memory} | Bateria: ${userData.battery} | Wizualnie: ${userData.visual} | Ekran: ${userData.damage} | Tył: ${userData.back} | FaceID: ${userData.faceid} | Uwagi klienta: ${extraNotes} ${userData.extra}`
+      quantity: 1,
+      price: calculatedTotal,
+      details: builtDetails,
+      description: builtDetails,
+      deviceDetails: builtDetails
     }]
   };
 
