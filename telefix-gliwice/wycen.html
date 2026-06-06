@@ -846,10 +846,11 @@ backStep12Btn.addEventListener('click', () => {
 });
 
 // --- FUNKCJA INTEGRACJI Z SERWEREM (ZAPIS DO BAZY I WYSYŁKA MAILA) --- //
+// --- ZAKTUALIZOWANA FUNKCJA WYSYŁANIA --- //
 async function sendSkupOrder(methodType) {
   let name, email, phone, address, extraNotes = "";
 
-  // 1. Mapowanie pól formularza na podstawie wybranego typu obsługi
+  // 1. Mapowanie pól formularza kontaktowego
   if (methodType === 'Dojazd – Śląsk') {
     name = document.getElementById("contactName")?.value.trim();
     phone = document.getElementById("contactPhone")?.value.trim();
@@ -866,61 +867,49 @@ async function sendSkupOrder(methodType) {
     extraNotes = document.getElementById("shipNotes")?.value.trim();
   }
 
-  // Podstawowa walidacja
   if (!name || !phone || !address) {
     alert("Proszę uzupełnić wszystkie podstawowe dane kontaktowe!");
     return;
   }
 
-  // Pobranie obliczonej ceny końcowej
   const priceText = finalPrice?.textContent || "0";
   const calculatedTotal = parseInt(priceText.replace(/\D/g, "")) || 0;
 
-  // 2. BUDOWANIE PEŁNEGO OPISU TELEFONU (Wszystkie parametry z kroków 1-9)
+  // 2. Budowanie pełnego, szczegółowego podsumowania tekstowego (Zabezpieczenie)
   const builtDetails = `
 Model: iPhone ${userData.model || userData.series}
 Pojemność: ${userData.memory || 'Nie podano'}
-Bateria: ${userData.battery || 'Nie podano'}
+Bateria (Kondycja): ${userData.battery || 'Nie podano'}
 Stan wizualny: ${userData.visual || 'Nie podano'}
 Wyświetlacz: ${userData.damage || 'Nie podano'}
 Tylna szyba: ${userData.back || 'Nie podano'}
-Face ID: ${userData.faceid || 'Nie podano'}
+Face ID / Touch ID: ${userData.faceid || 'Nie podano'}
 Inne podzespoły: ${userData.components || 'Nie podano'}
-Uwagi klienta z formularza: ${extraNotes || 'Brak'}
 Dodatkowy opis uszkodzeń: ${userData.extra || 'Brak'}
+Uwagi klienta z formularza: ${extraNotes || 'Brak'}
   `.trim();
 
-  // 3. Tworzymy obiekt zamówienia wysyłając opis do każdego możliwego pola, 
-  // które Twój backend/admin może brać pod uwagę.
+  // 3. Przygotowanie czystego obiektu, który serwer w całości zapisze
   const orderData = {
     name: name,
     email: email,
     phone: phone,
     address: address,
     total: calculatedTotal,
-    estimatedPrice: calculatedTotal, // Alternatywny klucz dla ceny
-    method: methodType,
-    
-    // Pola główne (często używane w panelach admina jako notatki do zamówienia)
-    deviceModel: `iPhone ${userData.model || userData.series}`,
-    deviceDetails: builtDetails,
-    notes: builtDetails,
-    comment: builtDetails,
-    comments: builtDetails,
-    description: builtDetails,
-
-    // Tradycyjna struktura produktów
+    method: `SKUP - ${methodType}`, // "SKUP -" włącza złoty kolor i tryb skupu w adminie
     products: [{
-      name: `Skup: iPhone ${userData.model || userData.series}`,
+      name: `iPhone ${userData.model || userData.series}`,
       quantity: 1,
-      price: calculatedTotal,
-      details: builtDetails,
-      description: builtDetails,
-      deviceDetails: builtDetails
+      price: `${calculatedTotal} zł`,
+      // Te pola są natychmiast czytane przez admin.html:
+      memory: userData.memory || 'Nie podano',
+      battery: userData.battery || 'Nie podano',
+      condition: userData.visual || 'Nie podano',
+      // W opisie przesyłamy CAŁĄ resztę szczegółów (bateria %, uszkodzenia, FaceID)
+      description: builtDetails 
     }]
   };
 
-  // Blokowanie odpowiedniego przycisku przed wielokrotnym kliknięciem
   const activeBtn = methodType === 'Dojazd – Śląsk' 
     ? document.getElementById("sendDeliveryBtn") 
     : document.getElementById("generateLabelBtn");
@@ -945,30 +934,10 @@ Dodatkowy opis uszkodzeń: ${userData.extra || 'Brak'}
     }
   } catch (error) {
     console.error("Błąd połączenia z serwerem:", error);
-    alert("Błąd połączenia z serwerem. Upewnij się, że serwer backendu działa.");
+    alert("Błąd połączenia z serwerem.");
     if (activeBtn) activeBtn.disabled = false;
   }
 }
-
-// --- PODPIĘCIE AKCJI WYSYŁKI POD PRZYCISKI KOŃCOWE --- //
-document.addEventListener("DOMContentLoaded", () => {
-  const sendDeliveryBtn = document.getElementById("sendDeliveryBtn");
-  const generateLabelBtn = document.getElementById("generateLabelBtn");
-
-  if (sendDeliveryBtn) {
-    sendDeliveryBtn.addEventListener("click", (e) => {
-      e.preventDefault();
-      sendSkupOrder('Dojazd – Śląsk');
-    });
-  }
-
-  if (generateLabelBtn) {
-    generateLabelBtn.addEventListener("click", (e) => {
-      e.preventDefault();
-      sendSkupOrder('Wysyłka kurierem / paczkomat');
-    });
-  }
-});
 
 // Płynne przewijanie do instrukcji "jak to działa"
 document.addEventListener('DOMContentLoaded', function() {
