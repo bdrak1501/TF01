@@ -425,7 +425,7 @@ const backStep11Btn = document.getElementById('backStep11Btn');
 const backStep12Btn = document.getElementById('backStep12Btn');
 
 const deliverySilesiaBtn = document.getElementById("deliverySilesiaBtn");
-const deliveryShipBtn = document.getElementById("deliveryShipBtn"); // upewnij się, że ten przycisk w kroku 10 ma takie ID
+const deliveryShipBtn = document.getElementById("deliveryShipBtn"); 
 
 const summaryModelName = document.getElementById('summaryModelName');
 const summaryDetails = document.getElementById('summaryDetails');
@@ -493,8 +493,10 @@ const componentsModelName = document.getElementById('componentsModelName');
 const componentsPhoneImage = document.getElementById('componentsPhoneImage');
 const componentsYes = document.getElementById('componentsYes');
 const componentsNo = document.getElementById('componentsNo');
-const extraDamageBox = document.getElementById('extraDamageBox');
-const extraDamageInput = document.getElementById('extraDamageInput');
+
+// POPRAWKA: Dopasowanie pobierania elementów do rzeczywistych ID z HTML
+const extraDamageBox = document.getElementById('damageDescription'); 
+const extraDamageInput = document.getElementById('damageInput');
 
 // --- ZMIENNE STANU --- //
 let selectedSeries = '';
@@ -713,8 +715,8 @@ function openStep9() {
   step9.classList.remove('hidden');
   componentsModelName.textContent = `iPhone ${selectedModel}`;
   componentsPhoneImage.src = `iphone${selectedModel.replace(/\s/g,'')}.png`;
-  extraDamageBox.classList.add('hidden');
-  extraDamageInput.value = '';
+  if (extraDamageBox) extraDamageBox.classList.add('hidden');
+  if (extraDamageInput) extraDamageInput.value = '';
 }
 
 // --- WYBÓR STANU FACE ID --- //
@@ -740,14 +742,14 @@ componentsYes.addEventListener('click', () => {
 
 componentsNo.addEventListener('click', () => {
   userData.components = "Nie, coś uszkodzone";
-  extraDamageBox.classList.remove('hidden');
-  extraDamageInput.focus();
+  if (extraDamageBox) extraDamageBox.classList.remove('hidden');
+  if (extraDamageInput) extraDamageInput.focus();
 });
 
 // Obsługa dodatkowego pola tekstowego przy wykryciu wad podzespołów
 if (document.getElementById('damageNextBtn')) {
   document.getElementById('damageNextBtn').addEventListener('click', () => {
-    const extra = extraDamageInput.value.trim();
+    const extra = extraDamageInput ? extraDamageInput.value.trim() : "";
     userData.extra = extra ? extra : "(brak szczegółów)";
     openStep10();
   });
@@ -846,11 +848,9 @@ backStep12Btn.addEventListener('click', () => {
 });
 
 // --- FUNKCJA INTEGRACJI Z SERWEREM (ZAPIS DO BAZY I WYSYŁKA MAILA) --- //
-// --- ZAKTUALIZOWANA FUNKCJA WYSYŁANIA --- //
 async function sendSkupOrder(methodType) {
   let name, email, phone, address, extraNotes = "";
 
-  // 1. Mapowanie pól formularza kontaktowego
   if (methodType === 'Dojazd – Śląsk') {
     name = document.getElementById("contactName")?.value.trim();
     phone = document.getElementById("contactPhone")?.value.trim();
@@ -875,7 +875,6 @@ async function sendSkupOrder(methodType) {
   const priceText = finalPrice?.textContent || "0";
   const calculatedTotal = parseInt(priceText.replace(/\D/g, "")) || 0;
 
-  // 2. Budowanie pełnego, szczegółowego podsumowania tekstowego (Zabezpieczenie)
   const builtDetails = `
 Model: iPhone ${userData.model || userData.series}
 Pojemność: ${userData.memory || 'Nie podano'}
@@ -889,23 +888,20 @@ Dodatkowy opis uszkodzeń: ${userData.extra || 'Brak'}
 Uwagi klienta z formularza: ${extraNotes || 'Brak'}
   `.trim();
 
-  // 3. Przygotowanie czystego obiektu, który serwer w całości zapisze
   const orderData = {
     name: name,
     email: email,
     phone: phone,
     address: address,
     total: calculatedTotal,
-    method: `SKUP - ${methodType}`, // "SKUP -" włącza złoty kolor i tryb skupu w adminie
+    method: `SKUP - ${methodType}`, 
     products: [{
       name: `iPhone ${userData.model || userData.series}`,
       quantity: 1,
       price: `${calculatedTotal} zł`,
-      // Te pola są natychmiast czytane przez admin.html:
       memory: userData.memory || 'Nie podano',
       battery: userData.battery || 'Nie podano',
       condition: userData.visual || 'Nie podano',
-      // W opisie przesyłamy CAŁĄ resztę szczegółów (bateria %, uszkodzenia, FaceID)
       description: builtDetails 
     }]
   };
@@ -938,6 +934,10 @@ Uwagi klienta z formularza: ${extraNotes || 'Brak'}
     if (activeBtn) activeBtn.disabled = false;
   }
 }
+
+// POPRAWKA: Podpięcie wywołania funkcji do przycisków formularzy końcowych
+document.getElementById("sendDeliveryBtn")?.addEventListener("click", () => sendSkupOrder('Dojazd – Śląsk'));
+document.getElementById("generateLabelBtn")?.addEventListener("click", () => sendSkupOrder('Wysyłka'));
 
 // Płynne przewijanie do instrukcji "jak to działa"
 document.addEventListener('DOMContentLoaded', function() {
