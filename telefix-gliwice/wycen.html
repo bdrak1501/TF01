@@ -847,9 +847,9 @@ backStep12Btn.addEventListener('click', () => {
 });
 
 // --- FUNKCJA INTEGRACJI Z SERWEREM (ZAPIS DO BAZY I WYSYŁKA MAILA) --- //
-// --- MODYFIKACJA FUNKCJI INTEGRACJI Z SERWEREM --- //
+// --- FUNKCJA INTEGRACJI Z SERWEREM (ZAPIS DO BAZY I WYSYŁKA MAILA) --- //
 async function sendSkupOrder(methodType) {
-  let name, email, phone, address, extraNotes = "";
+  let name = "", email = "", phone = "", address = "", extraNotes = "";
 
   if (methodType === 'Dojazd – Śląsk') {
     name = document.getElementById("contactName")?.value.trim();
@@ -859,23 +859,23 @@ async function sendSkupOrder(methodType) {
     address = document.getElementById("contactLocation")?.value.trim();
     extraNotes = document.getElementById("contactNotes")?.value.trim();
   } else {
-    // POPRAWKA: Prawidłowe pobieranie danych dla wysyłki InPost
     name = document.getElementById("shipName")?.value.trim();
     phone = document.getElementById("shipPhone")?.value.trim();
     email = document.getElementById("shipEmail")?.value.trim();
-    const imei = document.getElementById("shipLocker")?.value.trim(); // Używane jako IMEI w HTML
-    address = imei ? `Paczkomat / IMEI: ${imei}` : "Wysyłka Kurier/InPost";
-    extraNotes = "Zgłoszenie wysyłkowe InPost.";
+    const imei = document.getElementById("shipLocker")?.value.trim();
+    address = imei ? `IMEI: ${imei}` : "Wysyłka Kurier/InPost";
+    extraNotes = "Brak dodatkowych uwag"; // Poprawka: usunięto odwołanie do nieistniejącego shipNotes
   }
 
-  if (!name || !phone || !address || !email) {
-    alert("Proszę uzupełnić wszystkie dane kontaktowe!");
+  if (!name || !phone || !address) {
+    alert("Proszę uzupełnić wszystkie podstawowe dane kontaktowe!");
     return;
   }
 
   const priceText = finalPrice?.textContent || "0";
   const calculatedTotal = parseInt(priceText.replace(/\D/g, "")) || 0;
 
+  // Budujemy pełny opis stanu dla pola 'description', które przyjmuje serwer
   const builtDetails = `
 Model: iPhone ${userData.model || userData.series}
 Pojemność: ${userData.memory || 'Nie podano'}
@@ -886,26 +886,22 @@ Tylna szyba: ${userData.back || 'Nie podano'}
 Face ID / Touch ID: ${userData.faceid || 'Nie podano'}
 Inne podzespoły: ${userData.components || 'Nie podano'}
 Dodatkowy opis uszkodzeń: ${userData.extra || 'Brak'}
-Uwagi: ${extraNotes || 'Brak'}
+Uwagi klienta: ${extraNotes}
   `.trim();
 
-  // Przygotowanie struktury zgodnej z endpointem /create-manual-order i panelem admina
+  // Dopasowujemy obiekt do parametrów oczekiwanych przez /create-skup-order w server.js
   const orderData = {
     name: name,
     email: email,
     phone: phone,
     address: address,
-    total: calculatedTotal,
-    method: `SKUP - ${methodType}`, 
-    products: [{
-      name: `iPhone ${userData.model || userData.series}`,
-      quantity: 1,
-      price: `${calculatedTotal} zł`,
-      memory: userData.memory || 'Nie podano',
-      battery: userData.battery || 'Nie podano',
-      condition: userData.visual || 'Nie podano',
-      description: builtDetails 
-    }]
+    deviceModel: `iPhone ${userData.model || userData.series}`,
+    storage: userData.memory || 'Nie podano',
+    condition: userData.visual || 'Nie podano',
+    battery: userData.battery || 'Nie podano',
+    estimatedPrice: calculatedTotal,
+    method: methodType, 
+    description: builtDetails
   };
 
   const activeBtn = methodType === 'Dojazd – Śląsk' 
@@ -915,7 +911,8 @@ Uwagi: ${extraNotes || 'Brak'}
   if (activeBtn) activeBtn.disabled = true;
 
   try {
-    const response = await fetch("/create-manual-order", {
+    // ZMIANA: Strzelamy do /create-skup-order zamiast /create-manual-order
+    const response = await fetch("/create-skup-order", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(orderData)
@@ -924,13 +921,8 @@ Uwagi: ${extraNotes || 'Brak'}
     const data = await response.json();
 
     if (response.ok || data.success) {
-      if (methodType === 'Wysyłka') {
-        // Jeśli to wysyłka, pokazujemy wygenerowaną etykietę przed przekierowaniem
-        showInPostLabelPopup(name, phone, calculatedTotal);
-      } else {
-        alert("Zgłoszenie skupu zostało pomyślnie wysłane! Oczekuj na kontakt.");
-        window.location.href = "index.html"; 
-      }
+      alert("Zgłoszenie skupu zostało pomyślnie wysłane! Oczekuj na kontakt.");
+      window.location.href = "index.html"; 
     } else {
       alert("Błąd serwera: " + (data.error || "Nie udało się zapisać zgłoszenia."));
       if (activeBtn) activeBtn.disabled = false;
@@ -940,43 +932,6 @@ Uwagi: ${extraNotes || 'Brak'}
     alert("Błąd połączenia z serwerem.");
     if (activeBtn) activeBtn.disabled = false;
   }
-}
-
-// --- FUNKCJA WYŚWIETLAJĄCA PRZYKŁADOWĄ ETYKIETĘ INPOST --- //
-function showInPostLabelPopup(name, phone, price) {
-  // Tworzymy kontener popup dynamicznie
-  const popup = document.createElement('div');
-  popup.style = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); display:flex; justify-content:center; align-items:center; z-index:9999; font-family:sans-serif; color:#000;";
-  
-  popup.innerHTML = `
-    <div style="background:#fff; padding:30px; border-radius:16px; max-width:450px; width:90%; text-align:center; box-shadow:0 10px 25px rgba(0,0,0,0.3);">
-      <div style="background:#ffcc00; padding:15px; border-radius:10px; margin-bottom:20px; font-weight:bold; font-size:1.2rem; display:flex; align-items:center; justify-content:center; gap:10px;">
-        <span>📦</span> SKUP InPost Paczkomaty
-      </div>
-      
-      <p style="font-size:14px; color:#555; margin-bottom:20px;">Dziękujemy! Twoje zgłoszenie zostało zapisane w naszym systemie panelu administratora. Wkrótce się odezwiemy w celu weryfikacji.</p>
-      
-      <div style="border:2px dashed #000; padding:15px; text-align:left; background:#fafafa; margin-bottom:20px; font-family:monospace;">
-        <div style="text-align:center; font-weight:bold; border-bottom:1px solid #000; padding-bottom:5px; margin-bottom:10px;">ETYKIETA ZWROTNA (TEST)</div>
-        <strong>Odbiorca:</strong> TELEFIX GLIWICE<br>
-        <strong>Nadawca:</strong> ${name}<br>
-        <strong>Tel:</strong> ${phone}<br>
-        <strong>Wycena:</strong> ${price} zł<br>
-        <div style="margin-top:15px; text-align:center;">
-          <div style="background:#000; color:#fff; letter-spacing:5px; padding:5px; font-weight:bold;">|||| | ||||| | ||| ||</div>
-          <div style="font-size:11px; margin-top:3px;">KOD: SKUP-${Math.floor(100000 + Math.random() * 900000)}</div>
-        </div>
-      </div>
-      
-      <button id="closePopupBtn" style="background:#0f172a; color:#fff; border:none; padding:12px 25px; border-radius:8px; font-weight:bold; cursor:pointer; width:100%;">Zamknij i wróć do sklepu</button>
-    </div>
-  `;
-  
-  document.body.appendChild(popup);
-  
-  document.getElementById("closePopupBtn").addEventListener("click", () => {
-    window.location.href = "index.html";
-  });
 }
 </script>
 
