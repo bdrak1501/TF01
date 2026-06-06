@@ -415,17 +415,27 @@
 
 
 <script>
+// --- ELEMENTY UTYLITARNE I KROKI KOŃCOWE --- //
+const step10 = document.getElementById('step10');
+const step11 = document.getElementById('step11');
+const step12 = document.getElementById('step12');
 
-const step12 = document.getElementById("step12");
-const backStep12Btn = document.getElementById("backStep12Btn");
+const backStep10Btn = document.getElementById('backStep10Btn');
+const backStep11Btn = document.getElementById('backStep11Btn');
+const backStep12Btn = document.getElementById('backStep12Btn');
 
+const deliverySilesiaBtn = document.getElementById("deliverySilesiaBtn");
+const deliveryShipBtn = document.getElementById("deliveryShipBtn"); // upewnij się, że ten przycisk w kroku 10 ma takie ID
+
+const summaryModelName = document.getElementById('summaryModelName');
+const summaryDetails = document.getElementById('summaryDetails');
+const finalPrice = document.getElementById('finalPrice');
 
 // --- ELEMENTY KROKU 1 --- //
 const seriesSelect = document.getElementById('seriesSelect');
 const nextBtn = document.getElementById('nextBtn');
 const step1 = document.getElementById('step1');
 const previewImgs = document.querySelectorAll('.preview-img');
-
 
 // --- ELEMENTY KROKU 2 --- //
 const step2 = document.getElementById('step2');
@@ -455,9 +465,54 @@ const visualModelName = document.getElementById('visualModelName');
 const visualPhoneImage = document.getElementById('visualPhoneImage');
 const visualButtons = document.querySelectorAll('.visual-btn');
 
-// --- ZMIENNE --- //
+// --- ELEMENTY KROKU 6 --- //
+const step6 = document.getElementById('step6');
+const backStep6Btn = document.getElementById('backStep6Btn');
+const damageModelName = document.getElementById('damageModelName');
+const damagePhoneImage = document.getElementById('damagePhoneImage');
+const damageButtons = document.querySelectorAll('.damage-btn');
+
+// --- ELEMENTY KROKU 7 --- //
+const step7 = document.getElementById('step7');
+const backStep7Btn = document.getElementById('backStep7Btn');
+const backModelName = document.getElementById('backModelName');
+const backPhoneImage = document.getElementById('backPhoneImage');
+const backDamageButtons = document.querySelectorAll('.back-damage-btn');
+
+// --- ELEMENTY KROKU 8 --- //
+const step8 = document.getElementById('step8');
+const backStep8Btn = document.getElementById('backStep8Btn');
+const faceIdModelName = document.getElementById('faceIdModelName');
+const faceIdPhoneImage = document.getElementById('faceIdPhoneImage');
+const faceIdButtons = document.querySelectorAll('.faceid-btn');
+
+// --- ELEMENTY KROKU 9 --- //
+const step9 = document.getElementById('step9');
+const backStep9Btn = document.getElementById('backStep9Btn');
+const componentsModelName = document.getElementById('componentsModelName');
+const componentsPhoneImage = document.getElementById('componentsPhoneImage');
+const componentsYes = document.getElementById('componentsYes');
+const componentsNo = document.getElementById('componentsNo');
+const extraDamageBox = document.getElementById('extraDamageBox');
+const extraDamageInput = document.getElementById('extraDamageInput');
+
+// --- ZMIENNE STANU --- //
 let selectedSeries = '';
 let selectedModel = '';
+
+// GŁÓWNY OBIEKT PRZECHOWUJĄCY DANE ZGŁOSZENIA
+let userData = {
+  series: "",
+  model: "",
+  memory: "",
+  battery: "",
+  visual: "",
+  damage: "",
+  back: "",
+  faceid: "",
+  components: "",
+  extra: ""
+};
 
 // --- MODELE DLA SERII --- //
 const modelsBySeries = {
@@ -474,7 +529,6 @@ const modelsBySeries = {
 seriesSelect.addEventListener('change', () => {
   nextBtn.disabled = false;
   selectedSeries = seriesSelect.value;
-
   previewImgs.forEach(img => {
     img.classList.toggle('active', img.dataset.series === selectedSeries);
   });
@@ -486,7 +540,6 @@ previewImgs.forEach(img => {
     selectedSeries = img.dataset.series;
     seriesSelect.value = selectedSeries;
     nextBtn.disabled = false;
-
     previewImgs.forEach(i => i.classList.remove('active'));
     img.classList.add('active');
   });
@@ -496,15 +549,11 @@ previewImgs.forEach(img => {
 nextBtn.addEventListener('click', () => {
   step1.classList.add('hidden');
   step2.classList.remove('hidden');
-  document.getElementById("processSteps").classList.add("hidden");
+  if(document.getElementById("processSteps")) document.getElementById("processSteps").classList.add("hidden");
 
-  
-
-  // Ustaw obrazek główny
   phoneImage.src = `iphone${selectedSeries}.png`;
-
-  // Wygeneruj kafelki modeli
   modelOptions.innerHTML = '';
+  
   modelsBySeries[selectedSeries].forEach(model => {
     const div = document.createElement('div');
     div.classList.add('model-tile');
@@ -517,8 +566,6 @@ nextBtn.addEventListener('click', () => {
       selectBtn.disabled = false;
       document.querySelectorAll('.model-tile').forEach(m => m.classList.remove('active'));
       div.classList.add('active');
-
-      // zmiana obrazka centralnego
       phoneImage.src = `iphone${model.replace(/\s/g,'')}.png`;
     });
   });
@@ -528,14 +575,12 @@ nextBtn.addEventListener('click', () => {
 backBtn.addEventListener('click', () => {
   step2.classList.add('hidden');
   step1.classList.remove('hidden');
-  document.getElementById("processSteps").classList.remove("hidden");
-
+  if(document.getElementById("processSteps")) document.getElementById("processSteps").classList.remove("hidden");
 });
 
 // --- PRZEJŚCIE DO KROKU 3 --- //
 selectBtn.addEventListener('click', () => {
   if (!selectedModel) return;
-
   userData.series = selectedSeries;
   userData.model = selectedModel;
 
@@ -553,7 +598,7 @@ backStep3Btn.addEventListener('click', () => {
 });
 
 // --- FUNKCJA PRZEJŚCIA DO KROKU 4 --- //
-function openStep4(model) {
+function openStep4() {
   step3.classList.add('hidden');
   step4.classList.remove('hidden');
   batteryModelName.textContent = `iPhone ${selectedModel}`;
@@ -563,9 +608,8 @@ function openStep4(model) {
 // --- WYBÓR PAMIĘCI --- //
 memoryButtons.forEach(btn => {
   btn.addEventListener('click', () => {
-    const selectedMemory = btn.textContent;
-    // przejście do kroku 4
-    openStep4(memoryModelName.textContent);
+    userData.memory = btn.textContent.trim();
+    openStep4();
   });
 });
 
@@ -575,27 +619,19 @@ backStep4Btn.addEventListener('click', () => {
   step3.classList.remove('hidden');
 });
 
-// --- WYBÓR KONDUCJI BATERII --- //
-batteryButtons.forEach(btn => {
-  btn.addEventListener('click', () => {
-    const selectedBattery = btn.textContent;
-    // Na razie tylko komunikat — potem można tu dodać krok 5 (np. wycena)
-  });
-});
-
 // --- PRZEJŚCIE DO KROKU 5 --- //
-function openStep5(model) {
+function openStep5() {
   step4.classList.add('hidden');
   step5.classList.remove('hidden');
   visualModelName.textContent = `iPhone ${selectedModel}`;
   visualPhoneImage.src = `iphone${selectedModel.replace(/\s/g,'')}.png`;
 }
 
-// --- PRZEJŚCIE Z KROKU 4 DO 5 PO WYBORZE KONDUCJI --- //
+// --- WYBÓR KONDYCJI BATERII --- //
 batteryButtons.forEach(btn => {
   btn.addEventListener('click', () => {
-    const selectedBattery = btn.textContent;
-    openStep5(batteryModelName.textContent);
+    userData.battery = btn.textContent.trim();
+    openStep5();
   });
 });
 
@@ -605,29 +641,21 @@ backStep5Btn.addEventListener('click', () => {
   step4.classList.remove('hidden');
 });
 
-// --- WYBÓR STANU WIZUALNEGO --- //
-visualButtons.forEach(btn => {
-  btn.addEventListener('click', () => {
-    const selectedVisual = btn.textContent;
-  });
-});
-
-
-
-// --- ELEMENTY KROKU 6 --- //
-const step6 = document.getElementById('step6');
-const backStep6Btn = document.getElementById('backStep6Btn');
-const damageModelName = document.getElementById('damageModelName');
-const damagePhoneImage = document.getElementById('damagePhoneImage');
-const damageButtons = document.querySelectorAll('.damage-btn');
-
 // --- FUNKCJA PRZEJŚCIA DO KROKU 6 --- //
-function openStep6(model) {
+function openStep6() {
   step5.classList.add('hidden');
   step6.classList.remove('hidden');
   damageModelName.textContent = `iPhone ${selectedModel}`;
   damagePhoneImage.src = `iphone${selectedModel.replace(/\s/g,'')}.png`;
 }
+
+// --- WYBÓR STANU WIZUALNEGO --- //
+visualButtons.forEach(btn => {
+  btn.addEventListener('click', () => {
+    userData.visual = btn.textContent.trim();
+    openStep6();
+  });
+});
 
 // --- POWRÓT DO KROKU 5 --- //
 backStep6Btn.addEventListener('click', () => {
@@ -635,37 +663,21 @@ backStep6Btn.addEventListener('click', () => {
   step5.classList.remove('hidden');
 });
 
-// --- PRZEJŚCIE Z KROKU 5 DO 6 PO WYBORZE STANU WIZUALNEGO --- //
-visualButtons.forEach(btn => {
-  btn.addEventListener('click', () => {
-    const selectedVisual = btn.textContent;
-    openStep6(visualModelName.textContent);
-  });
-});
-
-// --- WYBÓR STANU USZKODZENIA --- //
-damageButtons.forEach(btn => {
-  btn.addEventListener('click', () => {
-    const selectedDamage = btn.textContent;
-    console.log("Wybrano stan wyświetlacza/przycisków:", selectedDamage);
-    // tutaj później można dodać np. podsumowanie lub wycenę
-  });
-});
-
-// --- ELEMENTY KROKU 7 --- //
-const step7 = document.getElementById('step7');
-const backStep7Btn = document.getElementById('backStep7Btn');
-const backModelName = document.getElementById('backModelName');
-const backPhoneImage = document.getElementById('backPhoneImage');
-const backDamageButtons = document.querySelectorAll('.back-damage-btn');
-
 // --- FUNKCJA PRZEJŚCIA DO KROKU 7 --- //
-function openStep7(model) {
+function openStep7() {
   step6.classList.add('hidden');
   step7.classList.remove('hidden');
   backModelName.textContent = `iPhone ${selectedModel}`;
   backPhoneImage.src = `iphone${selectedModel.replace(/\s/g,'')}.png`;
 }
+
+// --- WYBÓR STANU WYŚWIETLACZA --- //
+damageButtons.forEach(btn => {
+  btn.addEventListener('click', () => {
+    userData.damage = btn.textContent.trim();
+    openStep7();
+  });
+});
 
 // --- POWRÓT DO KROKU 6 --- //
 backStep7Btn.addEventListener('click', () => {
@@ -673,38 +685,21 @@ backStep7Btn.addEventListener('click', () => {
   step6.classList.remove('hidden');
 });
 
-// --- PRZEJŚCIE Z KROKU 6 DO 7 PO WYBORZE STANU WYŚWIETLACZA --- //
-damageButtons.forEach(btn => {
-  btn.addEventListener('click', () => {
-    const selectedDamage = btn.textContent;
-    console.log("Stan wyświetlacza:", selectedDamage);
-    openStep7(damageModelName.textContent);
-  });
-});
-
-// --- WYBÓR STANU TYLNEGO PANELU --- //
-backDamageButtons.forEach(btn => {
-  btn.addEventListener('click', () => {
-    const selectedBack = btn.textContent;
-    console.log("Stan tylnego panelu:", selectedBack);
-    // tutaj można dodać np. przejście do podsumowania (krok 8)
-  });
-});
-
-// --- ELEMENTY KROKU 8 --- //
-const step8 = document.getElementById('step8');
-const backStep8Btn = document.getElementById('backStep8Btn');
-const faceIdModelName = document.getElementById('faceIdModelName');
-const faceIdPhoneImage = document.getElementById('faceIdPhoneImage');
-const faceIdButtons = document.querySelectorAll('.faceid-btn');
-
 // --- FUNKCJA PRZEJŚCIA DO KROKU 8 --- //
-function openStep8(model) {
+function openStep8() {
   step7.classList.add('hidden');
   step8.classList.remove('hidden');
   faceIdModelName.textContent = `iPhone ${selectedModel}`;
   faceIdPhoneImage.src = `iphone${selectedModel.replace(/\s/g,'')}.png`;
 }
+
+// --- WYBÓR STANU TYLNEGO PANELU --- //
+backDamageButtons.forEach(btn => {
+  btn.addEventListener('click', () => {
+    userData.back = btn.textContent.trim();
+    openStep8();
+  });
+});
 
 // --- POWRÓT DO KROKU 7 --- //
 backStep8Btn.addEventListener('click', () => {
@@ -712,37 +707,8 @@ backStep8Btn.addEventListener('click', () => {
   step7.classList.remove('hidden');
 });
 
-// --- PRZEJŚCIE Z KROKU 7 DO 8 PO WYBORZE STANU PANELU TYLNEGO --- //
-backDamageButtons.forEach(btn => {
-  btn.addEventListener('click', () => {
-    const selectedBack = btn.textContent;
-    console.log("Stan tylnego panelu:", selectedBack);
-    openStep8(backModelName.textContent);
-  });
-});
-
-// --- WYBÓR STANU FACE ID --- //
-faceIdButtons.forEach(btn => {
-  btn.addEventListener('click', () => {
-    const selectedFaceId = btn.textContent;
-    console.log("Stan Face ID:", selectedFaceId);
-    // Tutaj można dodać przejście do kolejnego kroku lub podsumowania (krok 9)
-  });
-});
-
-
-// --- ELEMENTY KROKU 9 --- //
-const step9 = document.getElementById('step9');
-const backStep9Btn = document.getElementById('backStep9Btn');
-const componentsModelName = document.getElementById('componentsModelName');
-const componentsPhoneImage = document.getElementById('componentsPhoneImage');
-const componentsYes = document.getElementById('componentsYes');
-const componentsNo = document.getElementById('componentsNo');
-const extraDamageBox = document.getElementById('extraDamageBox');
-const extraDamageInput = document.getElementById('extraDamageInput');
-
 // --- FUNKCJA PRZEJŚCIA DO KROKU 9 --- //
-function openStep9(model) {
+function openStep9() {
   step8.classList.add('hidden');
   step9.classList.remove('hidden');
   componentsModelName.textContent = `iPhone ${selectedModel}`;
@@ -751,129 +717,48 @@ function openStep9(model) {
   extraDamageInput.value = '';
 }
 
+// --- WYBÓR STANU FACE ID --- //
+faceIdButtons.forEach(btn => {
+  btn.addEventListener('click', () => {
+    userData.faceid = btn.textContent.trim();
+    openStep9();
+  });
+});
+
 // --- POWRÓT DO KROKU 8 --- //
 backStep9Btn.addEventListener('click', () => {
   step9.classList.add('hidden');
   step8.classList.remove('hidden');
 });
 
-// --- PRZEJŚCIE Z KROKU 8 DO 9 --- //
-faceIdButtons.forEach(btn => {
-  btn.addEventListener('click', () => {
-    const selectedFaceId = btn.textContent;
-    console.log("Stan Face ID:", selectedFaceId);
-    openStep9(faceIdModelName.textContent);
-  });
-});
-
-// --- WYBÓR ODPOWIEDZI --- //
-componentsYes.addEventListener('click', () => {
-  extraDamageBox.classList.add('hidden');
-  console.log("Wszystkie podzespoły sprawne");
-  // Tutaj możesz dodać przejście do podsumowania / wyceny (krok 10)
-});
-
-componentsNo.addEventListener('click', () => {
-  extraDamageBox.classList.remove('hidden');
-  extraDamageInput.focus();
-  console.log("Zgłoszono inne uszkodzenia");
-});
-
-// --- KROK 10: PODSUMOWANIE --- //
-const step10 = document.getElementById('step10');
-const backStep10Btn = document.getElementById('backStep10Btn');
-const summaryModelName = document.getElementById('summaryModelName');
-const summaryDetails = document.getElementById('summaryDetails');
-const finalPrice = document.getElementById('finalPrice');
-
-
-const step11 = document.getElementById('step11');
-
-
-// Dane użytkownika
-let userData = {
-  series: "",
-  model: "",
-  memory: "",
-  battery: "",
-  visual: "",
-  damage: "",
-  back: "",
-  faceid: "",
-  components: "",
-  extra: ""
-};
-
-// --- PRZECHWYTYWANIE ODPOWIEDZI --- //
-memoryButtons.forEach(btn => {
-  btn.addEventListener('click', () => {
-    userData.memory = btn.textContent + " GB";
-  });
-});
-batteryButtons.forEach(btn => {
-  btn.addEventListener('click', () => {
-    userData.battery = btn.textContent;
-  });
-});
-visualButtons.forEach(btn => {
-  btn.addEventListener('click', () => {
-    userData.visual = btn.textContent;
-  });
-});
-damageButtons.forEach(btn => {
-  btn.addEventListener('click', () => {
-    userData.damage = btn.textContent;
-  });
-});
-backDamageButtons.forEach(btn => {
-  btn.addEventListener('click', () => {
-    userData.back = btn.textContent;
-  });
-});
-faceIdButtons.forEach(btn => {
-  btn.addEventListener('click', () => {
-    userData.faceid = btn.textContent;
-  });
-});
+// --- WYBÓR INNYCH PODZESPOŁÓW --- //
 componentsYes.addEventListener('click', () => {
   userData.components = "Tak, wszystko działa";
+  userData.extra = "";
   openStep10();
 });
 
 componentsNo.addEventListener('click', () => {
   userData.components = "Nie, coś uszkodzone";
-
-  // Ukryj przyciski, pokaż pole tekstowe
-  document.getElementById('damageDescription').classList.remove('hidden');
+  extraDamageBox.classList.remove('hidden');
+  extraDamageInput.focus();
 });
 
-damageNextBtn.addEventListener('click', () => {
-  const extra = damageInput.value.trim();
-  if (extra.length > 0) {
-    userData.extra = extra;
-  } else {
-    userData.extra = "(brak szczegółów)";
-  }
-  openStep10();
-});
+// Obsługa dodatkowego pola tekstowego przy wykryciu wad podzespołów
+if (document.getElementById('damageNextBtn')) {
+  document.getElementById('damageNextBtn').addEventListener('click', () => {
+    const extra = extraDamageInput.value.trim();
+    userData.extra = extra ? extra : "(brak szczegółów)";
+    openStep10();
+  });
+}
 
-// INDYWIDUALNE MODYFIKATORY DLA MODELI
-// Edytujesz TYLKO TĘ TABELĘ gdy chcesz zmienić wycenę
-
+// --- TABELA CEN I MODYFIKATORÓW --- //
 const basePrices = {
-  "13": {
-    "13": 1000,
-    "13 Mini": 2800,
-    "13 Pro": 4000,
-    "13 Pro Max": 4500
-  },
-  "14": {
-    "14": 1000,
-    "14 Plus": 2800,
-    "14 Pro": 4000,
-    "14 Pro Max": 4500
-  },
-  // Dodaj inne serie i modele z ich cenami bazowymi
+  "13": { "13": 1500, "13 Mini": 1400, "13 Pro": 2200, "13 Pro Max": 2600 },
+  "14": { "14": 1900, "14 Plus": 2100, "14 Pro": 2900, "14 Pro Max": 3400 },
+  "15": { "15": 2500, "15 Plus": 2800, "15 Pro": 3800, "15 Pro Max": 4400 },
+  "16": { "16": 3200, "16 Plus": 3500, "16 Pro": 4700, "16 Pro Max": 5300 }
 };
 
 const damageModifiers = {
@@ -884,61 +769,28 @@ const damageModifiers = {
       display: { "Sprawny": 0, "Pęknięty ekran": -200, "Wylany ekran": -350 },
       back: { "Nie, jest w porządku": 0, "Pęknięte szkło": -200 },
       faceid: { "Działa": 0, "Nie działa": -350 },
-      components: { "Tak, wszystko działa": 0, "Nie, coś uszkodzone": -200 }
-    },
-
-    "13 Mini": {
-      battery: { "100%-90%": 0, "89%-80%": -60, "Poniżej 80%": -120 },
-      visual: { "Bardzo dobry": 0, "Średni": -100, "Słaby": -200 },
-      display: { "Sprawny": 0, "Pęknięty ekran": -180, "Wylany ekran": -300 },
-      back: { "Nie, jest w porządku": 0, "Pęknięte szkło": -170 },
-      faceid: { "Działa": 0, "Nie działa": -300 },
-      components: { "Tak, wszystko działa": 0, "Nie, coś uszkodzone": -180 }
-    },
-
-    "13 Pro": {
-      battery: { "100%-90%": 0, "89%-80%": -90, "Poniżej 80%": -150 },
-      visual: { "Bardzo dobry": 0, "Średni": -150, "Słaby": -300 },
-      display: { "Sprawny": 0, "Pęknięty ekran": -300, "Wylany ekran": -450 },
-      back: { "Nie, jest w porządku": 0, "Pęknięte szkło": -280 },
-      faceid: { "Działa": 0, "Nie działa": -450 },
-      components: { "Tak, wszystko działa": 0, "Nie, coś uszkodzone": -250 }
-    },
-
-    "13 Pro Max": {
-      battery: { "100%-90%": 0, "89%-80%": -100, "Poniżej 80%": -180 },
-      visual: { "Bardzo dobry": 0, "Średni": -180, "Słaby": -350 },
-      display: { "Sprawny": 0, "Pęknięty ekran": -350, "Wylany ekran": -500 },
-      back: { "Nie, jest w porządku": 0, "Pęknięte szkło": -320 },
-      faceid: { "Działa": 0, "Nie działa": -450 },
-      components: { "Tak, wszystko działa": 0, "Nie, coś uszkodzone": -250 }
+      components: { "Tak, everything works": 0, "Nie, coś uszkodzone": -200 }
     }
-  },
-
-  // Możesz dopisać serię 14, 15, 16 itd. w identyczny sposób
+  }
 };
-
-
 
 // --- FUNKCJA DO OBLICZANIA CENY --- //
 function calculatePrice() {
-  const base = basePrices[userData.series]?.[userData.model] || 1000;
-
+  const base = basePrices[userData.series]?.[userData.model] || 1200;
   const modSet = damageModifiers[userData.series]?.[userData.model];
-  if (!modSet) return base; // brak tabeli? zwróć cenę bazową
+  if (!modSet) return base;
 
   const sum =
     (modSet.battery[userData.battery] || 0) +
     (modSet.visual[userData.visual] || 0) +
     (modSet.display[userData.damage] || 0) +
     (modSet.back[userData.back] || 0) +
-    (modSet.faceid[userData.faceid] || 0) +
-    (modSet.components[userData.components] || 0);
+    (modSet.faceid[userData.faceid] || 0);
 
   return Math.max(0, base + sum);
 }
 
-// --- FUNKCJA WYŚWIETLANIA PODSUMOWANIA --- //
+// --- FUNKCJA WYŚWIETLANIA PODSUMOWANIA (KROK 10) --- //
 function openStep10() {
   step9.classList.add('hidden');
   step10.classList.remove('hidden');
@@ -948,242 +800,161 @@ function openStep10() {
 
   summaryDetails.innerHTML = `
     <strong>Model:</strong> iPhone ${userData.model}<br>
-    <strong>Pamięć:</strong> ${userData.memory}<br>
-    <strong>Bateria:</strong> ${userData.battery}<br>
-    <strong>Stan wizualny:</strong> ${userData.visual}<br>
-    <strong>Wyświetlacz:</strong> ${userData.damage}<br>
-    <strong>Tylna szyba:</strong> ${userData.back}<br>
-    <strong>Face ID:</strong> ${userData.faceid}<br>
-    <strong>Podzespoły:</strong> ${userData.components}<br>
+    <strong>Pamięć:</strong> ${userData.memory || 'N/D'}<br>
+    <strong>Bateria:</strong> ${userData.battery || 'N/D'}<br>
+    <strong>Stan wizualny:</strong> ${userData.visual || 'N/D'}<br>
+    <strong>Wyświetlacz:</strong> ${userData.damage || 'N/D'}<br>
+    <strong>Tylna szyba:</strong> ${userData.back || 'N/D'}<br>
+    <strong>Face ID:</strong> ${userData.faceid || 'N/D'}<br>
+    <strong>Podzespoły:</strong> ${userData.components || 'N/D'}<br>
     ${userData.extra ? `<strong>Inne uszkodzenia:</strong> ${userData.extra}` : ""}
   `;
 
   finalPrice.textContent = price + " zł";
 }
 
-// --- POWRÓT DO KROKU 9 --- //
+// --- POWRÓT Z KROKU 10 DO KROKU 9 --- //
 backStep10Btn.addEventListener('click', () => {
   step10.classList.add('hidden');
   step9.classList.remove('hidden');
 });
 
-
-function openStep1() {
-    document.getElementById("step1").style.display = "block";
-    document.getElementById("step1Info").classList.remove("hidden");
-}
-
-
-document.addEventListener('DOMContentLoaded', function() {
-    const showHowItWorksBtn = document.getElementById('showHowItWorksBtn');
-    // Zmieniamy ID na to, które umieściliśmy na dole strony
-    const howItWorksSection = document.getElementById('processSteps'); 
-
-    if (showHowItWorksBtn && howItWorksSection) {
-        showHowItWorksBtn.addEventListener('click', function() {
-            howItWorksSection.scrollIntoView({
-                behavior: 'smooth', // Płynne, profesjonalne przewijanie
-                block: 'start'      // Przewija tak, by górna część sekcji była widoczna
-            });
-        });
-    }
-});
-
-// --- PRZENOSZENIE DO KROKU 11 PRZYCISKIEM "DOJAZD – ŚLĄSK" --- //
-const deliverySilesiaBtn = document.getElementById("deliverySilesiaBtn");
-
-deliverySilesiaBtn.addEventListener("click", () => {
+// --- NAWIGACJA Z KROKU 10 DO FORMULARZY (11 i 12) --- //
+if (deliverySilesiaBtn) {
+  deliverySilesiaBtn.addEventListener("click", () => {
     step10.classList.add("hidden");
     step11.classList.remove("hidden");
-});
+  });
+}
 
-deliveryShipBtn.addEventListener("click", () => {
+if (deliveryShipBtn) {
+  deliveryShipBtn.addEventListener("click", () => {
     step10.classList.add("hidden");
     step12.classList.remove("hidden");
-});
+  });
+}
 
-
-const backStep11Btn = document.getElementById('backStep11Btn');
-
+// Powroty z formularzy końcowych do podsumowania
 backStep11Btn.addEventListener('click', () => {
-    step11.classList.add('hidden');
-    step10.classList.remove('hidden');
+  step11.classList.add('hidden');
+  step10.classList.remove('hidden');
 });
 
-// Główna funkcja zbierająca dane i wysyłająca do bazy
-async function submitSkupForm(methodType) {
-    // 1. Pobieranie danych telefonu (upewnij się, że ID zgadzają się z Twoimi selectami w krokach 1-5)
-    const series = document.getElementById("seriesSelect")?.value || "";
-    const model = document.getElementById("modelSelect")?.value || "";
-    const storage = document.getElementById("storageSelect")?.value || "";
-    const condition = document.getElementById("conditionSelect")?.value || "";
-    
-    // Pobieranie ceny końcowej z kalkulatora (załóżmy, że przechowujesz ją w elemencie o ID 'finalPrice')
-    const estimatedPrice = parseInt(document.getElementById("finalPrice")?.innerText) || 0; 
+backStep12Btn.addEventListener('click', () => {
+  step12.classList.add('hidden');
+  step10.classList.remove('hidden');
+});
 
-    // 2. Pobieranie danych klienta zależnie od wybranego wariantu kontaktu
-    let name, email, phone, address = "";
-    
-    if (methodType === 'dojazd') {
-        name = document.getElementById("clientNameSilesia")?.value;
-        email = document.getElementById("clientEmailSilesia")?.value;
-        phone = document.getElementById("clientPhoneSilesia")?.value;
-        address = document.getElementById("clientAddressSilesia")?.value; // Adres dojazdu na Śląsku
-    } else {
-        name = document.getElementById("clientNameShip")?.value;
-        email = document.getElementById("clientEmailShip")?.value;
-        phone = document.getElementById("clientPhoneShip")?.value;
-        address = document.getElementById("clientAddressShip")?.value; // Adres do wysyłki etykiety
-    }
-
-    // Walidacja podstawowych pól
-    if (!name || !email || !phone) {
-        alert("Proszę uzupełnić wszystkie wymagane dane kontaktowe.");
-        return;
-    }
-
-    const skupPayload = {
-        name,
-        email,
-        phone,
-        address,
-        deviceModel: `${series} ${model}`.trim(),
-        deviceDetails: `Pojemność: ${storage} • Stan: ${condition}`,
-        estimatedPrice,
-        method: methodType === 'dojazd' ? "Dojazd (Śląsk)" : "Wysyłka kurierem"
-    };
-
-    try {
-        const response = await fetch("/create-skup-order", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(skupPayload)
-        });
-
-        const result = await response.json();
-        if (result.success) {
-            alert("Zgłoszenie skupu zostało pomyślnie przesłane! Oczekuj na kontakt.");
-            window.location.href = "/index.html";
-        } else {
-            alert("Wystąpił błąd serwera. Spróbuj ponownie później.");
-        }
-    } catch (error) {
-        console.error("Błąd wysyłania skupu:", error);
-        alert("Błąd połączenia z serwerem.");
-    }
-}
-
-// Podpięcie pod przyciski końcowe (Dopasuj ID przycisków w krokach 11 i 12)
-document.getElementById("submitSilesiaBtn")?.addEventListener("click", () => submitSkupForm('dojazd'));
-document.getElementById("submitShipBtn")?.addEventListener("click", () => submitSkupForm('wysylka'));
-
-
-// =========================================================================
-// 🚀 INTEGRACJA Z SERWEREM (WYSYŁANIE ZGŁOSZEŃ SKUPU DO BAZY I MAILA)
-// =========================================================================
-
-// Funkcja pomocnicza do wysyłania formularza skupu
+// --- FUNKCJA INTEGRACJI Z SERWEREM (ZAPIS DO BAZY / WYSYŁKA MAILA) --- //
 async function sendSkupOrder(methodType) {
-    let name, email, phone, address;
+  let name, email, phone, address, extraNotes = "";
 
-    // 1. Pobieramy dane w zależności od wybranej metody (Dojazd lub Wysyłka)
-    if (methodType === 'Dojazd – Śląsk') {
-        name = document.getElementById("clientNameDelivery")?.value.trim();
-        phone = document.getElementById("clientPhoneDelivery")?.value.trim();
-        email = document.getElementById("clientEmailDelivery")?.value.trim();
-        address = document.getElementById("clientAddressDelivery")?.value.trim();
+  // 1. Mapowanie pól formularza na podstawie wybranego typu obsługi
+  if (methodType === 'Dojazd – Śląsk') {
+    name = document.getElementById("contactName")?.value.trim();
+    phone = document.getElementById("contactPhone")?.value.trim();
+    // Dojazd Śląsk nie posiada w HTML pola email, przekazujemy IG jako identyfikator kontaktu
+    const instagram = document.getElementById("contactInstagram")?.value.trim();
+    email = instagram ? `instagram:${instagram}` : "brak-maila@telefix.pl";
+    address = document.getElementById("contactLocation")?.value.trim();
+    extraNotes = document.getElementById("contactNotes")?.value.trim();
+  } else {
+    name = document.getElementById("shipName")?.value.trim();
+    phone = document.getElementById("shipPhone")?.value.trim();
+    email = document.getElementById("shipEmail")?.value.trim();
+    const imei = document.getElementById("shipLocker")?.value.trim();
+    address = imei ? `IMEI: ${imei}` : "Wysyłka Kurier/InPost";
+    extraNotes = document.getElementById("shipNotes")?.value.trim();
+  }
+
+  // Podstawowa walidacja
+  if (!name || !phone || !address) {
+    alert("Proszę uzupełnić wszystkie podstawowe dane kontaktowe!");
+    return;
+  }
+
+  // Pobranie obliczonej ceny końcowej
+  const priceText = finalPrice?.textContent || "0";
+  const calculatedTotal = parseInt(priceText.replace(/\D/g, "")) || 0;
+
+  // 2. Budowanie struktury danych zgodnej z endpointem `/create-manual-order` na serwerze
+  const orderData = {
+    name: name,
+    email: email,
+    phone: phone,
+    address: address,
+    total: calculatedTotal,
+    method: methodType,
+    products: [{
+      name: `Skup: iPhone ${userData.model || userData.series}`,
+      details: `Pamięć: ${userData.memory} | Bateria: ${userData.battery} | Wizualnie: ${userData.visual} | Ekran: ${userData.damage} | Tył: ${userData.back} | FaceID: ${userData.faceid} | Uwagi klienta: ${extraNotes} ${userData.extra}`
+    }]
+  };
+
+  // Blokowanie odpowiedniego przycisku przed wielokrotnym kliknięciem
+  const activeBtn = methodType === 'Dojazd – Śląsk' 
+    ? document.getElementById("sendDeliveryBtn") 
+    : document.getElementById("generateLabelBtn");
+    
+  if (activeBtn) activeBtn.disabled = true;
+
+  try {
+    const response = await fetch("/create-manual-order", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(orderData)
+    });
+
+    const data = await response.json();
+
+    if (response.ok || data.success) {
+      alert("Zgłoszenie skupu zostało pomyślnie wysłane! Oczekuj na kontakt.");
+      window.location.href = "index.html"; 
     } else {
-        name = document.getElementById("clientNameShipping")?.value.trim();
-        phone = document.getElementById("clientPhoneShipping")?.value.trim();
-        email = document.getElementById("clientEmailShipping")?.value.trim();
-        address = document.getElementById("clientAddressShipping")?.value.trim();
+      alert("Błąd serwera: " + (data.error || "Nie udało się zapisać zgłoszenia."));
+      if (activeBtn) activeBtn.disabled = false;
     }
-
-    // Walidacja pól formularza
-    if (!name || !phone || !email || !address) {
-        alert("Proszę uzupełnić wszystkie pola formularza!");
-        return;
-    }
-
-    // 2. Pobieramy dane o wycenianym telefonie z formularza kroków
-    const seriesSelect = document.getElementById("seriesSelect");
-    const seriesText = seriesSelect ? seriesSelect.options[seriesSelect.selectedIndex]?.text : "Nieznana seria";
-    
-    // Pobieramy dane z Twoich zmiennych globalnych (jeśli istnieją) lub bezpieczny fallback
-    const model = typeof selectedModelGlobal !== 'undefined' ? selectedModelGlobal : "Wybrany model";
-    const storage = typeof selectedStorageGlobal !== 'undefined' ? selectedStorageGlobal : "";
-    const condition = typeof selectedConditionGlobal !== 'undefined' ? selectedConditionGlobal : "";
-    
-    // Pobieramy cenę końcową prosto z ekranu podsumowania (Krok 10)
-    const priceText = document.getElementById("finalPriceDisplay")?.textContent || "0";
-    const finalPrice = parseInt(priceText.replace(/\D/g, "")) || 0;
-
-    // 3. Tworzymy obiekt zamówienia pasujący do Twojej bazy w server.js (/create-manual-order)
-    const orderData = {
-        name: name,
-        email: email,
-        phone: phone,
-        address: address,
-        total: finalPrice,
-        method: methodType,
-        // Serwer oczekuje tablicy obiektów w "products"
-        products: [{
-            name: `Skup: ${seriesText} ${model}`,
-            details: `Pojemność: ${storage} | Stan: ${condition}`
-        }]
-    };
-
-    try {
-        // Blokada przycisku na czas wysyłania, żeby klient nie kliknął 10 razy
-        const activeBtn = methodType === 'Dojazd – Śląsk' 
-            ? document.getElementById("submitDeliveryOrderBtn") 
-            : document.getElementById("submitShippingOrderBtn");
-        if (activeBtn) activeBtn.disabled = true;
-
-        // Wysyłamy żądanie na Twój serwer na Renderze (ścieżka względna /)
-        const response = await fetch("/create-manual-order", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(orderData)
-        });
-
-        const data = await response.json();
-
-        if (response.ok || data.success) {
-            alert("Zgłoszenie zostało pomyślnie wysłane! Oczekuj na kontakt z naszej strony.");
-            window.location.href = "index.html"; // Przekierowanie na stronę główną
-        } else {
-            alert("Błąd serwera: " + (data.error || "Nie udało się zapisać zgłoszenia."));
-            if (activeBtn) activeBtn.disabled = false;
-        }
-    } catch (error) {
-        console.error("Błąd połączenia z serwerem:", error);
-        alert("Błąd połączenia z serwerem. Upewnij się, że Twój serwer działa poprawnie.");
-        const activeBtn = methodType === 'Dojazd – Śląsk' ? document.getElementById("submitDeliveryOrderBtn") : document.getElementById("submitShippingOrderBtn");
-        if (activeBtn) activeBtn.disabled = false;
-    }
+  } catch (error) {
+    console.error("Błąd połączenia z serwerem:", error);
+    alert("Błąd połączenia z serwerem. Upewnij się, że serwer backendu działa.");
+    if (activeBtn) activeBtn.disabled = false;
+  }
 }
 
-// 4. Podpinamy nasłuchiwanie pod przyciski po załadowaniu strony
+// --- PODPIĘCIE AKCJI WYSYŁKI POD PRZYCISKI KOŃCOWE --- //
 document.addEventListener("DOMContentLoaded", () => {
-    const deliveryBtn = document.getElementById("submitDeliveryOrderBtn");
-    const shippingBtn = document.getElementById("submitShippingOrderBtn");
+  const sendDeliveryBtn = document.getElementById("sendDeliveryBtn");
+  const generateLabelBtn = document.getElementById("generateLabelBtn");
 
-    if (deliveryBtn) {
-        deliveryBtn.addEventListener("click", (e) => {
-            e.preventDefault();
-            sendSkupOrder('Dojazd – Śląsk');
-        });
-    }
+  if (sendDeliveryBtn) {
+    sendDeliveryBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      sendSkupOrder('Dojazd – Śląsk');
+    });
+  }
 
-    if (shippingBtn) {
-        shippingBtn.addEventListener("click", (e) => {
-            e.preventDefault();
-            sendSkupOrder('Wysyłka kurierem / paczkomat');
-        });
-    }
+  if (generateLabelBtn) {
+    generateLabelBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      sendSkupOrder('Wysyłka kurierem / paczkomat');
+    });
+  }
 });
 
+// Płynne przewijanie do instrukcji "jak to działa"
+document.addEventListener('DOMContentLoaded', function() {
+  const showHowItWorksBtn = document.getElementById('showHowItWorksBtn');
+  const howItWorksSection = document.getElementById('processSteps'); 
+
+  if (showHowItWorksBtn && howItWorksSection) {
+    showHowItWorksBtn.addEventListener('click', function() {
+      howItWorksSection.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+      });
+    });
+  }
+});
 </script>
 
 
