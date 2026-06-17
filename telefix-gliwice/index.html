@@ -75,33 +75,6 @@
   <canvas id="backgroundCanvas"></canvas>
 </section>
 
-<section class="about-section">
-  <div class="about-header">
-  </div>
-  <div class="about-cards">
-    <div class="card">
-      <img src="handshake.jpg" alt="Who we are">
-      <h3>Kim jesteśmy?</h3>
-      <p>
-        As the leading provider of smartphone, tablet, and computer repairs, we specialize in fixing everything from broken screens to water damage and battery replacements. We ensure your data remains secure while delivering fast, reliable service.
-      </p>
-    </div>
-    <div class="card">
-      <img src="doswiadczenie.jpg" alt="Proven Experience">
-      <h3>Doświadczenie</h3>
-      <p>
-        Our technicians have years of experience handling countless issues, including screen replacements, water damage, and battery repairs. With a proven record of customer satisfaction, we ensure excellence and trust in every repair.
-      </p>
-    </div>
-    <div class="card">
-      <img src="dlaczegomy.jpg" alt="Our Mission">
-      <h3>Dlaczego my?</h3>
-      <p>
-        Our mission is to deliver high-quality repairs while promoting sustainability through reuse and recycling. We are committed to protecting your data and the environment through responsible solutions.
-      </p>
-    </div>
-  </div>
-</section>
 
 <section class="sell-phone-section">
   <div class="sell-phone-card">
@@ -123,6 +96,94 @@
       </div>
     </div>
   </div>
+</section>
+
+<section class="repair-configurator" id="serwis">
+
+    <div class="repair-head">
+        <h2>SERWIS TELEFIX</h2>
+        <p>Sprawdź koszt naprawy swojego iPhone w kilka sekund.</p>
+    </div>
+
+    <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+    </div>
+
+    <!-- KROK 1 -->
+    <div class="repair-step active" id="step1">
+
+
+        <div class="repair-grid">
+
+            <div class="repair-card" data-series="X">iPhone X</div>
+            <div class="repair-card" data-series="11">iPhone 11</div>
+            <div class="repair-card" data-series="12">iPhone 12</div>
+            <div class="repair-card" data-series="13">iPhone 13</div>
+            <div class="repair-card" data-series="14">iPhone 14</div>
+            <div class="repair-card" data-series="15">iPhone 15</div>
+            <div class="repair-card" data-series="16">iPhone 16</div>
+
+        </div>
+
+    </div>
+
+    <!-- KROK 2 -->
+    <div class="repair-step" id="step2">
+
+
+        <div class="repair-grid" id="modelGrid"></div>
+
+    </div>
+
+    <!-- KROK 3 -->
+    <div class="repair-step" id="step3">
+
+        <h3>Co jest uszkodzone?</h3>
+
+        <div class="repair-grid">
+
+            <div class="repair-card repairType">📱 Wyświetlacz</div>
+            <div class="repair-card repairType">🪟 Tylna klapka</div>
+            <div class="repair-card repairType">🔋 Bateria</div>
+            <div class="repair-card repairType">📷 Aparat</div>
+            <div class="repair-card repairType">⚡ Ładowanie</div>
+            <div class="repair-card repairType">🔊 Głośnik</div>
+            <div class="repair-card repairType">🎤 Mikrofon</div>
+            <div class="repair-card repairType">💧 Zalanie</div>
+
+        </div>
+
+    </div>
+
+    <!-- WYNIK -->
+    <div class="repair-result" id="repairResult">
+
+        <h2 id="resultModel"></h2>
+
+        <p id="resultRepair"></p>
+
+        <div class="repair-price">
+            od <span id="resultPrice">399</span> zł
+        </div>
+
+        <div class="repair-features">
+
+            <div>⚡ Naprawa nawet w 60 minut</div>
+            <div>🛡️ 2 miesiące gwarancji</div>
+            <div>✓ Części Premium</div>
+
+        </div>
+
+        <div class="repair-buttons">
+
+            <a " class="repair-btn">
+                Zadzwoń
+            </a>
+
+        </div>
+
+    </div>
+
 </section>
 
 <section class="shop-section">
@@ -199,6 +260,33 @@
 
   </section>
 
+  <section class="about-section">
+  <div class="about-header">
+  </div>
+  <div class="about-cards">
+    <div class="card">
+      <img src="handshake.jpg" alt="Who we are">
+      <h3>Kim jesteśmy?</h3>
+      <p>
+        As the leading provider of smartphone, tablet, and computer repairs, we specialize in fixing everything from broken screens to water damage and battery replacements. We ensure your data remains secure while delivering fast, reliable service.
+      </p>
+    </div>
+    <div class="card">
+      <img src="doswiadczenie.jpg" alt="Proven Experience">
+      <h3>Doświadczenie</h3>
+      <p>
+        Our technicians have years of experience handling countless issues, including screen replacements, water damage, and battery repairs. With a proven record of customer satisfaction, we ensure excellence and trust in every repair.
+      </p>
+    </div>
+    <div class="card">
+      <img src="dlaczegomy.jpg" alt="Our Mission">
+      <h3>Dlaczego my?</h3>
+      <p>
+        Our mission is to deliver high-quality repairs while promoting sustainability through reuse and recycling. We are committed to protecting your data and the environment through responsible solutions.
+      </p>
+    </div>
+  </div>
+</section>
 
 
 <section class="testimonials">
@@ -450,4 +538,136 @@ setInterval(changeSlide, 4000);
     });
   }
   });
+
+
+
+const models = {
+
+X:["iPhone X","iPhone XR", "iPhone XS","iPhone XS Max"],
+
+11:[
+"iPhone 11",
+"iPhone 11 Pro",
+"iPhone 11 Pro Max"
+],
+
+12:[
+"iPhone 12",
+"iPhone 12 Mini",
+"iPhone 12 Pro",
+"iPhone 12 Pro Max"
+],
+
+13:[
+"iPhone 13",
+"iPhone 13 Mini",
+"iPhone 13 Pro",
+"iPhone 13 Pro Max"
+],
+
+14:[
+"iPhone 14",
+"iPhone 14 Plus",
+"iPhone 14 Pro",
+"iPhone 14 Pro Max"
+],
+
+15:[
+"iPhone 15",
+"iPhone 15 Pro",
+"iPhone 15 Pro Max"
+],
+
+16:[
+"iPhone 16",
+"iPhone 16e",
+"iPhone 16 Pro",
+"iPhone 16 Pro Max"
+]
+
+};
+
+let selectedModel = "";
+
+const progress = document.getElementById("progressFill");
+
+document.querySelectorAll("[data-series]").forEach(card=>{
+
+card.addEventListener("click",()=>{
+
+const series = card.dataset.series;
+
+const modelGrid = document.getElementById("modelGrid");
+
+modelGrid.innerHTML="";
+
+models[series].forEach(model=>{
+
+modelGrid.innerHTML +=
+`<div class="repair-card modelCard">${model}</div>`;
+
+});
+
+document.getElementById("step1").classList.remove("active");
+document.getElementById("step2").classList.add("active");
+
+progress.style.width="66%";
+
+setTimeout(()=>{
+
+document.querySelectorAll(".modelCard").forEach(model=>{
+
+model.addEventListener("click",()=>{
+
+selectedModel = model.textContent;
+
+document.getElementById("step2").classList.remove("active");
+document.getElementById("step3").classList.add("active");
+
+progress.style.width="100%";
+
+});
+
+});
+
+},50);
+
+});
+
+});
+
+document.querySelectorAll(".repairType").forEach(type=>{
+
+type.addEventListener("click",()=>{
+
+document.getElementById("step3").style.display="none";
+
+document.getElementById("repairResult").style.display="block";
+
+document.getElementById("resultModel").textContent =
+selectedModel;
+
+document.getElementById("resultRepair").textContent =
+type.textContent;
+
+const prices = {
+
+"📱 Wyświetlacz":699,
+"🔋 Bateria":249,
+"📷 Aparat":349,
+"⚡ Ładowanie":299,
+"🪟 Tylna klapka":449,
+"🔊 Głośnik":199,
+"🎤 Mikrofon":199,
+"💧 Zalanie":149
+
+};
+
+document.getElementById("resultPrice").textContent =
+prices[type.textContent] || 399;
+
+});
+
+});
+
 </script>
