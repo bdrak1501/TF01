@@ -728,8 +728,8 @@ footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  max-width: 1200px;
-  margin: 0 auto;
+  margin-left: 19%;
+  max-width: 1300px;
   position: relative;
   z-index: 2;
 }
@@ -821,6 +821,8 @@ canvas#backgroundCanvas {
 }
 
 .sell-phone-card {
+  scale: 115%;
+  margin-right: 50px;
   background: rgba(1, 1, 1, 0.896);
   border-radius: 30px;
   padding: 60px;
@@ -863,14 +865,15 @@ canvas#backgroundCanvas {
   font-size: 40px;
   color: #ffffff;
   font-weight: 700;
-  margin-bottom: 24px;
+  margin-bottom: 22px;
+  white-space: nowrap;
 }
 
 .tile-desc {
   font-size: 18px;
   color: #dddddd;
   line-height: 1.7;
-  margin-bottom: 32px;
+  margin-bottom: 37px;
   max-width: 600px;
 }
 
@@ -896,6 +899,7 @@ canvas#backgroundCanvas {
   display: flex;
   flex-direction: row;
   gap: 40px;
+  margin-right : 170px;
   flex: 1;
   z-index: 1;
   justify-content: center;
@@ -910,15 +914,14 @@ canvas#backgroundCanvas {
 }
 
 .tile-image img {
-  width: 100%;
-  border-radius: 20px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+  width: 140%;
+  scale: 125%;
   transition: transform 0.4s ease, box-shadow 0.4s ease;
+  MARGIN-TOP: 50PX;
 }
 
 .tile-image img:hover {
   transform: scale(1.05);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.7);
 }
 
 .tile-caption {
@@ -969,7 +972,7 @@ body {
   margin: 0;
   padding: 0;
   font-family: 'Segoe UI', sans-serif;
-  background: linear-gradient(to bottom, #fff, #eaeaea);
+  background: #f4f4f4;
   color: #111;
 }
 
@@ -1042,6 +1045,7 @@ body {
     padding:100px 20px;
     max-width:1200px;
     margin:auto;
+    background:#f4f4f4;
 }
 
 .shop-title{
@@ -1326,3 +1330,480 @@ body {
     }
 }
 
+/* ===== SEKCJA LOKALIZACJI ===== */
+.location-section {
+    padding: 80px 20px;
+    background-color: #f4f4f4;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.location-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    gap: 50px;
+    align-items: center;
+}
+
+.location-info {
+    flex: 1;
+    min-width: 300px;
+}
+
+.location-info h2 {
+    font-size: 42px;
+    color: #111;
+    margin-bottom: 10px;
+    font-weight: 700;
+}
+
+.location-subtitle {
+    color: #666;
+    font-size: 18px;
+    margin-bottom: 40px;
+}
+
+.info-details {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.info-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+.info-item i {
+    font-size: 24px;
+    color: #000000; /* Zielony akcent spójny z Twoim serwisem */
+    background: rgba(20, 20, 20, 0.1);
+    padding: 15px;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.info-item h3 {
+    margin: 0 0 5px 0;
+    font-size: 18px;
+    color: #000000;
+}
+
+.info-item p {
+    margin: 0;
+    color: #555;
+    line-height: 1.5;
+    font-size: 16px;
+}
+
+.location-map {
+    flex: 1.3;
+    width: 100%;
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+}
+
+.location-map iframe {
+    display: block;
+}
+
+/* Responsywność dla urządzeń mobilnych */
+@media (max-width: 868px) {
+    .location-container {
+        flex-direction: column;
+        gap: 40px;
+    }
+    
+    .location-info {
+        text-align: center;
+    }
+
+    .info-item {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+}
+
+/* ===== SEKCJA INSTAGRAM ===== */
+.instagram-section {
+    padding: 100px 20px;
+    background-color: #f4f4f4; /* Odcięcie tła od szarych sekcji #f4f4f4 */
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.instagram-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 50px;
+}
+
+.instagram-feed-wrapper {
+    display: flex;
+    gap: 60px;
+    align-items: center;
+}
+
+/* Okno wideo */
+.instagram-video-box {
+    flex: 1;
+    position: relative;
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    aspect-ratio: 9 / 16; /* Format pionowy jak telefon/reels */
+    max-width: 360px;
+    margin: 0 auto;
+    background: #000;
+}
+
+.video-overlay-badge {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(8px);
+    color: #fff;
+    padding: 8px 16px;
+    border-radius: 30px;
+    font-weight: 600;
+    font-size: 14px;
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.mock-video {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    cursor: pointer;
+}
+
+.mock-video img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.85;
+    transition: transform 0.5s ease;
+}
+
+.instagram-video-box:hover .mock-video img {
+    transform: scale(1.03);
+}
+
+.play-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 70px;
+    height: 70px;
+    background: #ffffff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: #111;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    transition: all 0.3s ease;
+}
+
+.instagram-video-box:hover .play-icon {
+    transform: translate(-50%, -50%) scale(1.1);
+    background: #f4f4f4;
+}
+
+/* Prawa kolumna tekstowa */
+.instagram-info-box {
+    flex: 1.2;
+}
+
+.insta-tag {
+    font-weight: 700;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-size: 14px;
+    display: block;
+    margin-bottom: 12px;
+}
+
+.instagram-info-box h2 {
+    font-size: 42px;
+    color: #111;
+    margin: 0 0 20px 0;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.insta-desc {
+    color: #555;
+    font-size: 18px;
+    line-height: 1.6;
+    margin-bottom: 35px;
+}
+
+.insta-stats {
+    display: flex;
+    gap: 40px;
+    margin-bottom: 40px;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-item strong {
+    font-size: 32px;
+    color: #111;
+    font-weight: 700;
+}
+
+.stat-item span {
+    color: #777;
+    font-size: 14px;
+}
+
+.insta-follow-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 16px 36px;
+    background: #111;
+    color: #fff;
+    font-weight: bold;
+    border-radius: 50px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.insta-follow-btn:hover {
+    background: #333;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+}
+
+/* Responsywność */
+@media (max-width: 992px) {
+    .instagram-feed-wrapper {
+        flex-direction: column;
+        text-align: center;
+        gap: 40px;
+    }
+    
+    .insta-stats {
+        justify-content: center;
+    }
+    
+    .instagram-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* ===== PROFESJONALNY FOOTER ===== */
+.main-footer {
+    background-color: #0e0e0e;
+    color: #ffffff;
+    padding: 70px 20px 0 20px;
+    font-family: 'Segoe UI', sans-serif;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.footer-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr 1.2fr;
+    gap: 40px;
+    padding-bottom: 50px;
+}
+
+/* Poprawa pasków dekoracyjnych - teraz będą na całą szerokość tekstu nagłówka */
+.footer-column h3 {
+    font-size: 18px;
+    font-weight: 700;
+    margin-top: 0;
+    margin-bottom: 25px;
+    position: relative;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #ffffff;
+    display: inline-block; /* Kluczowe: dzięki temu nagłówek i linia dopasowują się do długości tekstu */
+}
+
+.footer-column h3::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 0;
+    width: 100%; /* Rozciągnięcie paska na 100% szerokości napisu */
+    height: 2px;
+    background-color: #ffffff; 
+}
+
+/* Wyśrodkowanie pionowe logo względem nagłówków innych kolumn */
+.footer-logo-wrapper {
+    height: 24px; /* Dopasowane idealnie do wysokości linii tekstu nagłówków h3 */
+    display: flex;
+    align-items: center;
+    margin-bottom: 25px; /* Taki sam margines jaki mają h3 */
+}
+
+.footer-logo img {
+  margin-left: 125px;
+    max-height: 55px; /* Regulacja wielkości logotypu */
+    display: block;
+}
+
+.footer-desc {
+    color: #aaaaaa;
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 25px;
+}
+
+.footer-socials {
+    display: flex;
+    gap: 12px;
+}
+
+.footer-socials a {
+    width: 38px;
+    height: 38px;
+    background: rgba(255, 255, 255, 0.05);
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    font-size: 16px;
+}
+
+.footer-socials a:hover {
+    background: #ffffff;
+    color: #0e0e0e;
+    transform: translateY(-3px);
+}
+
+/* Linki w stopce */
+.footer-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.footer-links li {
+    margin-bottom: 12px;
+}
+
+.footer-links li a {
+    color: #aaaaaa;
+    text-decoration: none;
+    font-size: 15px;
+    transition: color 0.2s ease, padding-left 0.2s ease;
+}
+
+.footer-links li a:hover {
+    color: #ffffff;
+    padding-left: 5px;
+}
+
+/* Dane kontaktowe */
+.footer-contact p {
+    color: #aaaaaa;
+    font-size: 15px;
+    line-height: 1.6;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.footer-contact p i {
+    color: #ffffff;
+    margin-top: 4px;
+    font-size: 16px;
+}
+
+.footer-contact p a {
+    color: #aaaaaa;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.footer-contact p a:hover {
+    color: #ffffff;
+}
+
+/* Dolny pasek (Sub-footer) */
+.footer-bottom {
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 25px 0;
+}
+
+.footer-bottom-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #777777;
+    font-size: 13px;
+}
+
+.footer-bottom-inner p {
+    margin: 0;
+}
+
+.footer-bottom-links {
+    display: flex;
+    gap: 20px;
+}
+
+.footer-bottom-links a {
+    color: #777777;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.footer-bottom-links a:hover {
+    color: #ffffff;
+}
+
+/* Responsywność */
+@media (max-width: 992px) {
+    .footer-container {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 30px;
+    }
+}
+
+@media (max-width: 576px) {
+    .main-footer {
+        padding: 50px 20px 0 20px;
+    }
+    .footer-container {
+        grid-template-columns: 1fr;
+        gap: 35px;
+    }
+    .footer-bottom-inner {
+        flex-direction: column;
+        text-align: center;
+        gap: 15px;
+    }
+}
