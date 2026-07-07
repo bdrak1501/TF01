@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>iPhone 16 Pro – TeleFix</title>
+<title>iPhone 13 Pro Max – TeleFix</title>
 
 <link rel="stylesheet" href="../style.css">
 
@@ -530,21 +530,21 @@ color:#fff;
 <section class="product-wrapper">
 
     <div class="product-gallery">
-        <img src="13PRO.png" alt="iPhone 16 Pro">
+        <img src="13PROMAX.png" alt="iPhone 13 Pro Max">
     </div>
 
 
     <div class="product-info">
 
-        <h1>iPhone 16 Pro</h1>
+        <h1>iPhone 13 Pro Max</h1>
 
         <p id="dynamic-desc">
-    iPhone 16 Pro • 256 GB • Dobry • Bateria 90–94%<br>
+    iPhone 13 Pro Max • 256 GB • Dobry • Bateria 90–94%<br>
         </p>
 
 
         <div class="product-price" id="price">
-        4699 zł
+        400 zł
         </div>
 
         <button class="cta-btn" onclick="addToCart()">
@@ -560,20 +560,16 @@ color:#fff;
     <div class="variant-options">   
 
 <div class="color-option disabled" data-color="Desert Titanium">
-    <img src="C:\Users\bdrak\Downloads\TF01-main\TF01-main\telefix-gliwice\DesertTitanium.png" alt="iPhone 16 Pro Desert Titanium">
+    <img src="C:\Users\bdrak\Downloads\TF01-main\TF01-main\telefix-gliwice\DesertTitanium.png" alt="iPhone 13 Pro Max Desert Titanium">
     </div>
 
         <div class="color-option disabled" data-color="Pomarańczowy">
-             <img src="C:\Users\bdrak\Downloads\TF01-main\TF01-main\telefix-gliwice\szary.png" alt="iPhone 16 Pro Natural Titanium">
+             <img src="C:\Users\bdrak\Downloads\TF01-main\TF01-main\telefix-gliwice\szary.png" alt="iPhone 13 Pro Max Natural Titanium">
         </div>
 
         <!-- NIEDOSTĘPNY -->
         <div class="color-option disabled">
-             <img src="C:\Users\bdrak\Downloads\TF01-main\TF01-main\telefix-gliwice\WhiteTitanium.png" alt="iPhone 16 Pro White Titanium">
-        </div>
-         <!-- NIEDOSTĘPNY -->
-        <div class="color-option disabled">
-             <img src="C:\Users\bdrak\Downloads\TF01-main\TF01-main\telefix-gliwice\WhiteTitanium.png" alt="iPhone 16 Pro White Titanium">
+             <img src="C:\Users\bdrak\Downloads\TF01-main\TF01-main\telefix-gliwice\WhiteTitanium.png" alt="iPhone 13 Pro Max White Titanium">
         </div>
 
 </div>
@@ -586,8 +582,9 @@ color:#fff;
 
     <div class="variant-options">
 
-       <div class="memory-option active" data-label="256 GB" data-price="200">256 GB</div>
-        <div class="memory-option disabled" data-label="512 GB" data-price="400">512 GB</div>
+       <div class="memory-option disabled" data-label="128 GB" data-price="200">128 GB</div>
+        <div class="memory-option disabled" data-label="256 GB" data-price="400">256 GB</div>
+        <div class="memory-option disabled" data-label="512 GB" data-price="900">512 GB</div>
         <div class="memory-option disabled" data-label="1 TB" data-price="900">1 TB</div>
 
     </div>
@@ -600,9 +597,9 @@ color:#fff;
 
     <div class="variant-options">
 
-        <div class="memory-option" data-label="85–89%" data-price="-150">90% - 100%</div>
-        <div class="memory-option active" data-label="90–94%" data-price="0">80% - 89%</div>
-        <div class="memory-option" data-label="95–100%" data-price="120">poniżej 80%</div>
+        <div class="memory-option disabled" data-label="90% - 100%" data-price="-150">90% - 100%</div>
+        <div class="memory-option disabled" data-label="80% - 89%" data-price="0">80% - 89%</div>
+        <div class="memory-option disabled" data-label="poniżej 80%" data-price="120">poniżej 80%</div>
 
     </div>
 
@@ -617,15 +614,15 @@ color:#fff;
 
     <div class="variant-options">
 
-        <div class="memory-option active" data-desc="Widoczne drobne rysy na obudowie lub ekranie. Telefon w 100% sprawny technicznie." data-label="Dobry" data-price="0">
+        <div class="memory-option disabled" data-desc="Widoczne drobne rysy na obudowie lub ekranie. Telefon w 100% sprawny technicznie." data-label="Dobry" data-price="0">
             Dobry
         </div>
 
-        <div class="memory-option" data-desc="Minimalne ślady użytkowania, praktycznie niewidoczne na pierwszy rzut oka." data-label="Bardzo dobry" data-price="100">
+        <div class="memory-option disabled" data-desc="Minimalne ślady użytkowania, praktycznie niewidoczne na pierwszy rzut oka." data-label="Bardzo dobry" data-price="100">
             Bardzo dobry
         </div>
 
-        <div class="memory-option" data-desc="Wygląda jak nowy – brak rys, idealny wizualnie i technicznie." data-label="Jak nowy" data-price="110">
+        <div class="memory-option disabled" data-desc="Wygląda jak nowy – brak rys, idealny wizualnie i technicznie." data-label="Jak nowy" data-price="110">
             Jak nowy
         </div>
 
@@ -929,7 +926,7 @@ Przejdź do koszyka
 
 
 <script>
-const basePrice = 4699;
+const basePrice = 400;
 function updatePrice(){
 
     let total = basePrice;
@@ -988,7 +985,7 @@ function updateDescription(){
         .querySelector('.active')?.dataset.label;
 
     document.getElementById('dynamic-desc').innerHTML = `
-        iPhone 16 Pro • ${memory} • ${condition} • Bateria ${battery}<br>
+        iPhone 13 Pro Max • ${memory} • ${condition} • Bateria ${battery}<br>
     `;
 }
 
@@ -997,7 +994,7 @@ updatePrice();
 
 
 function addToCart() {
-    const name = "iPhone 16 Pro";
+    const name = "iPhone 13 Pro Max";
     const price = document.getElementById("price").textContent;
     const image = "13PRO.png";
 
@@ -1055,7 +1052,7 @@ updateCartCount();
 
 function addToCart(){
 
-const name = "iPhone 16 Pro";
+const name = "iPhone 13 Pro Max";
 
 const price =
 document.getElementById("price").textContent;

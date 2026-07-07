@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>iPhone 16 Pro – TeleFix</title>
+<title>iPhone XS – TeleFix</title>
 
 <link rel="stylesheet" href="../style.css">
 
@@ -530,21 +530,21 @@ color:#fff;
 <section class="product-wrapper">
 
     <div class="product-gallery">
-        <img src="13PRO.png" alt="iPhone 16 Pro">
+        <img src="13PRO.png" alt="iPhone XS">
     </div>
 
 
     <div class="product-info">
 
-        <h1>iPhone 16 Pro</h1>
+        <h1>iPhone XS</h1>
 
         <p id="dynamic-desc">
-    iPhone 16 Pro • 256 GB • Dobry • Bateria 90–94%<br>
+       iPhone XS • 256 GB • Dobry • Bateria 90–94%<br>
         </p>
 
 
         <div class="product-price" id="price">
-        4699 zł
+        350 zł
         </div>
 
         <button class="cta-btn" onclick="addToCart()">
@@ -586,9 +586,9 @@ color:#fff;
 
     <div class="variant-options">
 
-       <div class="memory-option active" data-label="256 GB" data-price="200">256 GB</div>
-        <div class="memory-option disabled" data-label="512 GB" data-price="400">512 GB</div>
-        <div class="memory-option disabled" data-label="1 TB" data-price="900">1 TB</div>
+       <div class="memory-option active" data-label="256 GB" data-price="0">64 GB</div>
+        <div class="memory-option disabled" data-label="512 GB" data-price="50">128 GB</div>
+        <div class="memory-option disabled" data-label="1 TB" data-price="50">256 GB</div>
 
     </div>
 
@@ -600,9 +600,9 @@ color:#fff;
 
     <div class="variant-options">
 
-        <div class="memory-option" data-label="85–89%" data-price="-150">90% - 100%</div>
-        <div class="memory-option active" data-label="90–94%" data-price="0">80% - 89%</div>
-        <div class="memory-option" data-label="95–100%" data-price="120">poniżej 80%</div>
+        <div class="memory-option" data-label="85–89%" data-price="150">90% - 100%</div>
+        <div class="memory-option active" data-label="90–94%" data-price="50">80% - 89%</div>
+        <div class="memory-option" data-label="95–100%" data-price="0">poniżej 80%</div>
 
     </div>
 
@@ -621,11 +621,11 @@ color:#fff;
             Dobry
         </div>
 
-        <div class="memory-option" data-desc="Minimalne ślady użytkowania, praktycznie niewidoczne na pierwszy rzut oka." data-label="Bardzo dobry" data-price="100">
+        <div class="memory-option" data-desc="Minimalne ślady użytkowania, praktycznie niewidoczne na pierwszy rzut oka." data-label="Bardzo dobry" data-price="0">
             Bardzo dobry
         </div>
 
-        <div class="memory-option" data-desc="Wygląda jak nowy – brak rys, idealny wizualnie i technicznie." data-label="Jak nowy" data-price="110">
+        <div class="memory-option" data-desc="Wygląda jak nowy – brak rys, idealny wizualnie i technicznie." data-label="Jak nowy" data-price="50">
             Jak nowy
         </div>
 
@@ -929,7 +929,7 @@ Przejdź do koszyka
 
 
 <script>
-const basePrice = 4699;
+const basePrice = 350;
 function updatePrice(){
 
     let total = basePrice;
@@ -988,7 +988,7 @@ function updateDescription(){
         .querySelector('.active')?.dataset.label;
 
     document.getElementById('dynamic-desc').innerHTML = `
-        iPhone 16 Pro • ${memory} • ${condition} • Bateria ${battery}<br>
+        iPhone XS • ${memory} • ${condition} • Bateria ${battery}<br>
     `;
 }
 
@@ -997,7 +997,7 @@ updatePrice();
 
 
 function addToCart() {
-    const name = "iPhone 16 Pro";
+    const name = "iPhone XS";
     const price = document.getElementById("price").textContent;
     const image = "13PRO.png";
 
@@ -1055,7 +1055,7 @@ updateCartCount();
 
 function addToCart(){
 
-const name = "iPhone 16 Pro";
+const name = "iPhone XS";
 
 const price =
 document.getElementById("price").textContent;

@@ -1260,5 +1260,24 @@ h2 {
     gap: 20px; /* działa poprawnie */
 }
 
+.photo-preview{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    margin-top:20px;
+}
 
+.photo-preview img{
+    width:120px;
+    height:120px;
+    object-fit:cover;
+    border-radius:12px;
+    border:1px solid #ddd;
+}
+
+#phonePhotos{
+    width:100%;
+    margin-top:15px;
+    margin-bottom:20px;
+}
 
