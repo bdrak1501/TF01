@@ -1965,104 +1965,47 @@ body {
     margin-top: 5px;
 }
 @media (max-width: 768px) {
-    /* --- HEADER / NAWIGACJA --- */
-    .hero-inner {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 12px;
+    /* Zmniejszamy wewnętrzne marginesy całego nagłówka, żeby był węższy */
+    .hero-header {
+        padding: 10px 15px;
     }
 
-    .nav-links {
-        flex-direction: column;
-        width: 100%;
+    /* Układamy logo i nawigację na środku */
+    .hero-inner {
+        flex-direction: column; 
+        align-items: center;
         gap: 10px;
     }
+    
+    /* Zmniejszamy logo, żeby zyskać trochę przestrzeni */
+    .logo img {
+        max-height: 35px;
+    }
 
+    /* Wymuszamy układ POZIOMY dla linków, tak jak na monitorze */
+    .nav-links {
+        flex-direction: row; 
+        flex-wrap: wrap; /* Pozwala na zawinięcie do nowej linii, gdyby ekrany były bardzo wąskie */
+        justify-content: center;
+        width: 100%;
+        gap: 15px; /* Odstęp między linkami w poziomie */
+    }
+
+    /* Zmniejszamy czcionkę linków, żeby 5 pozycji zmieściło się obok siebie */
     .nav-links li a {
-        font-size: 18px;
+        font-size: 13px;
     }
 
-    /* --- SEKCJA NAPRAW (KARUZELA / POZIOME SCROLLOWANIE) --- */
-    .repair-grid {
-        display: flex;
-        flex-wrap: nowrap;       /* wszystkie karty w jednej linii */
-        justify-content: flex-start; /* wyrównanie do lewej, żeby pierwszy element nie uciekał */
-        gap: 15px;               /* odstęp między kartami */
-        overflow-x: auto;        /* włączenie przewijania poziomego */
-        -webkit-overflow-scrolling: touch; /* płynne przewijanie na iOS */
-        padding: 15px 20px;      /* marginesy boczne, by karty nie kleiły się do krawędzi ekranu */
+    /* Dopasowujemy wielkość tekstu na suwaku do mniejszych ekranów */
+    .slider-text h1 {
+        font-size: 28px !important; 
+        line-height: 1.2;
     }
 
-    /* Ukrycie paska przewijania dla estetyki */
-    .repair-grid::-webkit-scrollbar {
-        display: none;
-    }
-    .repair-grid {
-        -ms-overflow-style: none;
-        scrollbar-width: none;
-    }
-
-    .repair-card {
-        flex: 0 0 auto;          /* zapobiega kurczeniu się i zniekształcaniu kart */
-        min-width: 160px;        /* minimalna szerokość karty na telefonie */
-        padding: 20px;
-    }
-
-    /* --- SEKCJA SKUP (Jak działa nasz skup?) --- */
-    .sell-phone-card {
-        flex-direction: column !important; /* Zmiana układu na pionowy */
-        padding: 30px 20px !important;
-        margin: 20px 15px !important;
-        scale: 1 !important; /* Wyłączenie sztucznego powiększenia */
-        border-radius: 20px;
-        height: auto !important;
-    }
-
-    /* Dopasowanie sekcji tekstowej */
-    .sell-phone-content {
-        width: 100% !important;
-        text-align: center;
-        margin-bottom: 25px;
-    }
-
-    .tile-title {
-        font-size: 24px !important; /* Znacznie mniejszy, czytelny nagłówek */
-        line-height: 1.3 !important;
-        white-space: normal !important; /* Pozwala na zawijanie tekstu */
-        text-align: center !important;
-    }
-
-    .tile-desc {
-        font-size: 15px !important;
-        text-align: center !important;
-        margin: 15px 0 25px 0 !important;
-    }
-
-    /* Przycisk na pełną szerokość na telefonie */
-    .tile-btn {
-        width: 100%; 
-        justify-content: center;
-        margin: 0 auto !important;
-    }
-
-    /* Dopasowanie obrazków telefonów */
-    .tile-images {
-        width: 100% !important;
-        margin: 0 !important;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        gap: 15px; /* Odstęp między telefonami */
-        position: relative !important;
-        right: auto !important;
-        bottom: auto !important;
-    }
-
-    .tile-image img {
-        max-width: 130px !important; /* Optymalny rozmiar na mobile */
-        height: auto !important;
-        scale: 1 !important;
-        margin: 0 !important;
-        position: static !important; /* Resetowanie pozycjonowania z desktopu */
+    /* Mniejszy przycisk na sliderze */
+    .slider-btn {
+        padding: 12px 24px;
+        font-size: 13px;
+        margin-top: 15px;
     }
 }
