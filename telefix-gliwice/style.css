@@ -1965,8 +1965,50 @@ body {
     margin-top: 5px;
 }
 @media (max-width: 768px) {
+    /* --- HEADER / NAWIGACJA --- */
+    .hero-inner {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .nav-links {
+        flex-direction: column;
+        width: 100%;
+        gap: 10px;
+    }
+
+    .nav-links li a {
+        font-size: 18px;
+    }
+
+    /* --- SEKCJA NAPRAW (KARUZELA / POZIOME SCROLLOWANIE) --- */
+    .repair-grid {
+        display: flex;
+        flex-wrap: nowrap;       /* wszystkie karty w jednej linii */
+        justify-content: flex-start; /* wyrównanie do lewej, żeby pierwszy element nie uciekał */
+        gap: 15px;               /* odstęp między kartami */
+        overflow-x: auto;        /* włączenie przewijania poziomego */
+        -webkit-overflow-scrolling: touch; /* płynne przewijanie na iOS */
+        padding: 15px 20px;      /* marginesy boczne, by karty nie kleiły się do krawędzi ekranu */
+    }
+
+    /* Ukrycie paska przewijania dla estetyki */
+    .repair-grid::-webkit-scrollbar {
+        display: none;
+    }
+    .repair-grid {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+
+    .repair-card {
+        flex: 0 0 auto;          /* zapobiega kurczeniu się i zniekształcaniu kart */
+        min-width: 160px;        /* minimalna szerokość karty na telefonie */
+        padding: 20px;
+    }
+
     /* --- SEKCJA SKUP (Jak działa nasz skup?) --- */
-    
     .sell-phone-card {
         flex-direction: column !important; /* Zmiana układu na pionowy */
         padding: 30px 20px !important;
