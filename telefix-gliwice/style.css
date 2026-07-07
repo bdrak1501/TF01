@@ -1964,119 +1964,63 @@ body {
     justify-content: center; /* Centruje ikony wewnątrz samego kontenera */
     margin-top: 5px;
 }
-/* =========================================
-   📱 POPRAWKI MOBILNE (DODAJ NA SAM DÓŁ style.css)
-   ========================================= */
-
 @media (max-width: 768px) {
-    /* 1. Globalne zmniejszenie pustych przestrzeni na telefonie */
-    .phone-section, .sell-phone-section, .shop-section, .repair-configurator, .instagram-section, .location-section, .contact-section {
-        padding: 50px 15px !important;
-    }
-
-    /* 2. Sekcja Hero i Slider */
-    .slider-text h1 { 
-        font-size: 28px !important; 
-    }
-    .slider-text p { 
-        font-size: 16px !important; 
-    }
+    /* --- SEKCJA SKUP (Jak działa nasz skup?) --- */
     
-    /* Nawigacja - żeby się ładnie układała */
-    .nav-links {
-        flex-direction: row !important;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 15px !important;
-    }
-    .hero-header {
-        padding: 15px !important;
-    }
-
-    /* 3. Phone Section (Naprawa uciekającego marginesu) */
-    .content-wrapper {
-        margin-left: 0 !important;
-        flex-direction: column;
-        text-align: center;
-    }
-    .buttons { 
-        justify-content: center; 
-        flex-wrap: wrap; 
-    }
-    .phone-img { 
-        margin-top: 40px; 
-    }
-
-    /* 4. Sell Phone Section (Naprawa skalowania 115% i wyrównań) */
     .sell-phone-card {
+        flex-direction: column !important; /* Zmiana układu na pionowy */
+        padding: 30px 20px !important;
+        margin: 20px 15px !important;
+        scale: 1 !important; /* Wyłączenie sztucznego powiększenia */
+        border-radius: 20px;
+        height: auto !important;
+    }
+
+    /* Dopasowanie sekcji tekstowej */
+    .sell-phone-content {
+        width: 100% !important;
+        text-align: center;
+        margin-bottom: 25px;
+    }
+
+    .tile-title {
+        font-size: 24px !important; /* Znacznie mniejszy, czytelny nagłówek */
+        line-height: 1.3 !important;
+        white-space: normal !important; /* Pozwala na zawijanie tekstu */
+        text-align: center !important;
+    }
+
+    .tile-desc {
+        font-size: 15px !important;
+        text-align: center !important;
+        margin: 15px 0 25px 0 !important;
+    }
+
+    /* Przycisk na pełną szerokość na telefonie */
+    .tile-btn {
+        width: 100%; 
+        justify-content: center;
+        margin: 0 auto !important;
+    }
+
+    /* Dopasowanie obrazków telefonów */
+    .tile-images {
+        width: 100% !important;
+        margin: 0 !important;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 15px; /* Odstęp między telefonami */
+        position: relative !important;
+        right: auto !important;
+        bottom: auto !important;
+    }
+
+    .tile-image img {
+        max-width: 130px !important; /* Optymalny rozmiar na mobile */
+        height: auto !important;
         scale: 1 !important;
         margin: 0 !important;
-        padding: 30px 20px !important;
-        width: auto;
-    }
-    .tile-images { 
-        margin-right: 0 !important; 
-    }
-    .tile-image img { 
-        scale: 1 !important; 
-        margin-top: 20px !important; 
-        width: 100%; 
-    }
-    .tile-title { 
-        font-size: 28px !important; 
-        white-space: normal !important; /* Pozwala tekstowi przejść do nowej linii */
-        text-align: center; 
-    }
-    .tile-desc {
-        text-align: center;
-    }
-    .tile-btn {
-        margin: 0 auto;
-    }
-
-    /* 5. Konfigurator Serwisu (Złamanie linii w siatce) */
-    .repair-grid { 
-        flex-wrap: wrap !important; /* Kluczowe! Pozwala elementom spadać w dół */
-    }
-    .repair-card { 
-        padding: 15px !important; 
-        font-size: 14px; 
-        flex: 1 1 40%; 
-    }
-    .progress-bar { 
-        width: 100% !important; 
-    }
-
-    /* 6. Footer (Naprawa przesuniętego logo) */
-    .footer-logo img { 
-        margin-left: 0 !important; 
-        margin: 0 auto; 
-    }
-    .footer-logo-wrapper {
-        justify-content: center;
-    }
-    .footer-column h3 { 
-        display: block; 
-        text-align: center; 
-    }
-    .footer-column h3::after { 
-        left: 50%; 
-        transform: translateX(-50%); 
-        width: 50px; 
-    }
-    .footer-desc, .footer-links { 
-        text-align: center; 
-    }
-    .footer-contact p { 
-        justify-content: center; 
-    }
-    
-    /* 7. Poprawki okna modalnego "Zadzwoń" */
-    .custom-modal-content {
-        padding: 30px 20px;
-    }
-    .custom-modal-phone {
-        font-size: 18px;
-        padding: 12px 25px;
+        position: static !important; /* Resetowanie pozycjonowania z desktopu */
     }
 }
