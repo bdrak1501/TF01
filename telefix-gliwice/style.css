@@ -2082,7 +2082,7 @@ html, body {
 
     /* Lekkie powiększenie logo na telefonie (możesz zmienić 35px na więcej, np. 40px) */
     .logo img {
-        height: 75px !important; 
+        height: 55px !important; 
         width: auto !important;
     }
 
@@ -2187,5 +2187,65 @@ html, body {
     .repairType {
         white-space: nowrap !important;   /* Blokada tekstu "pod sobą" */
         font-size: 14px !important;       /* Czytelna czcionka na telefonie */
+    }
+}
+/* ========================================================
+   POPRAWKA SEKCJI "NASZE USŁUGI" (ZACHOWANIE UKŁADU DESKTOP)
+   ======================================================== */
+
+@media (max-width: 768px) {
+    .phone-section {
+        padding: 40px 10px !important; /* Mniejszy padding góra/dół na telefonie */
+    }
+
+    .content-wrapper {
+        flex-direction: row !important; /* Wymuszenie układu obok siebie (lewa/prawa) */
+        margin-left: 0 !important;      /* Usunięcie gigantycznego marginesu z desktopu */
+        padding: 0 15px !important;     /* Bezpieczny odstęp od krawędzi ekranu */
+        justify-content: space-between !important;
+        gap: 10px !important;
+    }
+
+    .text-section {
+        flex: 1.2 !important;           /* Tekst dostaje delikatnie więcej przestrzeni */
+        padding: 0 !important;
+        text-align: left !important;    /* Trzymamy wyrównanie do lewej */
+    }
+
+    .section-title {
+        font-size: 22px !important;     /* Zmniejszenie nagłówka, by zmieścił się w linii */
+        margin-bottom: 8px !important;
+    }
+
+    .section-desc {
+        font-size: 13px !important;     /* Czytelny, mniejszy opis */
+        margin-bottom: 15px !important;
+        line-height: 1.4 !important;
+    }
+
+    /* Dopasowanie przycisków w jednym rzędzie */
+    .buttons {
+        display: flex !important;
+        gap: 6px !important;           /* Mniejsze odstępy między przyciskami */
+    }
+
+    .buttons .btn {
+        padding: 8px 12px !important;   /* Zmniejszenie przycisków */
+        font-size: 10px !important;     /* Mniejsza czcionka, żeby nie spadały */
+        border-radius: 20px !important;
+    }
+
+    /* Sekcja z grafiką telefonu */
+    .image-section {
+        flex: 0.8 !important;           /* Kontener na zdjęcie */
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+    }
+
+    .phone-img {
+        max-width: 110px !important;    /* Proporcjonalne pomniejszenie telefonu */
+        height: auto !important;
+        transform: rotate(-5deg) !important; /* Zachowanie oryginalnego obrotu */
     }
 }
