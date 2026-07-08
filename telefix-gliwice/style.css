@@ -2146,3 +2146,46 @@ html, body {
     white-space: nowrap !important;   /* Blokada łamania tekstu (tekst zawsze w jednej linii) */
 }
 }
+/* ========================================================
+   NAPRAWA SEKCHJI SERWISU (KONFIGURATORA) NA TELEFONIE
+   ======================================================== */
+
+@media (max-width: 768px) {
+    /* Wymuszamy, aby kontener trzymał kafelki w jednej linii (poziomo) */
+    .repair-grid {
+        display: flex !important;
+        flex-wrap: nowrap !important;     /* Blokuje spadanie kafelków pod siebie */
+        overflow-x: auto !important;      /* Włącza przewijanie na boki */
+        gap: 15px !important;             /* Odstępy identyczne jak na desktopie */
+        padding: 15px 10px !important;    /* Przestrzeń, żeby cienie kafelków się nie ucinały */
+        scroll-snap-type: x mandatory;    /* Płynne przesuwanie palcem */
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* Ukrywamy domyślny, brzydki systemowy pasek przewijania, żeby było czysto */
+    .repair-grid::-webkit-scrollbar {
+        display: none !important;
+    }
+
+    /* Wymuszamy oryginalny kształt i rozmiar kafelków na telefonie */
+    .repair-card {
+        flex: 0 0 auto !important;        /* Kluczowe: kafelek nie może się ścisnąć/zmniejszyć */
+        width: 140px !important;          /* Szerokość kafelka na telefonie (dopasuj, jeśli chcesz większe) */
+        min-height: 50px !important;      /* Minimalna wysokość */
+        scroll-snap-align: start;
+        
+        /* Centrowanie tekstu wewnątrz kafelka */
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        text-align: center !important;
+    }
+
+    /* Blokujemy rozbijanie tekstu na dwie linie (np. "iPhone XS Max" zostanie w jednym rządku) */
+    .repair-card, 
+    .modelCard, 
+    .repairType {
+        white-space: nowrap !important;   /* Blokada tekstu "pod sobą" */
+        font-size: 14px !important;       /* Czytelna czcionka na telefonie */
+    }
+}
