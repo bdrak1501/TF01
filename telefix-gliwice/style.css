@@ -2082,7 +2082,7 @@ html, body {
 
     /* Lekkie powiększenie logo na telefonie (możesz zmienić 35px na więcej, np. 40px) */
     .logo img {
-        height: 45px !important; 
+        height: 75px !important; 
         width: auto !important;
     }
 
