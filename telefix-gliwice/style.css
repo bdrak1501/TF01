@@ -2039,11 +2039,6 @@ body {
         gap: 10px !important; /* Odstęp między logo a menu */
     }
 
-    .logo img {
-        height: 25px !important; /* Delikatne zmniejszenie logo na telefonie */
-        width: auto !important;
-    }
-
     .nav-links {
         display: flex !important;
         flex-direction: row !important; /* Linki zostają w jednym rzędzie */
@@ -2087,7 +2082,7 @@ html, body {
 
     /* Lekkie powiększenie logo na telefonie (możesz zmienić 35px na więcej, np. 40px) */
     .logo img {
-        height: 35px !important; 
+        height: 45px !important; 
         width: auto !important;
     }
 
@@ -2112,4 +2107,42 @@ html, body {
         margin-right: 15px !important;
         font-size: 20px !important;
     }
+    /* 1. PRZYWRÓCENIE PRZESUWANIA NA BOKI I USTAWIENIE KART OBOK SIEBIE */
+.repair-grid {
+    display: flex !important;         /* Zmieniamy układ na Flexbox, aby elementy były w jednym rzędzie */
+    flex-wrap: nowrap !important;     /* Blokujemy przechodzenie kart do nowej linii (zostają obok siebie) */
+    overflow-x: auto !important;      /* Włączamy przewijanie poziome (na boki) */
+    gap: 15px;                        /* Odstęp między kartami */
+    padding: 15px 5px;                /* Padding, aby cień wokół kart się nie przycinał */
+    scroll-snap-type: x mandatory;    /* Płynne przyciąganie kart podczas przewijania na telefonie */
+    -webkit-overflow-scrolling: touch;/* Płynne, natywne przewijanie na systemach iOS/Android */
+}
+
+/* Opcjonalnie: Dodanie dyskretnego, ładnego paska przewijania pod opcjami */
+.repair-grid::-webkit-scrollbar {
+    height: 6px;                      /* Wysokość paska */
+}
+.repair-grid::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+}
+.repair-grid::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2); /* Kolor suwaka */
+    border-radius: 10px;
+}
+
+/* 2. ZABEZPIECZENIE KARTY I NAPISU (IKONA + TEKST OBOK SIEBIE) */
+.repair-card {
+    flex: 0 0 auto !important;        /* Kluczowe! Zapobiega kurczeniu/ściskaniu się kart */
+    width: 160px;                     /* Stała szerokość każdej opcji w suwaku (dostosuj według uznania) */
+    scroll-snap-align: start;         /* Wyrównanie karty przy przewijaniu */
+    
+    /* Sprawiamy, że ikona (emoji) oraz tekst wewnątrz karty nigdy nie spadną pod siebie */
+    display: flex !important;
+    flex-direction: row !important;   /* Wymuszenie układu poziomego */
+    align-items: center;
+    justify-content: center;
+    gap: 8px;                         /* Odstęp między emoji a tekstem */
+    white-space: nowrap !important;   /* Blokada łamania tekstu (tekst zawsze w jednej linii) */
+}
 }
