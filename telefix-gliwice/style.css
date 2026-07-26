@@ -1010,8 +1010,8 @@ canvas#backgroundCanvas {
 
    /* Zwiększona specyficzność selektora */
 html body .tile-image img {
-    width: 64px !important;
-    height: 64px !important; /* Tutaj wpisz pożądaną wysokość */
+    width: 164px !important;
+    height: 164px !important; /* Tutaj wpisz pożądaną wysokość */
     max-width: none !important; /* Zdejmuje limit, który mógł blokować zmianę */
     max-height: none !important;
     object-fit: contain !important; /* Zapobiega rozciąganiu/zniekształcaniu obrazka */
