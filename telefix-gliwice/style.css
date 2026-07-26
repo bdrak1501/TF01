@@ -826,7 +826,7 @@ canvas#backgroundCanvas {
         
         /* ZEWNĘTRZNE ODSTĘPY: */
         margin-top: 5px !important;    /* Odstęp zewnętrzny od góry (zmień np. na 0px, żeby podciągnąć do nawigacji) */
-        margin-bottom: -25px !important; /* Odstęp zewnętrzny od dołu (wartość ujemna przyciąga kolejną sekcję) */
+        margin-bottom: -45px !important; /* Odstęp zewnętrzny od dołu (wartość ujemna przyciąga kolejną sekcję) */
     }
 }
 
