@@ -992,7 +992,7 @@ canvas#backgroundCanvas {
     /* 1. Tytuł */
     .tile-title {
         order: 1 !important;
-        font-size: 20px !important; /* Jeszcze mniejsza, zgrabna czcionka */
+        font-size: 25px !important; /* Jeszcze mniejsza, zgrabna czcionka */
         line-height: 1.1 !important;
         white-space: nowrap !important; 
         text-align: center !important;
@@ -1018,7 +1018,7 @@ html body .tile-image img {
     display: block !important;
     margin: 0 !important;
     margin-top:-30px !important; /* Usunięcie dodatkowego marginesu */
-    margin-bottom: -30px !important; /* Usunięcie dodatkowego marginesu */
+    margin-bottom: -38px !important; /* Usunięcie dodatkowego marginesu */
 }
 
     /* 3. Opis */
