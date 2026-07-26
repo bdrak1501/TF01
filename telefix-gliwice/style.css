@@ -2014,61 +2014,51 @@ body {
 @media (max-width: 768px) {
     /* --- SEKCJA SKUP (Jak działa nasz skup?) --- */
     
+ /* --- WYMUSZONY UKŁAD POZIOMY DLA TELEFONÓW --- */
+    
     .sell-phone-card {
-        flex-direction: column !important; /* Zmiana układu na pionowy */
-        padding: 30px 20px !important;
-        margin: 20px 15px !important;
-        scale: 1 !important; /* Wyłączenie sztucznego powiększenia */
-        border-radius: 20px;
-        height: auto !important;
+        display: flex !important;
+        flex-direction: row !important; /* To ustawia elementy w jednym rzędzie obok siebie */
+        flex-wrap: nowrap !important; /* Zabrania zrzucania ikony pod tekst */
+        align-items: center !important;
+        justify-content: space-between !important;
+        padding: 15px !important;
+        gap: 10px !important;
     }
 
-    /* Dopasowanie sekcji tekstowej */
-    .sell-phone-content {
-        width: 100% !important;
-        text-align: center;
-        margin-bottom: 25px;
+    .tile-content {
+        flex: 1 !important; /* Tekst zajmuje całą dostępną przestrzeń... */
+        text-align: left !important;
     }
 
-    .tile-title {
-        font-size: 24px !important; /* Znacznie mniejszy, czytelny nagłówek */
-        line-height: 1.3 !important;
-        white-space: normal !important; /* Pozwala na zawijanie tekstu */
-        text-align: center !important;
-    }
-
-    .tile-desc {
-        font-size: 15px !important;
-        text-align: center !important;
-        margin: 15px 0 25px 0 !important;
-    }
-
-    /* Przycisk na pełną szerokość na telefonie */
-    .tile-btn {
-        width: 100%; 
-        justify-content: center;
-        margin: 0 auto !important;
-    }
-
-    /* Dopasowanie obrazków telefonów */
     .tile-images {
-        width: 100% !important;
+        flex-shrink: 0 !important; /* ...a to zabrania zgniatania ikony! */
+        width: 90px !important; /* Sztywna szerokość ikony na telefonie, żeby się zmieściła */
         margin: 0 !important;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        gap: 15px; /* Odstęp między telefonami */
-        position: relative !important;
-        right: auto !important;
-        bottom: auto !important;
+        display: flex !important;
+        justify-content: center !important;
     }
 
-    .tile-image img {
-        max-width: 130px !important; /* Optymalny rozmiar na mobile */
+    .tile-images img {
+        width: 100% !important;
         height: auto !important;
-        scale: 1 !important;
-        margin: 0 !important;
-        position: static !important; /* Resetowanie pozycjonowania z desktopu */
+    }
+
+    /* Zmniejszenie czcionek, by tekst zmieścił się obok ikony na małym ekranie */
+    .tile-title { 
+        font-size: 16px !important; 
+        margin-bottom: 8px !important;
+    }
+    
+    .tile-desc { 
+        font-size: 11px !important; 
+        margin-bottom: 12px !important;
+    }
+    
+    .tile-btn { 
+        font-size: 11px !important; 
+        padding: 8px 12px !important;
+        width: auto !important;
     }
 }/* ==========================================
    MOBILNY HEADER (Dopasowanie do telefonów)
