@@ -2529,3 +2529,35 @@ html, body {
         margin: 0 !important;
     }
 }
+/* --- POPRAWA ODSTĘPÓW NAD I POD ZDJĘCIAMI (TYLKO MOBILE) --- */
+@media (max-width: 768px) {
+    
+    /* 1. Sekcja Skupu (Karta "Kupimy twojego iPhone") */
+    .sell-phone-section {
+        margin-top: 20px !important;    /* Likwiduje ogromny odstęp 100px z góry */
+        margin-bottom: 20px !important; 
+        padding-top: 20px !important;
+        padding-bottom: 20px !important;
+    }
+
+    /* Wyzerowanie ukrytych marginesów samego obrazka w karcie skupu */
+    .tile-images {
+        margin: 10px 0 !important;
+    }
+    
+    .tile-image img {
+        margin-top: 0 !important; 
+        margin-bottom: 0 !important;
+    }
+
+    /* 2. Sekcja "Nasze Usługi" (Zdjęcie latającego telefonu) */
+    .phone-section {
+        padding-top: 20px !important;   /* Zastępuje domyślne 100px */
+        padding-bottom: 20px !important;
+    }
+
+    /* 3. Główny Slider na samej górze */
+    .slider {
+        height: 60vh !important; /* Zmniejsza wysokość z 89vh, ucinając puste tło nad/pod zdjęciem */
+    }
+}
