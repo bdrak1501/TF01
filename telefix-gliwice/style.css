@@ -2420,47 +2420,52 @@ html, body {
     }
 }
 /* ========================================================
-   SEKCJA LOKALIZACJI NA TELEFONIE (MAPA + IKONY OBOK SIEBIE)
+   SEKCJA LOKALIZACJI NA TELEFONIE (WYRÓWNANA MAPA + IKONY)
    ======================================================== */
 
 @media (max-width: 768px) {
     .location-section {
-        padding: 30px 10px !important;
+        padding: 30px 12px !important;
     }
 
     .location-container {
         display: grid !important;
-        grid-template-columns: 1fr 1fr !important; /* Dwie równe kolumny obok siebie */
+        grid-template-columns: 1fr 1fr !important; /* Dwie równe kolumny */
         gap: 12px !important;
-        align-items: stretch !important;
+        align-items: start !important; /* Wyrównanie do samej góry */
     }
 
-    /* Umożliwia wyciągnięcie nagłówków bezpośrednio do siatki Grid */
     .location-info {
         display: contents !important;
     }
 
-    /* Napis "Siedziba TeleFix" i podtytuł na samej górze (cała szerokość) */
+    /* 1. Nagłówek (Cała szerokość) */
     .location-info h2 {
+        grid-row: 1 !important;
         grid-column: 1 / -1 !important;
         text-align: center !important;
         font-size: 22px !important;
         margin: 0 0 2px 0 !important;
     }
 
+    /* 2. Podtytuł (Cała szerokość) */
     .location-subtitle {
+        grid-row: 2 !important;
         grid-column: 1 / -1 !important;
         text-align: center !important;
         font-size: 12px !important;
-        margin-bottom: 12px !important;
+        margin-bottom: 16px !important;
     }
 
-    /* Lewa kolumna: Mapa */
+    /* 3. Lewa kolumna: Mapa (Wyrównana do wiersza 3) */
     .location-map {
+        grid-row: 3 !important;
         grid-column: 1 !important;
+        margin: 0 !important;
+        padding: 0 !important;
         width: 100% !important;
         height: 100% !important;
-        min-height: 210px !important;
+        min-height: 220px !important;
         border-radius: 16px !important;
         overflow: hidden !important;
     }
@@ -2468,29 +2473,32 @@ html, body {
     .location-map iframe {
         width: 100% !important;
         height: 100% !important;
-        min-height: 210px !important;
+        min-height: 220px !important;
+        border: 0 !important;
     }
 
-    /* Prawa kolumna: Szczegóły kontaktowe i ikonki */
+    /* 4. Prawa kolumna: Szczegóły kontaktowe (Równo w wierszu 3) */
     .info-details {
+        grid-row: 3 !important;
         grid-column: 2 !important;
+        margin: 0 !important;
         display: flex !important;
         flex-direction: column !important;
         justify-content: space-between !important;
-        gap: 8px !important;
+        gap: 12px !important;
     }
 
     .info-item {
         display: flex !important;
         flex-direction: row !important;
-        align-items: center !important;
+        align-items: flex-start !important;
         text-align: left !important;
         gap: 8px !important;
     }
 
     .info-item i {
-        font-size: 12px !important;
-        padding: 7px !important;
+        font-size: 11px !important;
+        padding: 6px !important;
         width: 12px !important;
         height: 12px !important;
         min-width: 12px !important;
@@ -2500,6 +2508,7 @@ html, body {
         align-items: center !important;
         justify-content: center !important;
         flex-shrink: 0 !important;
+        margin-top: 2px !important;
     }
 
     .info-item h3 {
