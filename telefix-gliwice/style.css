@@ -2023,7 +2023,7 @@ body {
         border-radius: 24px !important;
         align-items: center !important;
         justify-content: center !important;
-        gap: 15px !important; /* TUTAJ REGULUJESZ OGÓLNY ODSTĘP MIĘDZY ELEMENTAMI (zmień np. na 10px lub 20px) */
+        gap: 10px !important; /* TUTAJ REGULUJESZ OGÓLNY ODSTĘP MIĘDZY ELEMENTAMI (zmień np. na 10px lub 20px) */
         height: auto !important;
     }
 
@@ -2035,7 +2035,7 @@ body {
     /* 1. Tytuł w jednej linii (Pozycja 1) */
     .tile-title {
         order: 1 !important;
-        font-size: 22px !important; /* Zmniejszone, żeby na pewno zmieściło się w 1 linii na małym ekranie */
+        font-size: 20px !important; /* Zmniejszone, żeby na pewno zmieściło się w 1 linii na małym ekranie */
         line-height: 1.2 !important;
         white-space: nowrap !important; /* WYMUSZENIE JEDNEJ LINII */
         text-align: center !important;
