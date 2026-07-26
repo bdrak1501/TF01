@@ -820,6 +820,13 @@ canvas#backgroundCanvas {
   font-family: 'Segoe UI', sans-serif;
 }
 
+@media (max-width: 768px) {
+    .sell-phone-section {
+        padding: 15px 10px !important; /* Likwiduje wielką dziurę góra/dół */
+        margin: 0 !important;
+    }
+}
+
 .sell-phone-card {
   scale: 115%;
   margin-right: 50px;
