@@ -1008,13 +1008,13 @@ canvas#backgroundCanvas {
         margin: 0 0 3px 0 !important;
     }
 
-    .tile-image img {
-       width: 50% !important; /* <--- Zmniejszone z 80% */
-    max-width: 80px !important; /* <--- Zmniejszone z 130px */
-        height: auto !important;
-        display: block !important;
-        margin: 0 !important;
-    }
+   .tile-image img {
+    width: 40% !important;      /* Zmniejszone z 50% o 20% */
+    max-width: 64px !important;  /* Zmniejszone z 80px o 20% */
+    height: auto !important;
+    display: block !important;
+    margin: 0 !important;
+}
 
     /* 3. Opis */
     .tile-desc {
@@ -2420,44 +2420,45 @@ html, body {
     }
 }
 /* ========================================================
-   SEKCJA LOKALIZACJI NA TELEFONIE (WYRÓWNANA MAPA + IKONY)
+   SEKCJA LOKALIZACJI NA TELEFONIE (IDEALNIE WYRÓWNANA)
    ======================================================== */
 
 @media (max-width: 768px) {
     .location-section {
-        padding: 30px 12px !important;
+        padding: 20px 12px !important;
     }
 
     .location-container {
         display: grid !important;
-        grid-template-columns: 1fr 1fr !important; /* Dwie równe kolumny */
-        gap: 12px !important;
-        align-items: start !important; /* Wyrównanie do samej góry */
+        grid-template-columns: 1fr 1fr !important;
+        gap: 10px !important;
+        align-items: stretch !important; /* Rozciąga obie kolumny do tej samej wysokości */
     }
 
     .location-info {
         display: contents !important;
     }
 
-    /* 1. Nagłówek (Cała szerokość) */
+    /* 1. Nagłówek główny */
     .location-info h2 {
         grid-row: 1 !important;
         grid-column: 1 / -1 !important;
         text-align: center !important;
         font-size: 22px !important;
-        margin: 0 0 2px 0 !important;
+        margin: 0 0 2px 0 !important; /* Zmniejszony odstęp do podtytułu */
     }
 
-    /* 2. Podtytuł (Cała szerokość) */
+    /* 2. Podtytuł */
     .location-subtitle {
         grid-row: 2 !important;
         grid-column: 1 / -1 !important;
         text-align: center !important;
         font-size: 12px !important;
-        margin-bottom: 16px !important;
+        margin-top: 0 !important;
+        margin-bottom: 8px !important; /* Zmniejszony odstęp do mapy i ikon */
     }
 
-    /* 3. Lewa kolumna: Mapa (Wyrównana do wiersza 3) */
+    /* 3. Lewa kolumna: Mapa */
     .location-map {
         grid-row: 3 !important;
         grid-column: 1 !important;
@@ -2465,27 +2466,27 @@ html, body {
         padding: 0 !important;
         width: 100% !important;
         height: 100% !important;
-        min-height: 220px !important;
-        border-radius: 16px !important;
+        min-height: 180px !important;
+        border-radius: 14px !important;
         overflow: hidden !important;
     }
 
     .location-map iframe {
         width: 100% !important;
         height: 100% !important;
-        min-height: 220px !important;
         border: 0 !important;
     }
 
-    /* 4. Prawa kolumna: Szczegóły kontaktowe (Równo w wierszu 3) */
+    /* 4. Prawa kolumna: Ikony wyrównane do wysokości mapy */
     .info-details {
         grid-row: 3 !important;
         grid-column: 2 !important;
         margin: 0 !important;
+        padding: 2px 0 !important;
+        height: 100% !important;
         display: flex !important;
         flex-direction: column !important;
-        justify-content: space-between !important;
-        gap: 12px !important;
+        justify-content: space-between !important; /* Rozkłada ikony równomiernie od góry do dołu mapy */
     }
 
     .info-item {
@@ -2508,7 +2509,7 @@ html, body {
         align-items: center !important;
         justify-content: center !important;
         flex-shrink: 0 !important;
-        margin-top: 2px !important;
+        margin-top: 1px !important;
     }
 
     .info-item h3 {
