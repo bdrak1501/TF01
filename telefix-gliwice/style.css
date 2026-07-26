@@ -961,7 +961,7 @@ canvas#backgroundCanvas {
     
     .sell-phone-section {
         padding: 0 5px !important;
-        margin-top: 15px !important;
+        margin-top: 25px !important;
         margin-bottom: -15px !important;
     }
 
@@ -992,7 +992,7 @@ canvas#backgroundCanvas {
     /* 1. Tytuł */
     .tile-title {
         order: 1 !important;
-        font-size: 16px !important; /* Jeszcze mniejsza, zgrabna czcionka */
+        font-size: 19px !important; /* Jeszcze mniejsza, zgrabna czcionka */
         line-height: 1.1 !important;
         white-space: nowrap !important; 
         text-align: center !important;
