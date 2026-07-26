@@ -2011,79 +2011,81 @@ body {
     justify-content: center; /* Centruje ikony wewnątrz samego kontenera */
     margin-top: 5px;
 }
-@media (max-width: 768px) {
-    /* --- SEKCJA SKUP (Jak działa nasz skup?) --- */
-    
- /* --- WYMUSZONY UKŁAD POZIOMY DLA TELEFONÓW --- */
     
    @media (max-width: 768px) {
-    /* --- SEKCJA SKUP - ELEGANCKI PIONOWY KAFELEK NA MOBILE --- */
+    /* --- SEKCJA SKUP - NOWY UKŁAD (ZDJĘCIE POD TYTUŁEM) --- */
     
     .sell-phone-card {
-        flex-direction: column !important; /* Wracamy do układu pionowego */
+        display: flex !important;
+        flex-direction: column !important; 
         padding: 40px 25px !important;
         margin: 20px 15px !important;
         border-radius: 24px !important;
         align-items: center !important;
         justify-content: center !important;
-        gap: 30px !important; /* Ładny odstęp między górą a obrazkiem */
+        gap: 20px !important; /* Równe odstępy między wszystkimi elementami */
         height: auto !important;
     }
 
-    .tile-content {
-        width: 100% !important;
-        padding-right: 0 !important;
-        display: flex !important;
-        flex-direction: column !important;
-        align-items: center !important; /* Wyśrodkowanie tekstu i przycisku */
+    /* Ukrywamy kontenery "owijające", żeby swobodnie sortować ich zawartość */
+    .tile-content, .tile-images {
+        display: contents !important; 
     }
 
+    /* 1. Tytuł na samej górze (Pozycja 1) */
     .tile-title {
-        font-size: 26px !important; /* Odpowiednio duży, ale mieszczący się nagłówek */
+        order: 1 !important;
+        font-size: 26px !important;
         line-height: 1.3 !important;
         white-space: normal !important; 
         text-align: center !important;
-        margin-bottom: 15px !important;
-    }
-
-    .tile-desc {
-        font-size: 15px !important;
-        text-align: center !important;
-        margin: 0 0 25px 0 !important;
-        line-height: 1.6 !important;
-    }
-
-    .tile-btn {
-        width: 100% !important;
-        max-width: 260px !important; /* Żeby przycisk nie był komicznie szeroki */
-        font-size: 15px !important;
-        padding: 14px 20px !important;
-        text-align: center !important;
-        margin: 0 auto !important;
-        display: block !important;
-    }
-
-    .tile-images {
-        width: 100% !important;
         margin: 0 !important;
+    }
+
+    /* 2. Obrazek wciśnięty POD TYTUŁ (Pozycja 2) */
+    .tile-image {
+        order: 2 !important;
+        width: 100% !important;
         display: flex !important;
         justify-content: center !important;
-        align-items: center !important;
-    }
-
-    .tile-image {
-        max-width: 100% !important;
+        margin: 10px 0 !important;
     }
 
     .tile-image img {
         width: 100% !important;
-        max-width: 220px !important; /* POWIĘKSZONY OBRAZEK (wcześniej było 130px) */
+        max-width: 220px !important; 
         height: auto !important;
-        margin: 0 auto !important;
         display: block !important;
+        margin: 0 !important;
+        margin-top: 0 !important; /* Resetuje gigantyczny margines (50px) z wersji na komputery */
+    }
+
+    /* 3. Opis ląduje POD OBRAZKIEM (Pozycja 3) */
+    .tile-desc {
+        order: 3 !important;
+        font-size: 15px !important;
+        text-align: center !important;
+        margin: 0 !important;
+        line-height: 1.6 !important;
+    }
+
+    /* 4. Przycisk na samym dole (Pozycja 4) + IDEALNE WYŚRODKOWANIE */
+    .tile-btn {
+        order: 4 !important;
+        /* Wymuszenie wyśrodkowania tekstu wewnątrz przycisku za pomocą Flexboxa: */
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        
+        width: 100% !important;
+        max-width: 260px !important; 
+        font-size: 15px !important;
+        padding: 14px 20px !important;
+        margin: 10px auto 0 auto !important;
+        box-sizing: border-box !important;
     }
 }
-}/* ==========================================
+/* ==========================================
    MOBILNY HEADER (Dopasowanie do telefonów)
    ========================================== */
 @media (max-width: 768px) {
