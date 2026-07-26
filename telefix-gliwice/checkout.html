@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout – TeleFix</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background: #f5f7fb;
+            color: #111;
+        }
+
+        .checkout-wrapper {
+            max-width: 1100px;
+            margin: 100px auto 80px;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: 1fr 420px;
+            gap: 40px;
+        }
+
+        @media (max-width: 900px) {
+            .checkout-wrapper { grid-template-columns: 1fr; margin-top: 40px; }
+        }
+
+        .checkout-form, .checkout-summary {
+            background: #fff;
+            padding: 40px;
+            border-radius: 25px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.06);
+        }
+
+        h2, h3 { margin-top: 0; margin-bottom: 25px; }
+
+        /* Delivery Options Styles */
+        .delivery-options {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 30px;
+        }
+
+        .delivery-card {
+            border: 2px solid #f0f0f0;
+            border-radius: 15px;
+            padding: 15px 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.3s;
+            background: #fff;
+        }
+
+        .delivery-card:hover { border-color: #111; transform: translateY(-2px); }
+        .delivery-card.active {
+            border-color: #111;
+            background: #fafafa;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        .delivery-card span {
+            font-size: 12px;
+            font-weight: 600;
+            display: block;
+            margin-top: 5px;
+        }
+
+        .info-box {
+            background: #eef2ff;
+            padding: 15px;
+            border-radius: 12px;
+            border-left: 4px solid #111;
+            margin-bottom: 25px;
+            font-size: 14px;
+            line-height: 1.5;
+            display: none;
+        }
+
+        /* Form Inputs */
+        .input-group { margin-bottom: 15px; }
+        input {
+            width: 100%;
+            padding: 14px;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+            font-family: inherit;
+            transition: 0.2s;
+        }
+        input:focus {
+            border-color: #111;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(0,0,0,0.05);
+        }
+
+        /* Summary Styles */
+        .cart-product {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+            align-items: center;
+            padding-bottom: 15px;
+        }
+        .cart-product img {
+            width: 65px; height: 65px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+        .cart-product div { font-size: 13px; flex: 1; }
+        .cart-product strong { display: block; font-size: 14px; margin-bottom: 2px; }
+
+        .order-btn {
+            width: 100%;
+            background: #111;
+            color: #fff;
+            border: none;
+            padding: 18px;
+            border-radius: 35px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: 0.3s;
+        }
+        .order-btn:hover { background: #333; transform: scale(1.02); }
+    </style>
+</head>
+<body>
+
+<div class="checkout-wrapper">
+    <div class="checkout-form">
+        <h2>Metoda dostawy</h2>
+        <div class="delivery-options">
+            <div class="delivery-card active" onclick="selectDelivery('inpost')">
+                <span>📦 InPost</span>
+            </div>
+            <div class="delivery-card" onclick="selectDelivery('pobranie')">
+                <span>🚚 Pobranie</span>
+            </div>
+            <div class="delivery-card" onclick="selectDelivery('odbior')">
+                <span>🏠 Odbiór</span>
+            </div>
+        </div>
+
+        <div id="delivery-info" class="info-box"></div>
+
+        <div id="form-fields">
+            <h2>Dane kontaktowe</h2>
+            <div class="input-group"><input id="name" placeholder="Imię i nazwisko"></div>
+            <div class="input-group"><input id="email" type="email" placeholder="Adres e-mail"></div>
+            <div class="input-group"><input id="phone" type="tel" placeholder="Numer telefonu"></div>
+            
+            <div id="inpost-fields" style="display: none;">
+                <div class="input-group"><input id="paczkomat" placeholder="Kod Paczkomatu (np. GLI01A)"></div>
+                <div class="input-group" style="display: grid; grid-template-columns: 1fr 2fr; gap: 10px;">
+                    <input id="postcode" placeholder="Kod pocztowy">
+                    <input id="city" placeholder="Miasto">
+                </div>
+            </div>
+
+            <div class="input-group" id="address-container">
+                <input id="address" placeholder="Adres dostawy (Ulica, numer, miasto)">
+            </div>
+        </div>
+    </div>
+
+    <div class="checkout-summary">
+        <h3>Twoje zamówienie</h3>
+        <div id="order-products"></div>
+        <h3 id="order-total" style="margin-top: 20px;">Razem: 0 zł</h3>
+        <button class="order-btn" onclick="placeOrder()">Złóż zamówienie i zapłać</button>
+    </div>
+</div>
+
+<script>
+    // 🛒 ŁADOWANIE KOSZYKA
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+    const container = document.getElementById("order-products");
+    let total = 0;
+
+    function renderCart() {
+        container.innerHTML = "";
+        total = 0;
+        cart.forEach(product => {
+            const price = parseInt(product.price.replace(/\D/g, ""));
+            total += price;
+            container.innerHTML += `
+                <div class="cart-product">
+                    <img src="produkty/${product.image}">
+                    <div>
+                        <strong>${product.name}</strong>
+                        <span>${product.memory} • ${product.condition}</span><br>
+                        <span>${product.price}</span>
+                    </div>
+                </div>
+            `;
+        });
+        document.getElementById("order-total").textContent = `Razem: ${total.toLocaleString("pl-PL")} zł`;
+    }
+
+    // 🚚 LOGIKA DOSTAWY
+    let selectedMethod = 'inpost';
+    const infoBox = document.getElementById('delivery-info');
+    const addressContainer = document.getElementById('address-container');
+    const inpostFields = document.getElementById('inpost-fields');
+    const orderBtn = document.querySelector('.order-btn');
+
+    function selectDelivery(method) {
+        selectedMethod = method;
+        document.querySelectorAll('.delivery-card').forEach(card => card.classList.remove('active'));
+        
+        // Ustawienie aktywnej karty
+        if (event && event.currentTarget) {
+            event.currentTarget.classList.add('active');
+        }
+
+        infoBox.style.display = 'block';
+        orderBtn.innerText = "Złóż zamówienie i zapłać";
+
+        // Reset widoczności pól dodatkowych
+        addressContainer.style.display = 'none';
+        inpostFields.style.display = 'none';
+
+        if (method === 'odbior') {
+            infoBox.innerHTML = "📍 <strong>Punkt odbioru:</strong> Gliwice, ul. Przykład 12. Płatność na miejscu (karta/gotówka).";
+            orderBtn.innerText = "Rezerwuję i odbieram";
+        } else if (method === 'pobranie') {
+            infoBox.innerHTML = "🚚 <strong>Płatność u kuriera:</strong> Zapłacisz przy odbiorze. Podaj dokładny adres dostawy.";
+            addressContainer.style.display = 'block';
+            orderBtn.innerText = "Zamawiam z obowiązkiem zapłaty";
+        } else {
+            infoBox.innerHTML = "📦 <strong>InPost:</strong> Podaj kod paczkomatu oraz swoje miasto. Płatność online Stripe.";
+            inpostFields.style.display = 'block';
+        }
+    }
+
+    // 🚀 WYŚLIJ ZAMÓWIENIE
+    async function placeOrder() {
+        const name = document.getElementById("name").value;
+        const email = document.getElementById("email").value;
+        const phone = document.getElementById("phone").value;
+        
+        let finalAddress = "";
+
+        // Logika budowania adresu zależnie od metody
+        if (selectedMethod === 'odbior') {
+            finalAddress = "Odbiór osobisty - Gliwice";
+        } else if (selectedMethod === 'inpost') {
+            const p = document.getElementById("paczkomat").value;
+            const pc = document.getElementById("postcode").value;
+            const c = document.getElementById("city").value;
+            
+            if (!p || !pc || !c) {
+                alert("Proszę podać kod Paczkomatu, kod pocztowy i miasto.");
+                return;
+            }
+            finalAddress = `Paczkomat: ${p}, ${pc} ${c}`;
+        } else {
+            finalAddress = document.getElementById("address").value;
+            if (!finalAddress) {
+                alert("Proszę podać adres do wysyłki pobraniowej.");
+                return;
+            }
+        }
+
+        if (!name || !email || !phone) {
+            alert("Proszę uzupełnić dane kontaktowe.");
+            return;
+        }
+
+        const orderData = { 
+            name, 
+            email, 
+            phone, 
+            address: finalAddress, 
+            products: cart, 
+            total, 
+            method: selectedMethod 
+        };
+
+        try {
+            const endpoint = (selectedMethod === 'inpost') ? "/create-checkout-session" : "/create-manual-order";
+            
+            const res = await fetch(endpoint, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(orderData)
+            });
+
+            const data = await res.json();
+
+            if (selectedMethod === 'inpost' && data.url) {
+                window.location.href = data.url;
+            } else if (res.ok) {
+                localStorage.removeItem("cart");
+                window.location.href = "/success.html";
+            } else {
+                alert("Błąd serwera: " + (data.error || "Spróbuj ponownie."));
+            }
+        } catch (e) {
+            console.error(e);
+            alert("Błąd połączenia z serwerem.");
+        }
+    }
+
+    // Inicjalizacja
+    renderCart();
+    // Startujemy domyślnie z InPostem
+    selectDelivery('inpost');
+</script>
+
+</body>
+</html>
