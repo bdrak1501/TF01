@@ -1173,4 +1173,91 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 });
+
+document.addEventListener("DOMContentLoaded", function() {
+    // 1. Wykonujemy kod tylko na urządzeniach mobilnych
+    if (window.innerWidth <= 768) {
+        
+        // 2. Sprawdzamy, czy użytkownik już wcześniej zamknął/przewinął podpowiedź
+        const hasScrolled = localStorage.getItem('telefixSwipeHintDismissed');
+        
+        if (!hasScrolled) {
+            const repairSteps = document.querySelectorAll('.repair-step');
+            
+            // 3. Dodajemy element podpowiedzi do każdego kroku
+            repairSteps.forEach(step => {
+                const hint = document.createElement('div');
+                hint.className = 'swipe-hint-overlay';
+                // Ikona sugerująca przesunięcie w lewo/prawo (możesz tu wstawić image_47111c.png)
+                hint.innerHTML = '<i class="fa-solid fa-arrows-left-right"></i> Przesuń kafelki';
+                step.appendChild(hint);
+            });
+
+            const grids = document.querySelectorAll('.repair-grid');
+            let isHintVisible = false;
+
+            // 4. Funkcja odpowiedzialna za pokazanie podpowiedzi dla aktywnego kroku
+            const showHintForActiveStep = () => {
+                // Jeśli użytkownik już przewijał w tej sesji, przerywamy
+                if (localStorage.getItem('telefixSwipeHintDismissed')) return; 
+
+                const activeStep = document.querySelector('.repair-step.active');
+                if (activeStep) {
+                    const hint = activeStep.querySelector('.swipe-hint-overlay');
+                    if (hint) {
+                        // Opóźnienie 800ms, aby najpierw załadowała się sekcja
+                        setTimeout(() => {
+                            if (!localStorage.getItem('telefixSwipeHintDismissed')) {
+                                hint.classList.add('show');
+                                isHintVisible = true;
+                            }
+                        }, 800);
+                    }
+                }
+            };
+
+            // 5. Funkcja wygaszająca podpowiedź przy interakcji (scroll lub dotyk)
+            const dismissHint = function() {
+                document.querySelectorAll('.swipe-hint-overlay').forEach(h => {
+                    h.classList.remove('show');
+                });
+                
+                // Zapisujemy informację, że użytkownik już wie jak to działa
+                localStorage.setItem('telefixSwipeHintDismissed', 'true');
+                
+                // Optymalizacja: usuwamy nasłuchiwania, gdy nie są już potrzebne
+                grids.forEach(g => {
+                    g.removeEventListener('scroll', dismissHint);
+                    g.removeEventListener('touchstart', dismissHint);
+                });
+            };
+
+            // 6. Przypisanie zdarzeń interakcji do siatki z kafelkami
+            grids.forEach(grid => {
+                grid.addEventListener('scroll', dismissHint, { passive: true });
+                grid.addEventListener('touchstart', dismissHint, { passive: true });
+            });
+
+            // 7. Uruchomienie początkowe
+            showHintForActiveStep();
+
+            // 8. Nasłuchiwanie zmian klas (gdy użytkownik przechodzi do Kroku 2 lub 3)
+            // Dzięki temu podpowiedź pojawi się również na kolejnych krokach, 
+            // jeśli użytkownik w kroku 1 np. kliknął od razu na widoczny kafelek i go nie przesuwał.
+            const observer = new MutationObserver((mutations) => {
+                mutations.forEach((mutation) => {
+                    if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                        if (mutation.target.classList.contains('active')) {
+                            showHintForActiveStep();
+                        }
+                    }
+                });
+            });
+
+            repairSteps.forEach(step => {
+                observer.observe(step, { attributes: true });
+            });
+        }
+    }
+});
 </script>

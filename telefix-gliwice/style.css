@@ -2531,3 +2531,48 @@ html, body {
         margin: 0 !important;
     }
 }
+/* ===== PODPOWIEDŹ SWIPE DLA URZĄDZEŃ MOBILNYCH ===== */
+.swipe-hint-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(17, 17, 17, 0.85);
+    color: #ffffff;
+    padding: 12px 24px;
+    border-radius: 30px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    pointer-events: none; /* Kluczowe: nie blokuje kliknięć w kafelki pod spodem */
+    z-index: 100;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.4s ease, visibility 0.4s ease;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(6px);
+    white-space: nowrap;
+}
+
+/* Klasa aktywująca pokazanie podpowiedzi */
+.swipe-hint-overlay.show {
+    opacity: 1;
+    visibility: visible;
+    animation: pulseHint 2s infinite;
+}
+
+/* Subtelna animacja pulsowania i przesuwania się na boki */
+@keyframes pulseHint {
+    0% { transform: translate(-50%, -50%) translateX(0) scale(1); }
+    25% { transform: translate(-50%, -50%) translateX(-5px) scale(1.02); }
+    50% { transform: translate(-50%, -50%) translateX(0) scale(1); }
+    75% { transform: translate(-50%, -50%) translateX(5px) scale(1.02); }
+    100% { transform: translate(-50%, -50%) translateX(0) scale(1); }
+}
+
+/* Zabezpieczenie kontenera */
+.repair-step {
+    position: relative;
+}
