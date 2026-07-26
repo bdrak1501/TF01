@@ -1009,8 +1009,8 @@ canvas#backgroundCanvas {
     }
 
    .tile-image img {
-    width: 20% !important;      /* Zmniejszone z 50% o 20% */
-    max-width: 44px !important;  /* Zmniejszone z 80px o 20% */
+    width: 10% !important;      /* Zmniejszone z 50% o 20% */
+    max-width: 14px !important;  /* Zmniejszone z 80px o 20% */
     height: auto !important;
     display: block !important;
     margin: 0 !important;
@@ -2488,7 +2488,7 @@ html, body {
         display: flex !important;
         flex-direction: column !important;
         justify-content: center !important; /* Wyśrodkowanie grupy w pionie względem mapy */
-        gap: 6px !important; /* Zmniejszony odstęp między informacjami */
+        gap: 10px !important; /* Zmniejszony odstęp między informacjami */
     }
 
     .info-item {
