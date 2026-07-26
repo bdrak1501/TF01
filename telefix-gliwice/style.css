@@ -956,73 +956,83 @@ canvas#backgroundCanvas {
   100% {transform: rotate(360deg);}
 }
 
-@media (max-width: 992px) {
- /* --- NAPRAWIONA SEKCJA SKUP (Układ poziomy na mobile) --- */
+@media (max-width: 768px) {
+    /* --- SEKCJA SKUP - NAPRAWIONY KLIKALNY PRZYCISK --- */
     
     .sell-phone-card {
-        flex-direction: row !important; /* Wymuszenie układu poziomego tak jak na PC */
+        display: flex !important;
+        flex-direction: column !important; 
         padding: 20px 15px !important;
-        margin: 20px 10px !important;
-        align-items: center !important;
-        justify-content: space-between !important;
-        gap: 15px !important; /* Zmniejszony odstęp między tekstem a obrazkiem */
-        scale: 1 !important; /* Wyłączenie sztucznego powiększenia */
         border-radius: 20px !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 8px !important;
         height: auto !important;
+        
+        /* Zewnętrzne odstępy sekcji (zgodnie z tym, co ustawialiśmy) */
+        margin-top: 5px !important;
+        margin-bottom: -15px !important;
     }
 
+    /* Kontener tekstowy ustawiamy jako kolumnę, żeby elementy w nim poukładać po kolei */
     .tile-content {
-        flex: 1.5 !important; /* Tekst zajmuje nieco więcej miejsca niż obrazek */
-        text-align: left !important; /* Wyrównanie do lewej, jak na PC */
-        padding-right: 0 !important;
-        margin-bottom: 0 !important;
-        width: auto !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        width: 100% !important;
+        padding: 0 !important;
     }
 
+    /* 1. Tytuł na samej górze (w jednej linii) */
     .tile-title {
-        font-size: 18px !important; /* Pomniejszony nagłówek, aby zmieścił się w jednej/dwóch liniach */
-        line-height: 1.3 !important;
-        white-space: normal !important;
-        text-align: left !important;
-        margin-bottom: 10px !important;
+        order: 1 !important;
+        font-size: 22px !important;
+        line-height: 1.2 !important;
+        white-space: nowrap !important; 
+        text-align: center !important;
+        margin: 0 0 8px 0 !important;
     }
 
-    .tile-desc {
-        font-size: 12px !important; /* Pomniejszony opis */
-        text-align: left !important;
-        margin: 0 0 15px 0 !important;
-        line-height: 1.4 !important;
-    }
-
-    .tile-btn {
-        width: auto !important; 
-        display: inline-block !important;
-        padding: 10px 20px !important;
-        font-size: 12px !important;
-        margin: 0 !important;
-    }
-
+    /* 2. Kontener ze zdjęciem pod tytułem */
     .tile-images {
-        flex: 1 !important; /* Obrazek zajmuje resztę miejsca */
-        width: auto !important;
-        margin: 0 !important;
+        order: 2 !important;
         display: flex !important;
         justify-content: center !important;
-        align-items: center !important;
-        position: static !important;
-    }
-
-    .tile-image {
-        max-width: 100% !important;
+        width: 100% !important;
+        margin: 0 0 8px 0 !important;
     }
 
     .tile-image img {
         width: 100% !important;
-        max-width: 110px !important; /* Optymalny rozmiar pudełka na mobile */
+        max-width: 320px !important; 
         height: auto !important;
-        scale: 1 !important;
+        display: block !important;
         margin: 0 !important;
-        position: static !important;
+    }
+
+    /* 3. Opis pod zdjęciem */
+    .tile-desc {
+        order: 3 !important;
+        font-size: 14px !important;
+        text-align: center !important;
+        margin: 0 0 12px 0 !important;
+        line-height: 1.5 !important;
+    }
+
+    /* 4. Przycisk na samym dole - teraz w pełni KLIKALNY */
+    .tile-btn {
+        order: 4 !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        width: 100% !important;
+        max-width: 260px !important; 
+        font-size: 14px !important;
+        padding: 12px 20px !important;
+        margin: 0 auto !important;
+        box-sizing: border-box !important;
+        position: relative !important;
+        z-index: 10 !important; /* Gwarantuje, że przycisk jest na wierzchu i reaguje na dotyk */
     }
 }
 body {
