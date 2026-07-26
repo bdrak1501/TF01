@@ -2334,3 +2334,35 @@ html, body {
         transform: rotate(-5deg) !important; /* Zachowanie oryginalnego obrotu */
     }
 }
+
+@media (max-width: 768px) {
+    /* --- NAWIGACJA / HEADER - WYŚRODKOWANIE I ODCHUDZENIE --- */
+    
+    header, .header, nav, .navbar {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        padding: 10px 15px !important; /* Zmniejsza wysokość paska (góra/dół) */
+        margin: 0 !important;
+    }
+
+    /* Wycentrowanie logo */
+    .logo, header img, .header-logo {
+        display: block !important;
+        margin: 0 auto 6px auto !important; /* Odstęp między logo a menu poniżej */
+        text-align: center !important;
+    }
+
+    /* Wycentrowanie linków nawigacyjnych (SKLEP, SKUP, SERWIS) */
+    .nav-links, .menu, header ul {
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        gap: 20px !important; /* Odstępy między słowami Sklep, Skup, Serwis */
+        padding: 0 !important;
+        margin: 0 !important;
+        list-style: none !important;
+        text-align: center !important;
+    }
+}
