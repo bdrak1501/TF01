@@ -1009,8 +1009,8 @@ canvas#backgroundCanvas {
     }
 
     .tile-image img {
-        width: 80% !important;
-        max-width: 130px !important; /* Małe, schludne pudełko/ikona */
+       width: 50% !important; /* <--- Zmniejszone z 80% */
+    max-width: 80px !important; /* <--- Zmniejszone z 130px */
         height: auto !important;
         display: block !important;
         margin: 0 !important;
@@ -2417,5 +2417,100 @@ html, body {
     .repair-grid::-webkit-scrollbar-thumb {
         background: rgba(0, 0, 0, 0.2);
         border-radius: 10px;
+    }
+}
+/* ========================================================
+   SEKCJA LOKALIZACJI NA TELEFONIE (MAPA + IKONY OBOK SIEBIE)
+   ======================================================== */
+
+@media (max-width: 768px) {
+    .location-section {
+        padding: 30px 10px !important;
+    }
+
+    .location-container {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important; /* Dwie równe kolumny obok siebie */
+        gap: 12px !important;
+        align-items: stretch !important;
+    }
+
+    /* Umożliwia wyciągnięcie nagłówków bezpośrednio do siatki Grid */
+    .location-info {
+        display: contents !important;
+    }
+
+    /* Napis "Siedziba TeleFix" i podtytuł na samej górze (cała szerokość) */
+    .location-info h2 {
+        grid-column: 1 / -1 !important;
+        text-align: center !important;
+        font-size: 22px !important;
+        margin: 0 0 2px 0 !important;
+    }
+
+    .location-subtitle {
+        grid-column: 1 / -1 !important;
+        text-align: center !important;
+        font-size: 12px !important;
+        margin-bottom: 12px !important;
+    }
+
+    /* Lewa kolumna: Mapa */
+    .location-map {
+        grid-column: 1 !important;
+        width: 100% !important;
+        height: 100% !important;
+        min-height: 210px !important;
+        border-radius: 16px !important;
+        overflow: hidden !important;
+    }
+
+    .location-map iframe {
+        width: 100% !important;
+        height: 100% !important;
+        min-height: 210px !important;
+    }
+
+    /* Prawa kolumna: Szczegóły kontaktowe i ikonki */
+    .info-details {
+        grid-column: 2 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: space-between !important;
+        gap: 8px !important;
+    }
+
+    .info-item {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        text-align: left !important;
+        gap: 8px !important;
+    }
+
+    .info-item i {
+        font-size: 12px !important;
+        padding: 7px !important;
+        width: 12px !important;
+        height: 12px !important;
+        min-width: 12px !important;
+        min-height: 12px !important;
+        border-radius: 50% !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        flex-shrink: 0 !important;
+    }
+
+    .info-item h3 {
+        font-size: 11px !important;
+        margin: 0 0 1px 0 !important;
+        font-weight: 700 !important;
+    }
+
+    .info-item p {
+        font-size: 10px !important;
+        line-height: 1.2 !important;
+        margin: 0 !important;
     }
 }
