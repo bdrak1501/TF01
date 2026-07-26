@@ -971,7 +971,7 @@ canvas#backgroundCanvas {
         /* Bardzo małe wypełnienie wewnętrzne, żeby kafelek był niski */
         padding: 10px 10px !important; 
         /* Karta zajmuje teraz tylko 78% szerokości ekranu – mocno zwężona */
-        max-width: 60% !important;
+        max-width: 69% !important;
         margin: 0 auto !important;
         
         border-radius: 14px !important;
