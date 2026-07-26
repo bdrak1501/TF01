@@ -2111,31 +2111,42 @@ body {
 /* ==========================================
    MOBILNY HEADER (Dopasowanie do telefonów)
    ========================================== */
+
 @media (max-width: 768px) {
     .hero-header {
         position: fixed !important;
-        padding: 10px 15px !important; /* Mniejszy padding, żeby header nie zajmował pół ekranu */
+        padding: 10px 15px !important;
     }
 
     .hero-inner {
         display: flex !important;
-        flex-direction: column !important; /* Logo ląduje na górze, nawigacja pod nim */
-        align-items: center !important;
-        gap: 10px !important; /* Odstęp między logo a menu */
+        flex-direction: column !important;
+        align-items: center !important; /* Wyśrodkowanie w poziomie */
+        justify-content: center !important;
+        text-align: center !important; /* Wymuszenie centrowania tekstu/logo */
+        gap: 8px !important;
+    }
+
+    .logo {
+        display: flex !important;
+        justify-content: center !important;
+        width: 100% !important;
     }
 
     .nav-links {
         display: flex !important;
-        flex-direction: row !important; /* Linki zostają w jednym rzędzie */
-        justify-content: center !important;
-        flex-wrap: wrap !important; /* Jeśli ekran będzie super mały, linki bezpiecznie przejdą do nowej linii */
-        gap: 12px !important; /* Mniejsze odstępy między linkami, żeby się zmieściły */
+        flex-direction: row !important;
+        justify-content: center !important; /* Wyśrodkowanie zakładek */
+        align-items: center !important;
+        flex-wrap: wrap !important;
+        gap: 16px !important;
         padding: 0 !important;
-        margin: 0 !important;
+        margin: 0 auto !important;
+        width: 100% !important;
     }
 
     .nav-links li a {
-        font-size: 12px !important; /* Mniejsza, ale wciąż czytelna czcionka */
+        font-size: 13px !important;
         letter-spacing: 0.5px !important;
     }
 }
