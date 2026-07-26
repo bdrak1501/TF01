@@ -1017,8 +1017,8 @@ html body .tile-image img {
     object-fit: contain !important; /* Zapobiega rozciąganiu/zniekształcaniu obrazka */
     display: block !important;
     margin: 0 !important;
-    margin-top: -100px !important; /* Usunięcie dodatkowego marginesu */
-    margin-bottom: -100px !important; /* Usunięcie dodatkowego marginesu */
+    margin-top: -20px !important; /* Usunięcie dodatkowego marginesu */
+    margin-bottom: -20px !important; /* Usunięcie dodatkowego marginesu */
 }
 
     /* 3. Opis */
