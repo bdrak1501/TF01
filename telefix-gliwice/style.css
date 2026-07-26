@@ -957,27 +957,27 @@ canvas#backgroundCanvas {
 }
 
 @media (max-width: 768px) {
-    /* --- SEKCJA SKUP - REALNIE MNIEJSZA, KOMPAKTOWA KARTA --- */
+    /* --- SEKCJA SKUP - BARDZO KOMPAKTOWA, MAŁA KARTA --- */
     
     .sell-phone-section {
-        padding: 5px 5px !important;
-        margin-top: 0px !important;
-        margin-bottom: -10px !important;
+        padding: 0 5px !important;
+        margin-top: -5px !important;
+        margin-bottom: -15px !important;
     }
 
     .sell-phone-card {
         display: flex !important;
         flex-direction: column !important; 
-        /* Mocno zmniejszony padding, dzięki czemu kafelek zrob się niski i zgrabny */
-        padding: 12px 12px !important; 
-        /* Węższa karta, żeby nie zajmowała całego ekranu na boki */
-        max-width: 85% !important;
+        /* Bardzo małe wypełnienie wewnętrzne, żeby kafelek był niski */
+        padding: 10px 10px !important; 
+        /* Karta zajmuje teraz tylko 78% szerokości ekranu – mocno zwężona */
+        max-width: 78% !important;
         margin: 0 auto !important;
         
-        border-radius: 16px !important;
+        border-radius: 14px !important;
         align-items: center !important;
         justify-content: center !important;
-        gap: 4px !important;
+        gap: 3px !important;
         height: auto !important;
     }
 
@@ -992,25 +992,25 @@ canvas#backgroundCanvas {
     /* 1. Tytuł */
     .tile-title {
         order: 1 !important;
-        font-size: 18px !important; /* Zmniejszona czcionka tytułu */
+        font-size: 16px !important; /* Jeszcze mniejsza, zgrabna czcionka */
         line-height: 1.1 !important;
         white-space: nowrap !important; 
         text-align: center !important;
-        margin: 0 0 4px 0 !important;
+        margin: 0 0 3px 0 !important;
     }
 
-    /* 2. Zdjęcie - teraz zgrabniejsze i mniejsze */
+    /* 2. Zdjęcie - pomniejszone, żeby pasowało do małej karty */
     .tile-images {
         order: 2 !important;
         display: flex !important;
         justify-content: center !important;
         width: 100% !important;
-        margin: 0 0 4px 0 !important;
+        margin: 0 0 3px 0 !important;
     }
 
     .tile-image img {
         width: 100% !important;
-        max-width: 200px !important; /* Wyraźnie mniejsze zdjęcie (było 270px) */
+        max-width: 150px !important; /* Małe, schludne pudełko/ikona */
         height: auto !important;
         display: block !important;
         margin: 0 !important;
@@ -1019,10 +1019,10 @@ canvas#backgroundCanvas {
     /* 3. Opis */
     .tile-desc {
         order: 3 !important;
-        font-size: 12.5px !important; /* Drobniejszy, czytelny tekst */
+        font-size: 11.5px !important; /* Drobny, zwięzły tekst */
         text-align: center !important;
-        margin: 0 0 8px 0 !important;
-        line-height: 1.4 !important;
+        margin: 0 0 6px 0 !important;
+        line-height: 1.35 !important;
     }
 
     /* 4. Przycisk */
@@ -1032,9 +1032,9 @@ canvas#backgroundCanvas {
         justify-content: center !important;
         align-items: center !important;
         width: 100% !important;
-        max-width: 210px !important; /* Węższy przycisk dopasowany do mniejszej karty */
-        font-size: 12.5px !important;
-        padding: 8px 14px !important;
+        max-width: 180px !important; /* Wąski przycisk dopasowany do całości */
+        font-size: 11.5px !important;
+        padding: 7px 12px !important;
         margin: 0 auto !important;
         box-sizing: border-box !important;
         position: relative !important;
