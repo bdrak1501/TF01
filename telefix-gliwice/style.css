@@ -2281,7 +2281,10 @@ html, body {
     /* Wymuszamy oryginalny kształt i rozmiar kafelków na telefonie */
     .repair-card {
         flex: 0 0 auto !important;        /* Kluczowe: kafelek nie może się ścisnąć/zmniejszyć */
-        width: 140px !important;          /* Szerokość kafelka na telefonie (dopasuj, jeśli chcesz większe) */
+        
+        /* Zmiana ze sztywnego 140px na responsywne wyliczenie: */
+        width: calc(40vw - 16px) !important; 
+        
         min-height: 50px !important;      /* Minimalna wysokość */
         scroll-snap-align: start;
         
