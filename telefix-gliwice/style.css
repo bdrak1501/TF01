@@ -2531,12 +2531,14 @@ html, body {
         margin: 0 !important;
     }
 }
-/* ===== PODPOWIEDŹ SWIPE DLA URZĄDZEŃ MOBILNYCH ===== */
+/* ===== PODPOWIEDŹ SWIPE DLA URZĄDZEŃ MOBILNYCH (POD KAFELKAMI) ===== */
 .swipe-hint-overlay {
     position: absolute;
-    top: 50%;
+    /* Pozycjonowanie pod kafelkami */
+    bottom: -50px; /* Zmień tę wartość (np. na -40px lub -60px), aby idealnie dopasować odstęp */
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translateX(-50%);
+    
     background: rgba(17, 17, 17, 0.85);
     color: #ffffff;
     padding: 12px 24px;
@@ -2546,7 +2548,7 @@ html, body {
     gap: 10px;
     font-size: 14px;
     font-weight: 600;
-    pointer-events: none; /* Kluczowe: nie blokuje kliknięć w kafelki pod spodem */
+    pointer-events: none; /* Nie blokuje kliknięć w elementy pod spodem */
     z-index: 100;
     opacity: 0;
     visibility: hidden;
@@ -2563,16 +2565,18 @@ html, body {
     animation: pulseHint 2s infinite;
 }
 
-/* Subtelna animacja pulsowania i przesuwania się na boki */
+/* Zaktualizowana animacja - uwzględnia tylko oś X (lewo-prawo) */
 @keyframes pulseHint {
-    0% { transform: translate(-50%, -50%) translateX(0) scale(1); }
-    25% { transform: translate(-50%, -50%) translateX(-5px) scale(1.02); }
-    50% { transform: translate(-50%, -50%) translateX(0) scale(1); }
-    75% { transform: translate(-50%, -50%) translateX(5px) scale(1.02); }
-    100% { transform: translate(-50%, -50%) translateX(0) scale(1); }
+    0% { transform: translateX(-50%) translateX(0) scale(1); }
+    25% { transform: translateX(-50%) translateX(-5px) scale(1.02); }
+    50% { transform: translateX(-50%) translateX(0) scale(1); }
+    75% { transform: translateX(-50%) translateX(5px) scale(1.02); }
+    100% { transform: translateX(-50%) translateX(0) scale(1); }
 }
 
 /* Zabezpieczenie kontenera */
 .repair-step {
     position: relative;
+    /* Jeśli przy wartości bottom: -50px dymek ucina się na dole ekranu/sekcji, 
+       dodaj margines dolny do tego kontenera, np: margin-bottom: 60px; */
 }
