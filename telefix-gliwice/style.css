@@ -2535,7 +2535,7 @@ html, body {
 .swipe-hint-overlay {
     position: absolute;
     /* Pozycjonowanie pod kafelkami */
-    bottom: -50px; /* Zmień tę wartość (np. na -40px lub -60px), aby idealnie dopasować odstęp */
+    bottom: -10px; /* Zmień tę wartość (np. na -40px lub -60px), aby idealnie dopasować odstęp */
     left: 50%;
     transform: translateX(-50%);
     
@@ -2574,9 +2574,14 @@ html, body {
     100% { transform: translateX(-50%) translateX(0) scale(1); }
 }
 
-/* Zabezpieczenie kontenera */
 .repair-step {
     position: relative;
-    /* Jeśli przy wartości bottom: -50px dymek ucina się na dole ekranu/sekcji, 
-       dodaj margines dolny do tego kontenera, np: margin-bottom: 60px; */
+    padding-bottom: 70px; /* Robimy "kieszeń" na dole na nasz dymek */
+    overflow: visible !important; /* Wymuszamy, żeby nic nie było ucinane */
+}
+
+.swipe-hint-overlay {
+    /* ... reszta kodu bez zmian ... */
+    bottom: 10px; /* Teraz pozycjonujemy go na samym dole rozciągniętego kontenera */
+    /* ... reszta kodu bez zmian ... */
 }
