@@ -2334,32 +2334,31 @@ html, body {
         transform: rotate(-5deg) !important; /* Zachowanie oryginalnego obrotu */
     }
 }
-
 @media (max-width: 768px) {
-    /* --- NAWIGACJA / HEADER - WYŚRODKOWANIE I ODCHUDZENIE --- */
+    /* --- NAWIGACJA - MNIEJSZY ODSTĘP MIĘDZY LOGIEM A MENU --- */
     
     header, .header, nav, .navbar {
         display: flex !important;
         flex-direction: column !important;
         align-items: center !important;
         justify-content: center !important;
-        padding: 10px 15px !important; /* Zmniejsza wysokość paska (góra/dół) */
+        padding: 8px 15px !important;
         margin: 0 !important;
     }
 
-    /* Wycentrowanie logo */
+    /* Logo z mniejszym marginesem od dołu (tutaj zmniejszasz przerwę) */
     .logo, header img, .header-logo {
         display: block !important;
-        margin: 0 auto 6px auto !important; /* Odstęp między logo a menu poniżej */
+        margin: 0 auto 2px auto !important; /* <--- Zmniejszone z 6px na 2px (lub wpisz 0px, jeśli mają być styk) */
         text-align: center !important;
     }
 
-    /* Wycentrowanie linków nawigacyjnych (SKLEP, SKUP, SERWIS) */
+    /* Linki nawigacyjne (SKLEP, SKUP, SERWIS) */
     .nav-links, .menu, header ul {
         display: flex !important;
         justify-content: center !important;
         align-items: center !important;
-        gap: 20px !important; /* Odstępy między słowami Sklep, Skup, Serwis */
+        gap: 20px !important;
         padding: 0 !important;
         margin: 0 !important;
         list-style: none !important;
