@@ -996,7 +996,7 @@ canvas#backgroundCanvas {
     justify-content: center !important;
     width: 100% !important;
     /* Zmieniono 3px na np. -10px (przyciąga tekst znajdujący się poniżej) */
-    margin: -20px -20px -10px 0 !important;
+    margin: -200px -200px -10px 0 !important;
 }
    /* Zwiększona specyficzność selektora */
 html body .tile-image img {
