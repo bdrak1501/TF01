@@ -992,7 +992,7 @@ canvas#backgroundCanvas {
     /* 1. Tytuł */
     .tile-title {
         order: 1 !important;
-        font-size: 19px !important; /* Jeszcze mniejsza, zgrabna czcionka */
+        font-size: 20px !important; /* Jeszcze mniejsza, zgrabna czcionka */
         line-height: 1.1 !important;
         white-space: nowrap !important; 
         text-align: center !important;
@@ -1010,7 +1010,7 @@ canvas#backgroundCanvas {
 
     .tile-image img {
         width: 100% !important;
-        max-width: 150px !important; /* Małe, schludne pudełko/ikona */
+        max-width: 130px !important; /* Małe, schludne pudełko/ikona */
         height: auto !important;
         display: block !important;
         margin: 0 !important;
