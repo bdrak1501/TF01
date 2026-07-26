@@ -2051,13 +2051,13 @@ body {
         margin: 10px 0 !important;
     }
 
-    .tile-image img {
+ .tile-image img {
         width: 100% !important;
-        max-width: 220px !important; 
+        max-width: 320px !important; /* <-- ZWIĘKSZONA WARTOŚĆ (wcześniej było 220px) */
         height: auto !important;
         display: block !important;
         margin: 0 !important;
-        margin-top: 0 !important; /* Resetuje gigantyczny margines (50px) z wersji na komputery */
+        margin-top: 0 !important; 
     }
 
     /* 3. Opis ląduje POD OBRAZKIEM (Pozycja 3) */
