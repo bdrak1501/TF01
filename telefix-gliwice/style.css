@@ -2430,6 +2430,7 @@ html, body {
 
 @media (max-width: 768px) {
     .location-section {
+        margin-bottom: 20px !important;
         padding: 20px 12px !important;
     }
 
