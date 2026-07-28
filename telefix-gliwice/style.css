@@ -2383,7 +2383,7 @@ html, body {
     /* Logo z mniejszym marginesem od dołu (tutaj zmniejszasz przerwę) */
     .logo, header img, .header-logo {
         display: block !important;
-        margin: 0 auto -10px auto !important; /* <--- Zmniejszone z 6px na 2px (lub wpisz 0px, jeśli mają być styk) */
+        margin: 0 auto -5px auto !important; /* <--- Zmniejszone z 6px na 2px (lub wpisz 0px, jeśli mają być styk) */
         text-align: center !important;
     }
 
