@@ -1472,3 +1472,25 @@ body:has(.card:not(#step1):not(.hidden)) .scroll-indicator-button {
     display: none !important;
 }
 
+/* ====== TYLKO TELEFONY ====== */
+@media (max-width: 768px) {
+
+    #step11 .delivery-form{
+        width:100%;
+        margin:0;
+        padding:0;
+        box-sizing:border-box;
+    }
+
+    #step11 .delivery-form input,
+    #step11 .delivery-form textarea{
+        width:100%;
+        max-width:100%;
+        box-sizing:border-box;
+    }
+
+    #step11.card{
+        padding:25px 20px !important;
+    }
+
+}
