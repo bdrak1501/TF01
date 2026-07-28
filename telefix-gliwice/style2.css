@@ -1459,19 +1459,15 @@ h2 {
   }
 }
 
-/* Zmniejszenie górnego odstępu dla Kroku 2 */
-#step2 {
-    margin-top: 90px !important;
-}
-
 /* Dostosowanie dla urządzeniach mobilnych */
 @media (max-width: 850px) {
     #step2 {
-        margin-top: 80px !important; /* Domyślnie było 185px */
+        margin-top: 90px !important; /* Domyślnie było 185px */
     }
 }
 
-.how-it-works-button-container,
-.scroll-indicator-button {
+/* Ukryj strzałkę tylko wtedy, gdy jesteśmy w Kroku 2 lub dalszym */
+body.step-active .how-it-works-button-container,
+body.step-active .scroll-indicator-button {
     display: none !important;
 }
