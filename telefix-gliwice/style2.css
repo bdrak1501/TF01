@@ -1280,4 +1280,73 @@ h2 {
     margin-top:15px;
     margin-bottom:20px;
 }
+/* Responsywność - Urządzenia mobilne i tablety */
+@media (max-width: 850px) {
+    /* Poprawa głównej karty */
+    .card {
+        width: 90% !important;
+        padding: 30px 20px !important;
+        margin-top: 100px !important;
+        min-height: auto !important;
+    }
 
+    /* Układ zawartości - zamiana na kolumnę (zdjęcie pod/nad tekstem) */
+    .content {
+        flex-direction: column !important;
+        gap: 20px !important;
+    }
+
+    /* Wyśrodkowanie tekstu */
+    .text-section {
+        text-align: center;
+        width: 100%;
+    }
+
+    /* Dopasowanie obrazków w krokach */
+    .image-section img {
+        width: 200px !important;
+        margin: 0 auto;
+    }
+
+    /* Wyśrodkowanie opcji wyboru (przyciski) */
+    .memory-options, .battery-options, .visual-options, .damage-options, .back-damage-options, .faceid-options, .components-options {
+        justify-content: center;
+    }
+
+    /* Dopasowanie szerokości dropdowna */
+    .dropdown {
+        width: 100%;
+        max-width: 300px;
+    }
+
+    /* Poprawa formularza dojazdu (krok 11 i 12) */
+    #step11 .delivery-form, #step12 .delivery-form {
+        margin-right: 0 !important;
+    }
+    
+    #step11.card {
+        padding: 25px 15px !important;
+    }
+
+    /* Skrócenie ogromnego marginesu w sekcji 'Jak to działa' */
+    .how-it-works-section {
+        margin-top: 80px !important;
+    }
+}
+
+/* Dodatkowe poprawki dla bardzo małych ekranów (np. starsze telefony) */
+@media (max-width: 480px) {
+    h1 {
+        font-size: 22px !important;
+    }
+    h2 {
+        font-size: 18px !important;
+    }
+    .price {
+        font-size: 26px !important;
+    }
+    .delivery-btn {
+        font-size: 16px !important;
+        padding: 12px 20px !important;
+    }
+}
