@@ -1472,3 +1472,95 @@ body:has(.card:not(#step1):not(.hidden)) .scroll-indicator-button {
     display: none !important;
 }
 
+/* Układ kroków 3 - ostatni na telefonach */
+@media (max-width: 768px) {
+
+  #step3 .content,
+  #step4 .content,
+  #step5 .content,
+  #step6 .content,
+  #step7 .content,
+  #step8 .content,
+  #step9 .content,
+  #step10 .content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+  }
+
+  /* telefon pomiędzy nazwą modelu a pytaniem */
+  #step3 .image-section,
+  #step4 .image-section,
+  #step5 .image-section,
+  #step6 .image-section,
+  #step7 .image-section,
+  #step8 .image-section,
+  #step9 .image-section {
+      order: 2;
+      margin: 25px 0;
+  }
+
+  #step3 .text-section,
+  #step4 .text-section,
+  #step5 .text-section,
+  #step6 .text-section,
+  #step7 .text-section,
+  #step8 .text-section,
+  #step9 .text-section {
+      display: contents;
+  }
+
+  /* tytuł i model zostają wyżej */
+  #step3 h2,
+  #step4 h2,
+  #step5 h2,
+  #step6 h2,
+  #step7 h2,
+  #step8 h2,
+  #step9 h2 {
+      order: 1;
+  }
+
+  #step3 h1,
+  #step4 h1,
+  #step5 h1,
+  #step6 h1,
+  #step7 h1,
+  #step8 h1,
+  #step9 h1 {
+      order: 2;
+  }
+
+  /* telefon */
+  #step3 .image-section,
+  #step4 .image-section,
+  #step5 .image-section,
+  #step6 .image-section,
+  #step7 .image-section,
+  #step8 .image-section,
+  #step9 .image-section {
+      order: 3;
+  }
+
+  /* pytanie pod telefonem */
+  #step3 p,
+  #step4 p,
+  #step5 p,
+  #step6 p,
+  #step7 p,
+  #step8 p,
+  #step9 p {
+      order: 4;
+  }
+
+  #step3 .memory-options,
+  #step4 .battery-options,
+  #step5 .visual-options,
+  #step6 .damage-options,
+  #step7 .back-damage-options,
+  #step8 .faceid-options,
+  #step9 .components-options {
+      order: 5;
+  }
+
+}
