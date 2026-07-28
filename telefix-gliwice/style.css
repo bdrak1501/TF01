@@ -2137,7 +2137,7 @@ body {
         margin: 0 !important;
         padding: 0 !important;
         text-align: center !important;
-        gap: 1px !important;
+        gap: 10px !important;
     }
 
     .logo {
@@ -2147,6 +2147,7 @@ body {
         width: 100% !important;
         margin: 0 auto !important;
         text-align: center !important;
+        margin-bottom: -50px !important;
     }
 
     .nav-links {
@@ -2155,7 +2156,7 @@ body {
         justify-content: center !important;
         align-items: center !important;
         flex-wrap: wrap !important;
-        gap: 5px !important;
+        gap: 18px !important;
         width: 100% !important;
         margin: 0 auto !important;
         padding: 0 !important;
