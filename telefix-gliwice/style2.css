@@ -1516,3 +1516,44 @@ body:has(.card:not(#step1):not(.hidden)) .scroll-indicator-button {
     }
 
 }
+/* =========================================================
+   POPRAWKA DLA KOMPUTERA (Zdjęcie po prawej stronie)
+   ========================================================= */
+
+@media (min-width: 851px) {
+  /* 1. Kontener karty i tekstu przygotowany pod pozycjonowanie */
+  .card:not(#step1):not(#step2):not(#step11):not(#step12) .content {
+    display: block !important;
+  }
+
+  .card:not(#step1):not(#step2):not(#step11):not(#step12) .text-section {
+    position: relative !important;
+    padding-right: 320px !important; /* Odstęp po prawej stronie na zdjęcie */
+    text-align: left !important;
+  }
+
+  /* 2. Wyciągnięcie zdjęcia na prawą stronę karty */
+  .card:not(#step1):not(#step2):not(#step11):not(#step12) .text-section .image-section {
+    position: absolute !important;
+    top: 0 !important;
+    right: 0 !important;
+    width: 280px !important;
+    margin: 0 !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+  }
+
+  .card:not(#step1):not(#step2):not(#step11):not(#step12) .text-section .image-section img {
+    width: 250px !important;
+    height: auto !important;
+  }
+}
+
+/* Układ dla telefonów (pozwala na zachowanie pionowego widoku) */
+@media (max-width: 850px) {
+  .text-section .image-section {
+    position: static !important;
+    margin: 20px 0 !important;
+  }
+}
