@@ -578,10 +578,6 @@ h2 {
   visibility: visible !important;
 }
 
-#step2, #step3, #step4, #step5, #step6, #step7, #step8, #step9, #step10 {
-    margin-top : 50px;
-}
-
 .damage-options {
   display: flex;
   flex-wrap: wrap;
@@ -1556,4 +1552,98 @@ body:has(.card:not(#step1):not(.hidden)) .scroll-indicator-button {
     position: static !important;
     margin: 20px 0 !important;
   }
+}
+
+@media (min-width: 851px) {
+  /* 1. Zwiększamy odstęp po prawej, aby większy telefon się zmieścił */
+  .card:not(#step1):not(#step2):not(#step11):not(#step12) .text-section {
+    position: relative !important;
+    padding-right: 360px !important; /* Zwiększone z 320px na 360px */
+    text-align: left !important;
+  }
+
+  /* 2. Zwiększamy szerokość kontenera zdjęcia i samego pliku img */
+  .card:not(#step1):not(#step2):not(#step11):not(#step12) .text-section .image-section {
+    position: absolute !important;
+    top: -10px !important;            /* Opcjonalnie podnosimy lekko w górę */
+    right: 0 !important;
+    width: 320px !important;          /* Zwiększone z 280px na 320px */
+    margin: 0 !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+  }
+
+  .card:not(#step1):not(#step2):not(#step11):not(#step12) .text-section .image-section img {
+    width: 310px !important;          /* Zwiększone z 250px na 310px (lub więcej według uznania) */
+    height: auto !important;
+  }
+}
+/* --- PODSUMOWANIE NA CAŁĄ SZEROKOŚĆ KAFELKI --- */
+#step10 .text-section {
+  padding-right: 0 !important;
+  width: 100% !important;
+}
+
+#step10 .summary-details {
+  width: 100% !important;
+  box-sizing: border-box !important;
+  margin-top: 25px !important;
+}
+
+/* --- PRZYCISKI OBOK SIEBIE --- */
+.delivery-buttons {
+  display: flex !important;
+  flex-direction: row !important;
+  justify-content: center !important;
+  align-items: center !important;
+  gap: 15px !important;
+  margin-top: 35px !important;
+  width: 100% !important;
+}
+
+.delivery-btn {
+  flex: 1 !important;
+  min-width: 0 !important; /* Pozwala przyciskom zmniejszać się w jednym wierszu */
+  max-width: 280px !important;
+  height: 60px !important;
+  padding: 10px 15px !important;
+  justify-content: center !important;
+}
+
+.delivery-text {
+  font-size: 16px !important;
+  white-space: nowrap !important;
+}
+
+/* --- RESPONSYWNOŚĆ NA BARDZO MAŁE EKRANY --- */
+@media (max-width: 480px) {
+  .delivery-buttons {
+    flex-direction: column !important; /* Na bardzo małych telefonach układa w pionie */
+  }
+  
+  .delivery-btn {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+}
+
+#step10.card {
+  margin-top: 150px !important;
+}
+
+/* Powiększenie przycisków dostawy w podsumowaniu */
+.delivery-btn {
+  max-width: 320px !important;
+  height: 72px !important;
+  padding: 14px 24px !important;
+}
+
+.delivery-text {
+  font-size: 18px !important;
+}
+
+.delivery-icon svg {
+  width: 28px !important;
+  height: 28px !important;
 }
