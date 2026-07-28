@@ -1459,15 +1459,16 @@ h2 {
   }
 }
 
-/* 1. Zmniejszenie margin-top dla Kroku 2 na mobilkach */
+/* 1. Zmniejszenie margin-top na mobilkach dla KAŻDEGO kroku oprócz Kroku 1 */
 @media (max-width: 850px) {
-    #step2 {
+    .card:not(#step1) {
         margin-top: 90px !important;
     }
 }
 
-/* 2. Ukryj strzałkę TYLKO wtedy, gdy aktywny (widoczny) jest Krok 2 */
-body:has(#step2:not(.hidden)) .how-it-works-button-container,
-body:has(#step2:not(.hidden)) .scroll-indicator-button {
+/* 2. Ukryj strzałkę gdy JAKIKOLWIEK krok inny niż Krok 1 jest aktywny (widoczny) */
+body:has(.card:not(#step1):not(.hidden)) .how-it-works-button-container,
+body:has(.card:not(#step1):not(.hidden)) .scroll-indicator-button {
     display: none !important;
 }
+
