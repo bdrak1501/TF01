@@ -1458,3 +1458,20 @@ h2 {
     margin: 0 16px 16px !important;
   }
 }
+
+/* Zmniejszenie górnego odstępu dla Kroku 2 */
+#step2 {
+    margin-top: 90px !important;
+}
+
+/* Dostosowanie dla urządzeniach mobilnych */
+@media (max-width: 850px) {
+    #step2 {
+        margin-top: 80px !important; /* Domyślnie było 185px */
+    }
+}
+
+.how-it-works-button-container,
+.scroll-indicator-button {
+    display: none !important;
+}
