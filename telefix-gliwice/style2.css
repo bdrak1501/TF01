@@ -1464,13 +1464,12 @@ h2 {
     .card:not(#step1) {
         margin-top: 90px !important;
     }
-
+}
 
 /* 2. Ukryj strzałkę gdy JAKIKOLWIEK krok inny niż Krok 1 jest aktywny (widoczny) */
 body:has(.card:not(#step1):not(.hidden)) .how-it-works-button-container,
 body:has(.card:not(#step1):not(.hidden)) .scroll-indicator-button {
     display: none !important;
-}
 }
 
 /* ====== TYLKO TELEFONY ====== */
