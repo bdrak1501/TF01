@@ -2137,7 +2137,7 @@ body {
         margin: 0 !important;
         padding: 0 !important;
         text-align: center !important;
-        gap: -70px !important;
+        gap: 1px !important;
     }
 
     .logo {
@@ -2155,7 +2155,7 @@ body {
         justify-content: center !important;
         align-items: center !important;
         flex-wrap: wrap !important;
-        gap: 18px !important;
+        gap: 5px !important;
         width: 100% !important;
         margin: 0 auto !important;
         padding: 0 !important;
