@@ -1472,7 +1472,6 @@ body:has(.card:not(#step1):not(.hidden)) .scroll-indicator-button {
     display: none !important;
 }
 
-/* Układ kroków 3 - ostatni na telefonach */
 @media (max-width: 768px) {
 
   #step3 .content,
@@ -1481,25 +1480,15 @@ body:has(.card:not(#step1):not(.hidden)) .scroll-indicator-button {
   #step6 .content,
   #step7 .content,
   #step8 .content,
-  #step9 .content,
-  #step10 .content {
+  #step9 .content {
       display: flex;
       flex-direction: column;
       align-items: center;
+      gap: 15px;
   }
 
-  /* telefon pomiędzy nazwą modelu a pytaniem */
-  #step3 .image-section,
-  #step4 .image-section,
-  #step5 .image-section,
-  #step6 .image-section,
-  #step7 .image-section,
-  #step8 .image-section,
-  #step9 .image-section {
-      order: 2;
-      margin: 25px 0;
-  }
 
+  /* tekstowa część zostaje normalnie */
   #step3 .text-section,
   #step4 .text-section,
   #step5 .text-section,
@@ -1507,10 +1496,14 @@ body:has(.card:not(#step1):not(.hidden)) .scroll-indicator-button {
   #step7 .text-section,
   #step8 .text-section,
   #step9 .text-section {
-      display: contents;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
   }
 
-  /* tytuł i model zostają wyżej */
+
+  /* model i nagłówek */
   #step3 h2,
   #step4 h2,
   #step5 h2,
@@ -1531,7 +1524,8 @@ body:has(.card:not(#step1):not(.hidden)) .scroll-indicator-button {
       order: 2;
   }
 
-  /* telefon */
+
+  /* telefon między nazwą a pytaniem */
   #step3 .image-section,
   #step4 .image-section,
   #step5 .image-section,
@@ -1540,19 +1534,23 @@ body:has(.card:not(#step1):not(.hidden)) .scroll-indicator-button {
   #step8 .image-section,
   #step9 .image-section {
       order: 3;
+      margin: 15px 0;
   }
 
-  /* pytanie pod telefonem */
-  #step3 p,
-  #step4 p,
-  #step5 p,
-  #step6 p,
-  #step7 p,
-  #step8 p,
-  #step9 p {
+
+  /* pytanie */
+  #step3 p:not(.info),
+  #step4 p:not(.info),
+  #step5 p:not(.info),
+  #step6 p:not(.info),
+  #step7 p:not(.info),
+  #step8 p:not(.info),
+  #step9 p:not(.info) {
       order: 4;
   }
 
+
+  /* opcje */
   #step3 .memory-options,
   #step4 .battery-options,
   #step5 .visual-options,
@@ -1561,6 +1559,31 @@ body:has(.card:not(#step1):not(.hidden)) .scroll-indicator-button {
   #step8 .faceid-options,
   #step9 .components-options {
       order: 5;
+  }
+
+
+  /* opis */
+  #step3 .info,
+  #step4 .info,
+  #step5 .info,
+  #step6 .info,
+  #step7 .info,
+  #step8 .info,
+  #step9 .info {
+      order: 6;
+  }
+
+
+  /* przycisk wróć zawsze na końcu */
+  #step3 .back-btn,
+  #step4 .back-btn,
+  #step5 .back-btn,
+  #step6 .back-btn,
+  #step7 .back-btn,
+  #step8 .back-btn,
+  #step9 .back-btn {
+      order: 7;
+      margin-top: 20px;
   }
 
 }
