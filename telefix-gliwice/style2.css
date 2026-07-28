@@ -1410,3 +1410,16 @@ h2 {
         letter-spacing: 0.5px !important;
     }
 }
+/* Poprawka wyłącznie dla ekranów mobilnych (telefony i małe tablety) */
+@media (max-width: 768px) {
+  .model-preview {
+    flex-wrap: wrap !important; /* Zezwala na zawijanie ikon do drugiego wiersza */
+    gap: 8px !important;        /* Zmniejsza odstępy między ikonami */
+    justify-content: center !important;
+  }
+
+  .model-preview .preview-img {
+    width: 40px !important;     /* Zmniejsza rozmiar miniaturek na telefonach */
+    height: auto !important;
+  }
+}
