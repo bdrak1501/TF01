@@ -1280,3 +1280,240 @@ h2 {
     margin-top:15px;
     margin-bottom:20px;
 }
+/* Responsywność - Urządzenia mobilne i tablety */
+@media (max-width: 850px) {
+    /* Poprawa głównej karty */
+    .card {
+        width: 90% !important;
+        padding: 30px 20px !important;
+        margin-top: 175px !important;
+        min-height: auto !important;
+    }
+
+    /* Układ zawartości - zamiana na kolumnę (zdjęcie pod/nad tekstem) */
+    .content {
+        flex-direction: column !important;
+        gap: 20px !important;
+    }
+
+    /* Wyśrodkowanie tekstu */
+    .text-section {
+        text-align: center;
+        width: 100%;
+    }
+
+    /* Dopasowanie obrazków w krokach */
+    .image-section img {
+        width: 200px !important;
+        margin: 0 auto;
+    }
+
+    /* Wyśrodkowanie opcji wyboru (przyciski) */
+    .memory-options, .battery-options, .visual-options, .damage-options, .back-damage-options, .faceid-options, .components-options {
+        justify-content: center;
+    }
+
+    /* Dopasowanie szerokości dropdowna */
+    .dropdown {
+        width: 100%;
+        max-width: 300px;
+    }
+
+    /* Poprawa formularza dojazdu (krok 11 i 12) */
+    #step11 .delivery-form, #step12 .delivery-form {
+        margin-right: 0 !important;
+    }
+    
+    #step11.card {
+        padding: 25px 15px !important;
+    }
+
+    /* Skrócenie ogromnego marginesu w sekcji 'Jak to działa' */
+    .how-it-works-section {
+        margin-top: 80px !important;
+    }
+}
+
+/* Dodatkowe poprawki dla bardzo małych ekranów (np. starsze telefony) */
+@media (max-width: 480px) {
+    h1 {
+        font-size: 22px !important;
+    }
+    h2 {
+        font-size: 18px !important;
+    }
+    .price {
+        font-size: 26px !important;
+    }
+    .delivery-btn {
+        font-size: 16px !important;
+        padding: 12px 20px !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .hero-header {
+        position: fixed !important;
+        padding: 12px 16px !important;
+        width: 100% !important;
+        left: 0 !important;
+        right: 0 !important;
+        box-sizing: border-box !important;
+    }
+
+    .hero-inner {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        text-align: center !important;
+        gap: 10px !important;
+    }
+
+    .logo {
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        width: 100% !important;
+        margin: 0 auto -7px auto !important;
+        text-align: center !important;
+    }
+    
+    .logo img {
+        height: 55px !important; 
+        width: auto !important;
+    }
+
+    .nav-links {
+        display: flex !important;
+        flex-direction: row !important;
+        justify-content: center !important;
+        align-items: center !important;
+        flex-wrap: wrap !important;
+        gap: 14px !important;
+        width: 100% !important;
+        margin: 0 auto !important;
+        padding: 0 !important;
+        list-style: none !important;
+    }
+
+    .nav-links li {
+        margin: 0 !important;
+    }
+
+    .nav-links li a {
+        font-size: 13px !important;
+        letter-spacing: 0.5px !important;
+    }
+}
+@media (max-width: 768px) {
+  .model-preview {
+    display: flex !important;
+    flex-wrap: nowrap !important;      /* Wymuszenie WSZYSTKICH ikon w 1 wierszu */
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 4px !important;               /* Niewielki odstęp, by 7 sztuk zmieściło się bez problemu */
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .model-preview .preview-img {
+    flex: 1 1 0 !important;            /* Każda ikonka płynnie zmniejsza się do dostępnego miejsca */
+    min-width: 0 !important;           /* Blokuje rozpychanie kontenera przez oryginalny rozmiar pliku */
+    max-width: 42px !important;        /* Ograniczenie wielkości na większych ekranach mobilnych */
+    height: auto !important;
+    object-fit: contain !important;
+    box-sizing: border-box !important; /* Aktywny border nie powiększy szerokości wybranego elementu */
+  }
+}
+/* Poprawka wielkości nagłówków i kafelków wyłącznie na mobilkach */
+@media (max-width: 768px) {
+  /* Większe napisy główne */
+  .how-it-works-section h2,
+  .online-title {
+    font-size: 28px !important;
+    font-weight: 700 !important;
+    margin-top: 40px !important;
+    margin-bottom: 25px !important;
+  }
+
+  /* Leciutko mniejsze kafelki "Wypełnij formularz" */
+  .steps-grid {
+    max-width: 330px !important; /* Zwężenie kafelków z 400px na 330px */
+    gap: 20px !important;        /* Zmniejszenie odstępu pionowego między kafelkami */
+    margin: 0 auto !important;
+  }
+
+  .step-card h3 {
+    font-size: 18px !important;  /* Dopasowany, lekko mniejszy tytuł wewnątrz kafelka */
+    margin: 12px 16px 6px !important;
+  }
+
+  .step-card p {
+    font-size: 13px !important;  /* Lekko zmniejszony opis w kafelku */
+    margin: 0 16px 16px !important;
+  }
+}
+
+/* 1. Zmniejszenie margin-top na mobilkach dla KAŻDEGO kroku oprócz Kroku 1 */
+@media (max-width: 850px) {
+    .card:not(#step1) {
+        margin-top: 90px !important;
+    }
+
+
+/* 2. Ukryj strzałkę gdy JAKIKOLWIEK krok inny niż Krok 1 jest aktywny (widoczny) */
+body:has(.card:not(#step1):not(.hidden)) .how-it-works-button-container,
+body:has(.card:not(#step1):not(.hidden)) .scroll-indicator-button {
+    display: none !important;
+}
+}
+
+/* ====== TYLKO TELEFONY ====== */
+@media (max-width: 768px) {
+
+    #step11 .delivery-form{
+        width:100%;
+        margin:0;
+        padding:0;
+        box-sizing:border-box;
+    }
+
+    #step11 .delivery-form input,
+    #step11 .delivery-form textarea{
+        width:100%;
+        max-width:100%;
+        box-sizing:border-box;
+    }
+
+    #step11.card{
+        padding:25px 20px !important;
+    }
+
+}
+/* ====== TYLKO TELEFONY - KROK 12 ====== */
+@media (max-width: 768px) {
+
+    #step12 .delivery-form{
+        width:100%;
+        margin:0;
+        padding:0;
+        box-sizing:border-box;
+    }
+
+    #step12 .delivery-form input,
+    #step12 .delivery-form textarea{
+        width:100%;
+        max-width:100%;
+        box-sizing:border-box;
+    }
+
+    #step12.card{
+        padding:25px 20px !important;
+    }
+
+}
