@@ -1286,7 +1286,7 @@ h2 {
     .card {
         width: 90% !important;
         padding: 30px 20px !important;
-        margin-top: 185px !important;
+        margin-top: 175px !important;
         min-height: auto !important;
     }
 
@@ -1459,15 +1459,15 @@ h2 {
   }
 }
 
-/* Dostosowanie dla urządzeniach mobilnych */
+/* 1. Zmniejszenie margin-top dla Kroku 2 na mobilkach */
 @media (max-width: 850px) {
     #step2 {
-        margin-top: 90px !important; /* Domyślnie było 185px */
+        margin-top: 90px !important;
     }
 }
 
-/* Ukryj strzałkę tylko wtedy, gdy jesteśmy w Kroku 2 lub dalszym */
-body.step-active .how-it-works-button-container,
-body.step-active .scroll-indicator-button {
+/* 2. Ukryj strzałkę TYLKO wtedy, gdy aktywny (widoczny) jest Krok 2 */
+body:has(#step2:not(.hidden)) .how-it-works-button-container,
+body:has(#step2:not(.hidden)) .scroll-indicator-button {
     display: none !important;
 }
