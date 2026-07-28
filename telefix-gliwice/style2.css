@@ -1410,16 +1410,23 @@ h2 {
         letter-spacing: 0.5px !important;
     }
 }
-/* Poprawka wyłącznie dla ekranów mobilnych (telefony i małe tablety) */
 @media (max-width: 768px) {
   .model-preview {
-    flex-wrap: wrap !important; /* Zezwala na zawijanie ikon do drugiego wiersza */
-    gap: 8px !important;        /* Zmniejsza odstępy między ikonami */
+    display: flex !important;
+    flex-wrap: nowrap !important;      /* Wymuszenie WSZYSTKICH ikon w 1 wierszu */
     justify-content: center !important;
+    align-items: center !important;
+    gap: 4px !important;               /* Niewielki odstęp, by 7 sztuk zmieściło się bez problemu */
+    width: 100% !important;
+    box-sizing: border-box !important;
   }
 
   .model-preview .preview-img {
-    width: 40px !important;     /* Zmniejsza rozmiar miniaturek na telefonach */
+    flex: 1 1 0 !important;            /* Każda ikonka płynnie zmniejsza się do dostępnego miejsca */
+    min-width: 0 !important;           /* Blokuje rozpychanie kontenera przez oryginalny rozmiar pliku */
+    max-width: 42px !important;        /* Ograniczenie wielkości na większych ekranach mobilnych */
     height: auto !important;
+    object-fit: contain !important;
+    box-sizing: border-box !important; /* Aktywny border nie powiększy szerokości wybranego elementu */
   }
 }
