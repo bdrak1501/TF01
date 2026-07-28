@@ -1494,3 +1494,25 @@ body:has(.card:not(#step1):not(.hidden)) .scroll-indicator-button {
     }
 
 }
+/* ====== TYLKO TELEFONY - KROK 12 ====== */
+@media (max-width: 768px) {
+
+    #step12 .delivery-form{
+        width:100%;
+        margin:0;
+        padding:0;
+        box-sizing:border-box;
+    }
+
+    #step12 .delivery-form input,
+    #step12 .delivery-form textarea{
+        width:100%;
+        max-width:100%;
+        box-sizing:border-box;
+    }
+
+    #step12.card{
+        padding:25px 20px !important;
+    }
+
+}
