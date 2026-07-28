@@ -1481,14 +1481,10 @@ body:has(.card:not(#step1):not(.hidden)) .scroll-indicator-button {
   #step7 .content,
   #step8 .content,
   #step9 .content {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 15px;
+      display: block;
   }
 
 
-  /* tekstowa część zostaje normalnie */
   #step3 .text-section,
   #step4 .text-section,
   #step5 .text-section,
@@ -1499,11 +1495,10 @@ body:has(.card:not(#step1):not(.hidden)) .scroll-indicator-button {
       display: flex;
       flex-direction: column;
       align-items: center;
-      width: 100%;
   }
 
 
-  /* model i nagłówek */
+  /* nagłówek */
   #step3 h2,
   #step4 h2,
   #step5 h2,
@@ -1525,7 +1520,7 @@ body:has(.card:not(#step1):not(.hidden)) .scroll-indicator-button {
   }
 
 
-  /* telefon między nazwą a pytaniem */
+  /* zdjęcie przenosimy pod h1 */
   #step3 .image-section,
   #step4 .image-section,
   #step5 .image-section,
@@ -1533,56 +1528,30 @@ body:has(.card:not(#step1):not(.hidden)) .scroll-indicator-button {
   #step7 .image-section,
   #step8 .image-section,
   #step9 .image-section {
-      order: 3;
-      margin: 15px 0;
+      display: block;
+      margin: 20px auto;
+  }
+
+
+  #step3 .image-section img,
+  #step4 .image-section img,
+  #step5 .image-section img,
+  #step6 .image-section img,
+  #step7 .image-section img,
+  #step8 .image-section img,
+  #step9 .image-section img {
+      width: 220px;
   }
 
 
   /* pytanie */
-  #step3 p:not(.info),
-  #step4 p:not(.info),
-  #step5 p:not(.info),
-  #step6 p:not(.info),
-  #step7 p:not(.info),
-  #step8 p:not(.info),
-  #step9 p:not(.info) {
-      order: 4;
-  }
-
-
-  /* opcje */
-  #step3 .memory-options,
-  #step4 .battery-options,
-  #step5 .visual-options,
-  #step6 .damage-options,
-  #step7 .back-damage-options,
-  #step8 .faceid-options,
-  #step9 .components-options {
-      order: 5;
-  }
-
-
-  /* opis */
-  #step3 .info,
-  #step4 .info,
-  #step5 .info,
-  #step6 .info,
-  #step7 .info,
-  #step8 .info,
-  #step9 .info {
-      order: 6;
-  }
-
-
-  /* przycisk wróć zawsze na końcu */
-  #step3 .back-btn,
-  #step4 .back-btn,
-  #step5 .back-btn,
-  #step6 .back-btn,
-  #step7 .back-btn,
-  #step8 .back-btn,
-  #step9 .back-btn {
-      order: 7;
+  #step3 .text-section > p:not(.info),
+  #step4 .text-section > p:not(.info),
+  #step5 .text-section > p:not(.info),
+  #step6 .text-section > p:not(.info),
+  #step7 .text-section > p:not(.info),
+  #step8 .text-section > p:not(.info),
+  #step9 .text-section > p:not(.info) {
       margin-top: 20px;
   }
 
