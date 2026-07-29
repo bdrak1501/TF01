@@ -569,12 +569,30 @@ color:#fff;
     .cart-emoji {
         font-size: 28px !important; /* Domyślnie ma rozdzielczość 38px z .cart-icon – zmniejsz np. do 22px lub 20px */
     }
+@media (max-width:900px){
 
-    .product-gallery img {
-        margin-top: 0 !important; /* Konieczne usunięcie 20% marginesu ze zdjęcia */
-        max-width: 80%;           /* Opcjonalnie: żeby zdjęcie ładnie mieściło się w kafelce */
-        height: auto;
+    .product-gallery{
+        background:#fff;
+        border-radius:30px;
+        box-shadow:0 20px 40px rgba(0,0,0,.05);
+
+        min-height:520px;      /* wysokość kafelka */
+        padding:30px;
+
+        display:flex;
+        align-items:center;
+        justify-content:center;
     }
+
+    .product-gallery img{
+        width:75%;
+        max-width:260px;
+        max-height:420px;
+        object-fit:contain;
+        margin:0;
+        display:block;
+    }
+
 }
 </style>
 </head>
