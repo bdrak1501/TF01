@@ -1650,3 +1650,39 @@ body:has(.card:not(#step1):not(.hidden)) .scroll-indicator-button {
   width: 28px !important;
   height: 28px !important;
 }
+
+/* Przesunięcie przycisku "Wyślij zgłoszenie" na środek karty */
+#sendDeliveryBtn {
+  position: relative;
+  left: 33%;
+  transform: translate(-50%, -30px) !important;
+}
+
+#backStep11Btn {
+  transform: scale(0.72) translateY(20px) !important; /* 10px przesuwa w dół */
+  transform-origin: left center !important; /* Trzyma przycisk przy lewej krawędzi podczas skalowania */
+}
+
+#generateLabelBtn {
+  position: relative;
+  left: 38%;
+  transform: translate(-50%, -22px) !important;
+}
+
+#backStep12Btn {
+  transform: scale(0.88) translateY(20px) !important; /* 10px przesuwa w dół */
+  transform-origin: left center !important; /* Trzyma przycisk przy lewej krawędzi podczas skalowania */
+}
+#step12 .delivery-form {
+    width: 100%;
+    max-width: 950px;
+    margin: 5px auto 30px auto;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+#step12 .delivery-form input,
+#step12 .delivery-form textarea {
+    width: 100%;
+    box-sizing: border-box;
+}
