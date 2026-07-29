@@ -176,6 +176,10 @@ body {
   transition: all 0.3s ease;
 }
 
+.card:not(#step1):not(#step2) {
+  min-height: 350px; /* <--- Wpisz tutaj docelową wysokość */
+}
+
 .hidden {
   display: none;
 }
@@ -1151,8 +1155,7 @@ h2 {
     border-radius: 32px;
     padding: 50px 55px;
     max-width: 720px;
-    margin-top: 20px;
-    margin: 60px auto;
+    margin: 160px auto 60px auto !important; /* Margines górny: 160px */
     border: 1px solid #e5e5e7;
     box-shadow: 0 8px 30px rgba(0,0,0,0.08);
     transition: 0.3s ease;
