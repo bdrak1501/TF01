@@ -533,6 +533,39 @@ color:#fff;
         margin-bottom: 0; /* wyzerowanie ewentualnego marginesu dolnego */
     }
 }
+
+@media(max-width:900px){
+    .product-wrapper{
+        grid-template-columns:1fr;
+    }
+    
+    /* Układ nagłówka w jednej linii na telefonie */
+    .hero-inner {
+        display: flex !important;
+        flex-direction: row !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        width: 100%;
+        padding: 10px 20px; /* ewentualny wewnętrzny odstęp od krawędzi ekranu */
+        box-sizing: border-box;
+    }
+
+    .logo {
+        margin: 0 !important;
+        display: flex;
+        align-items: center;
+    }
+
+    .logo img {
+        max-height: 40px; /* opcjonalnie: ograniczenie wysokości logo, by nie rozpychało belce */
+        width: auto;
+    }
+
+    .cart-icon {
+        margin: 0 !important;
+        padding: 10px !important;
+    }
+}
 </style>
 </head>
 
