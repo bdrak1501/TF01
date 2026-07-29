@@ -515,6 +515,24 @@ color:#fff;
         margin-left: auto;
     }
 }
+@media(max-width:900px){
+    .product-wrapper{
+        grid-template-columns:1fr;
+    }
+    
+    /* Układ nawigacji na telefonie: logo po lewej, koszyk po prawej */
+    .hero-inner {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+    }
+
+    .cart-icon {
+        margin-left: auto;
+        margin-bottom: 0; /* wyzerowanie ewentualnego marginesu dolnego */
+    }
+}
 </style>
 </head>
 
