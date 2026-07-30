@@ -502,6 +502,108 @@ color:#fff;
     filter: brightness(0) invert(1);
     display: inline-block;
 }
+
+
+@media (max-width: 768px) {
+    .hero-inner {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+    }
+
+    .cart-icon {
+        margin-left: auto;
+    }
+}
+@media(max-width:900px){
+    .product-wrapper{
+        grid-template-columns:1fr;
+    }
+    
+    /* Układ nawigacji na telefonie: logo po lewej, koszyk po prawej */
+    .hero-inner {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+    }
+
+    .cart-icon {
+        margin-left: auto;
+        margin-bottom: 0; /* wyzerowanie ewentualnego marginesu dolnego */
+    }
+}
+
+@media(max-width:900px){
+    .product-wrapper{
+        grid-template-columns:1fr;
+    }
+    
+    /* Układ nagłówka w jednej linii na telefonie */
+    .hero-inner {
+        display: flex !important;
+        flex-direction: row !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        width: 100%;
+        padding: 10px 20px; /* ewentualny wewnętrzny odstęp od krawędzi ekranu */
+        box-sizing: border-box;
+    }
+
+    .logo {
+        margin: 0 !important;
+        display: flex;
+        align-items: center;
+        margin-left: -120px !important; /* przesunięcie jeszcze bardziej w lewo */
+    }
+
+    .logo img {
+        max-height: 90px; /* opcjonalnie: ograniczenie wysokości logo, by nie rozpychało belce */
+        width: auto;
+    }
+
+    .cart-icon {
+        margin: 0 !important;
+        padding: 10px !important;
+    }
+    .cart-emoji {
+        font-size: 28px !important; /* Domyślnie ma rozdzielczość 38px z .cart-icon – zmniejsz np. do 22px lub 20px */
+    }
+}
+
+@media (max-width:900px){
+
+    .product-gallery{
+        background:#fff;
+        border-radius:30px;
+        box-shadow:0 20px 40px rgba(0,0,0,.05);
+
+        min-height:320px;      /* wysokość kafelka */
+        padding:30px;
+        margin-bottom:-70px;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+    }
+
+    .product-gallery img{
+        width:140%;
+        max-width:260px;
+        max-height:420px;
+        object-fit:contain;
+        margin:0;
+        display:block;
+    }
+
+}
+
+@media (max-width: 900px) {
+    .benefits .benefit:last-child {
+        display: none;
+    }
+}
+
 </style>
 </head>
 
