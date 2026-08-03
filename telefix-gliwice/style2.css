@@ -1686,3 +1686,16 @@ body:has(.card:not(#step1):not(.hidden)) .scroll-indicator-button {
     width: 100%;
     box-sizing: border-box;
 }
+@media (max-width: 768px) {
+
+    #backStep11Btn,
+    #sendDeliveryBtn {
+        display: block;
+        margin: 20px auto;
+        position: static;
+        float: none;
+        left: auto;
+        right: auto;
+    }
+
+}
