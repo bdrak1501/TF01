@@ -1686,16 +1686,13 @@ body:has(.card:not(#step1):not(.hidden)) .scroll-indicator-button {
     width: 100%;
     box-sizing: border-box;
 }
+/* Wyśrodkowanie przycisku wyłącznie na telefonach */
 @media (max-width: 768px) {
-
-    #backStep11Btn,
-    #sendDeliveryBtn {
-        display: block;
-        margin: 20px auto;
-        position: static;
-        float: none;
-        left: auto;
-        right: auto;
-    }
-
+  #sendDeliveryBtn {
+    position: static !important;
+    left: auto !important;
+    transform: none !important;
+    margin: 20px auto 0 auto !important;
+    display: block !important;
+  }
 }
