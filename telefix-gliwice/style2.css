@@ -1690,7 +1690,7 @@ body:has(.card:not(#step1):not(.hidden)) .scroll-indicator-button {
 /* Przesunięcie przycisku w lewo tylko na telefonach */
 @media (max-width: 768px) {
   #sendDeliveryBtn {
-    left: 5% !important; /* Zmniejsz tę wartość (np. 0%, -5%, 10%), jeśli chcesz przesunąć go jeszcze bardziej w lewo */
+    left: 0% !important; /* Zmniejsz tę wartość (np. 0%, -5%, 10%), jeśli chcesz przesunąć go jeszcze bardziej w lewo */
   }
 }
 
@@ -1700,5 +1700,20 @@ body:has(.card:not(#step1):not(.hidden)) .scroll-indicator-button {
     font-size: 13px !important;    /* Zmniejsza rozmiar tekstu */
     padding: 6px 12px !important;  /* Zmniejsza wysokość i szerokość przycisku */
     transform: scale(0.85);        /* Alternatywnie: skaluje cały przycisk do 85% */
+  }
+}
+/* Przesunięcie przycisku "Wygeneruj etykietę" w lewo na telefonach */
+@media (max-width: 768px) {
+  #generateLabelBtn {
+    left: 0% !important;
+  }
+}
+
+/* Zmniejszenie przycisku "Wróć" (Krok 12) na telefonach */
+@media (max-width: 768px) {
+  #backStep12Btn {
+    font-size: 13px !important;
+    padding: 6px 12px !important;
+    transform: scale(0.85) !important;
   }
 }
