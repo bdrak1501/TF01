@@ -1690,6 +1690,6 @@ body:has(.card:not(#step1):not(.hidden)) .scroll-indicator-button {
 /* Przesunięcie przycisku w lewo tylko na telefonach */
 @media (max-width: 768px) {
   #sendDeliveryBtn {
-    left: 5% !important; /* Zmniejsz tę wartość (np. 0%, -5%, 10%), jeśli chcesz przesunąć go jeszcze bardziej w lewo */
+    left: 15% !important; /* Zmniejsz tę wartość (np. 0%, -5%, 10%), jeśli chcesz przesunąć go jeszcze bardziej w lewo */
   }
 }
