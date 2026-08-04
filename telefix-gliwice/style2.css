@@ -1705,7 +1705,8 @@ body:has(.card:not(#step1):not(.hidden)) .scroll-indicator-button {
 /* Przesunięcie przycisku "Wygeneruj etykietę" w lewo na telefonach */
 @media (max-width: 768px) {
   #generateLabelBtn {
-    left:35% !important;
+    left:25% !important;
+    bottom: 0 !important;
   }
 }
 
