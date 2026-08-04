@@ -1706,7 +1706,7 @@ body:has(.card:not(#step1):not(.hidden)) .scroll-indicator-button {
 @media (max-width: 768px) {
   #generateLabelBtn {
     left:30% !important;
-    transform: translate(-50%, -45px) !important; /* Zwiększaj tę wartość ujemną (np. -70px), aby podnieść go jeszcze wyżej */
+    transform: translate(-50%, -48px) !important; /* Zwiększaj tę wartość ujemną (np. -70px), aby podnieść go jeszcze wyżej */
   }
 }
 
