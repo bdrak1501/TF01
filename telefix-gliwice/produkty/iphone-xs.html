@@ -658,22 +658,19 @@ color:#fff;
 
     <div class="variant-options">   
 
-<div class="color-option disabled" data-color="Desert Titanium">
-    <img src="C:\Users\bdrak\Downloads\TF01-main\TF01-main\telefix-gliwice\DesertTitanium.png" alt="iPhone 16 Pro Desert Titanium">
+<div class="color-option active" data-color="Desert Titanium">
+    <img src="blackcolor16.png" alt="iPhone 16 Pro Desert Titanium">
     </div>
 
         <div class="color-option disabled" data-color="Pomarańczowy">
-             <img src="C:\Users\bdrak\Downloads\TF01-main\TF01-main\telefix-gliwice\szary.png" alt="iPhone 16 Pro Natural Titanium">
+             <img src="szary.png" alt="iPhone 16 Pro Natural Titanium">
         </div>
 
         <!-- NIEDOSTĘPNY -->
         <div class="color-option disabled">
-             <img src="C:\Users\bdrak\Downloads\TF01-main\TF01-main\telefix-gliwice\WhiteTitanium.png" alt="iPhone 16 Pro White Titanium">
+             <img src="WhiteTitanium.png" alt="iPhone 16 Pro White Titanium">
         </div>
-         <!-- NIEDOSTĘPNY -->
-        <div class="color-option disabled">
-             <img src="C:\Users\bdrak\Downloads\TF01-main\TF01-main\telefix-gliwice\WhiteTitanium.png" alt="iPhone 16 Pro White Titanium">
-        </div>
+    
 
 </div>
 
@@ -686,8 +683,8 @@ color:#fff;
     <div class="variant-options">
 
        <div class="memory-option active" data-label="256 GB" data-price="0">64 GB</div>
-        <div class="memory-option disabled" data-label="512 GB" data-price="50">128 GB</div>
-        <div class="memory-option disabled" data-label="1 TB" data-price="50">256 GB</div>
+        <div class="memory-option disabled" data-label="512 GB" data-price="50">256 GB</div>
+        <div class="memory-option disabled" data-label="1 TB" data-price="50">512 GB</div>
 
     </div>
 
@@ -699,8 +696,8 @@ color:#fff;
 
     <div class="variant-options">
 
-        <div class="memory-option" data-label="85–89%" data-price="150">90% - 100%</div>
-        <div class="memory-option active" data-label="90–94%" data-price="50">80% - 89%</div>
+        <div class="memory-option" data-label="85–89%" data-price="50">90% - 100%</div>
+        <div class="memory-option disabled" data-label="90–94%" data-price="0">80% - 89%</div>
         <div class="memory-option" data-label="95–100%" data-price="0">poniżej 80%</div>
 
     </div>
@@ -724,7 +721,7 @@ color:#fff;
             Bardzo dobry
         </div>
 
-        <div class="memory-option" data-desc="Wygląda jak nowy – brak rys, idealny wizualnie i technicznie." data-label="Jak nowy" data-price="50">
+        <div class="memory-option disabled" data-desc="Wygląda jak nowy – brak rys, idealny wizualnie i technicznie." data-label="Jak nowy" data-price="50">
             Jak nowy
         </div>
 
@@ -1042,7 +1039,7 @@ Przejdź do koszyka
 
 
 <script>
-const basePrice = 350;
+const basePrice = 299;
 function updatePrice(){
 
     let total = basePrice;
