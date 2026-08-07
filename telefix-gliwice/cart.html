@@ -100,25 +100,26 @@ document.getElementById("cart-items");
 
 let total = 0;
 
-cart.forEach((item,index)=>{
+cart.forEach((item, index) => {
 
-const price =
-parseInt(item.price.replace(/\D/g,""));
+  const price = parseInt(item.price.replace(/\D/g, ""));
+  total += price;
 
-total += price;
+  // Usuwa wszystkie spacje z nazwy, np. "iPhone 16 Pro" -> "iPhone16Pro"
+  const imageName = item.name.replaceAll(' ', '');
 
-container.innerHTML += `
+  container.innerHTML += `
 <div class="cart-item">
 
     <div class="cart-left">
-        <img src="produkty/${item.image}">
+        <img src="produkty/${imageName}.png" alt="${item.name}">
 
         <div>
             <h3>${item.name}</h3>
 
             <p>
-            ${item.memory} •
-            ${item.condition} •
+            ${item.memory} • 
+            ${item.condition} • 
             Bateria ${item.battery}
             </p>
 
