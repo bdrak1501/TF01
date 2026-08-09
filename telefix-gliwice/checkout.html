@@ -165,11 +165,19 @@
                 </div>
             </div>
 
-            <div class="input-group" id="address-container">
-                <input id="address" placeholder="Adres dostawy (Ulica, numer, miasto)">
-            </div>
-        </div>
+            <!-- DLA POBRANIA: Kod pocztowy i Miasto w jednym wierszu, pod nim Adres -->
+<div id="address-container" style="display: none;">
+        <div class="input-group" style="display: grid; grid-template-columns: 1fr 2fr; gap: 10px;">
+        <input id="cod-postcode" placeholder="Kod pocztowy">
+        <input id="cod-city" placeholder="Miasto">
     </div>
+
+        <div class="input-group">
+        <input id="address" placeholder="Adres">
+    </div>
+
+</div> </div> </div> 
+
 
     <div class="checkout-summary">
         <h3>Twoje zamówienie</h3>
@@ -273,7 +281,17 @@
         if (!name || !email || !phone) {
             alert("Proszę uzupełnić dane kontaktowe.");
             return;
-        }
+        } else {
+    const street = document.getElementById("address").value;
+    const postcode = document.getElementById("cod-postcode").value;
+    const city = document.getElementById("cod-city").value;
+
+    if (!street || !postcode || !city) {
+        alert("Proszę podać pełny adres (ulicę, kod pocztowy i miasto).");
+        return;
+    }
+    finalAddress = `${street}, ${postcode} ${city}`;
+}
 
         const orderData = { 
             name, 
@@ -309,6 +327,7 @@
             alert("Błąd połączenia z serwerem.");
         }
     }
+    
 
     // Inicjalizacja
     renderCart();
