@@ -193,7 +193,7 @@
             total += price;
             container.innerHTML += `
                 <div class="cart-product">
-                    <img src="produkty/${product.image.replace(/\s+/g, '')}">
+                    <img src="produkty/${product.name.replace(/\s+/g, '').replace(/\.png$/i, '')}.png">
                     <div>
                         <strong>${product.name}</strong>
                         <span>${product.memory} • ${product.condition}</span><br>
