@@ -767,6 +767,7 @@ footer {
 }
 
 .phone-img {
+    margin-left: -130px;
   max-width: 300px;
   height: auto;
   transform: rotate(-5deg);
