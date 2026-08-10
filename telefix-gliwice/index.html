@@ -18,8 +18,8 @@
             <nav>
                 <ul class="nav-links">
                     <li><a href="#top">SKLEP</a></li>
-                    <li><a href="#top">SKUP</a></li>
-                    <li><a href="#blog">SERWIS</a></li>
+                    <li><a href="#wycena">SKUP</a></li>
+                    <li><a href="#serwis">SERWIS</a></li>
                 </ul>
             </nav>
         </div>
@@ -74,7 +74,7 @@
 </section>
 
 
-<section class="sell-phone-section">
+<section class="sell-phone-section" id="wycena">
   <div class="sell-phone-card">
     <div class="tile-content">
       <h2 class="tile-title">Kupimy twojego iPhone</h2>
@@ -92,7 +92,7 @@
 </section>
 
 
-<section class="shop-section">
+<section class="shop-section" id="sklep">
 
   <h2 class="shop-title">Nasza oferta</h2>
 
@@ -755,7 +755,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 <div class="contact-popup" id="contactPopup">
     <p><strong>Skontaktuj się z nami:</strong></p>
-    <p>📞+48 788 123 456</p>
+    <p>📞+48 788 514 867</p>
     <p>✉️ telefixgliwice@onet.pl</p>
 </div>
 
@@ -800,10 +800,10 @@ document.addEventListener("DOMContentLoaded", function() {
 
         <div class="footer-column footer-contact">
             <h3>Kontakt</h3>
-            <p><i class="fa-solid fa-location-dot"></i> ul. Raciborska 3/Z, Gliwice 44-100</p>
+            <p><i class="fa-solid fa-location-dot"></i> ul. Raciborska 3, Gliwice 44-100</p>
             <p><i class="fa-solid fa-id-card"></i> NIP: 1234567890</p>
-            <p><i class="fa-solid fa-phone"></i> <a href="tel:+48788123456">+48 788 123 456</a></p>
-            <p><i class="fa-solid fa-envelope"></i> <a href="mailto:kontakt@telefix.pl">kontakt@telefix.pl</a></p>
+            <p><i class="fa-solid fa-phone"></i> <a href="tel:+48788514867">+48 788 514 867</a></p>
+            <p><i class="fa-solid fa-envelope"></i> <a href="mailto:telefixgliwice@onet.pl">telefixgliwice@onet.pl</a></p>
         </div>
     </div>
 
@@ -949,7 +949,7 @@ const sliderData = [
   {
     title: "SKUP IPHONE",
     btnText: "WYCEŃ SWÓJ TELEFON",
-    link: "#skup"
+    link: "#wycena"
   },
   {
     title: "SKLEP IPHONE",
@@ -1111,38 +1111,78 @@ progress.style.width="100%";
 
 });
 
-document.querySelectorAll(".repairType").forEach(type=>{
+// Baza cen z podziałem na wszystkie modele i usługi
+const modelPrices = {
+  // Seria X
+  "iPhone X":       { "Wyświetlacz": 299, "Bateria": 179, "Tylna klapka": 249, "Aparat": 299, "Ładowanie": 199, "Głośnik": 149, "Mikrofon": 149 },
+  "iPhone XR":      { "Wyświetlacz": 299, "Bateria": 179, "Tylna klapka": 199, "Aparat": 249, "Ładowanie": 199, "Głośnik": 149, "Mikrofon": 149 },
+  "iPhone XS":      { "Wyświetlacz": 299, "Bateria": 189, "Tylna klapka": 249, "Aparat": 279, "Ładowanie": 199, "Głośnik": 149, "Mikrofon": 149 },
+  "iPhone XS Max":  { "Wyświetlacz": 299, "Bateria": 199, "Tylna klapka": 299, "Aparat": 299, "Ładowanie": 219, "Głośnik": 169, "Mikrofon": 169 },
 
-type.addEventListener("click",()=>{
+  // Seria 11
+  "iPhone 11":         { "Wyświetlacz": 399, "Bateria": 199, "Tylna klapka": 299, "Aparat": 299, "Ładowanie": 219, "Głośnik": 169, "Mikrofon": 169 },
+  "iPhone 11 Pro":     { "Wyświetlacz": 499, "Bateria": 229, "Tylna klapka": 349, "Aparat": 349, "Ładowanie": 249, "Głośnik": 189, "Mikrofon": 189 },
+  "iPhone 11 Pro Max": { "Wyświetlacz": 549, "Bateria": 249, "Tylna klapka": 399, "Aparat": 399, "Ładowanie": 249, "Głośnik": 189, "Mikrofon": 189 },
 
-document.getElementById("step3").style.display="none";
+  // Seria 12
+  "iPhone 12":         { "Wyświetlacz": 499, "Bateria": 229, "Tylna klapka": 349, "Aparat": 349, "Ładowanie": 249, "Głośnik": 189, "Mikrofon": 189 },
+  "iPhone 12 Mini":    { "Wyświetlacz": 449, "Bateria": 219, "Tylna klapka": 329, "Aparat": 329, "Ładowanie": 229, "Głośnik": 179, "Mikrofon": 179 },
+  "iPhone 12 Pro":     { "Wyświetlacz": 549, "Bateria": 249, "Tylna klapka": 399, "Aparat": 399, "Ładowanie": 269, "Głośnik": 199, "Mikrofon": 199 },
+  "iPhone 12 Pro Max": { "Wyświetlacz": 649, "Bateria": 269, "Tylna klapka": 449, "Aparat": 449, "Ładowanie": 289, "Głośnik": 219, "Mikrofon": 219 },
 
-document.getElementById("repairResult").style.display="block";
+  // Seria 13
+  "iPhone 13":         { "Wyświetlacz": 599, "Bateria": 249, "Tylna klapka": 399, "Aparat": 399, "Ładowanie": 269, "Głośnik": 199, "Mikrofon": 199 },
+  "iPhone 13 Mini":    { "Wyświetlacz": 549, "Bateria": 239, "Tylna klapka": 379, "Aparat": 379, "Ładowanie": 259, "Głośnik": 189, "Mikrofon": 189 },
+  "iPhone 13 Pro":     { "Wyświetlacz": 899, "Bateria": 279, "Tylna klapka": 449, "Aparat": 449, "Ładowanie": 299, "Głośnik": 229, "Mikrofon": 229 },
+  "iPhone 13 Pro Max": { "Wyświetlacz": 999, "Bateria": 299, "Tylna klapka": 499, "Aparat": 499, "Ładowanie": 319, "Głośnik": 249, "Mikrofon": 249 },
 
-document.getElementById("resultModel").textContent =
-selectedModel;
+  // Seria 14
+  "iPhone 14":         { "Wyświetlacz": 699, "Bateria": 279, "Tylna klapka": 429, "Aparat": 429, "Ładowanie": 299, "Głośnik": 219, "Mikrofon": 219 },
+  "iPhone 14 Plus":    { "Wyświetlacz": 799, "Bateria": 299, "Tylna klapka": 469, "Aparat": 469, "Ładowanie": 319, "Głośnik": 239, "Mikrofon": 239 },
+  "iPhone 14 Pro":     { "Wyświetlacz": 1199, "Bateria": 319, "Tylna klapka": 499, "Aparat": 549, "Ładowanie": 349, "Głośnik": 259, "Mikrofon": 259 },
+  "iPhone 14 Pro Max": { "Wyświetlacz": 1399, "Bateria": 349, "Tylna klapka": 549, "Aparat": 599, "Ładowanie": 379, "Głośnik": 279, "Mikrofon": 279 },
 
-document.getElementById("resultRepair").textContent =
-type.textContent;
+  // Seria 15
+  "iPhone 15":         { "Wyświetlacz": 899, "Bateria": 319, "Tylna klapka": 449, "Aparat": 499, "Ładowanie": 329, "Głośnik": 239, "Mikrofon": 239 },
+  "iPhone 15 Pro":     { "Wyświetlacz": 1399, "Bateria": 369, "Tylna klapka": 549, "Aparat": 649, "Ładowanie": 379, "Głośnik": 279, "Mikrofon": 279 },
+  "iPhone 15 Pro Max": { "Wyświetlacz": 1599, "Bateria": 399, "Tylna klapka": 599, "Aparat": 699, "Ładowanie": 399, "Głośnik": 299, "Mikrofon": 299 },
 
-const prices = {
-
-"📱 Wyświetlacz":699,
-"🔋 Bateria":249,
-"📷 Aparat":349,
-"⚡ Ładowanie":299,
-"🪟 Tylna klapka":449,
-"🔊 Głośnik":199,
-"🎤 Mikrofon":199,
-"💧 Zalanie":149
-
+  // Seria 16
+  "iPhone 16":         { "Wyświetlacz": 1199, "Bateria": 369, "Tylna klapka": 499, "Aparat": 549, "Ładowanie": 369, "Głośnik": 259, "Mikrofon": 259 },
+  "iPhone 16e":        { "Wyświetlacz": 999, "Bateria": 329, "Tylna klapka": 449, "Aparat": 499, "Ładowanie": 349, "Głośnik": 239, "Mikrofon": 239 },
+  "iPhone 16 Pro":     { "Wyświetlacz": 1599, "Bateria": 419, "Tylna klapka": 599, "Aparat": 749, "Ładowanie": 419, "Głośnik": 299, "Mikrofon": 299 },
+  "iPhone 16 Pro Max": { "Wyświetlacz": 1799, "Bateria": 449, "Tylna klapka": 649, "Aparat": 799, "Ładowanie": 449, "Głośnik": 319, "Mikrofon": 319 }
 };
 
-document.getElementById("resultPrice").textContent =
-prices[type.textContent] || 399;
+// Domyślne wartości w razie wybrania opcji nieujętej wyżej
+const defaultPrices = {
+  "Wyświetlacz": 599,
+  "Bateria": 249,
+  "Aparat": 349,
+  "Ładowanie": 299,
+  "Tylna klapka": 449,
+  "Głośnik": 199,
+  "Mikrofon": 199
+};
 
-});
+document.querySelectorAll(".repairType").forEach(type => {
+  type.addEventListener("click", () => {
+    document.getElementById("step3").style.display = "none";
+    document.getElementById("repairResult").style.display = "block";
 
+    document.getElementById("resultModel").textContent = selectedModel;
+    document.getElementById("resultRepair").textContent = type.textContent;
+
+    const repairName = type.textContent.trim();
+
+    // Szukamy ceny dla modelu, potem dla usterki, a na końcu stosujemy fallback
+    const finalPrice = 
+      (modelPrices[selectedModel] && modelPrices[selectedModel][repairName]) ||
+      defaultPrices[repairName] ||
+      399;
+
+    document.getElementById("resultPrice").textContent = finalPrice;
+  });
 });
 
 // Obsługa modala "Zadzwoń" w konfiguratorze napraw
