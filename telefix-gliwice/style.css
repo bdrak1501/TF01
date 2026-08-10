@@ -8,7 +8,15 @@
     --glow-gradient: linear-gradient(90deg, #fffafa, #cccccc, #c7c7c7, #eee9e9, #c9c9c9);
 }
 
+/* Płynne przewijanie dla całej strony */
+html {
+    scroll-behavior: smooth;
+}
 
+/* Zapobiega zasłanianiu nagłówków przez przypięty header (pozycja zależy od wysokości headera) */
+section, [id] {
+    scroll-margin-top: 80px; 
+}
 
 /* Header styling */
 .hero-header {
