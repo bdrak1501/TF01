@@ -774,6 +774,13 @@ footer {
   animation: float 4s ease-in-out infinite;
 }
 
+/* Styl na urządzenia mobilne (ekrany o szerokości 768px i mniejsze) */
+@media (max-width: 768px) {
+    .phone-img {
+        margin-left: -20px; /* Tutaj wpisz mniejszą wartość */
+    }
+}
+
 .buttons {
   display: flex;
   gap: 15px;
