@@ -6,6 +6,7 @@
   <title>Wyceń telefon – TeleFix</title>
   <link rel="stylesheet" href="style2.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="icon" href="MINILOGOtelefix.png" type="image/x-icon">
 </head>
 <body>
 
@@ -931,7 +932,7 @@ Uwagi: ${extraNotes}
   if (activeBtn) activeBtn.disabled = true;
 
   try {
-    const response = await fetch("/create-skup-order", {
+    const response = await fetch("https://telefix.onrender.com/create-skup-order", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(orderData)
@@ -1028,6 +1029,16 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 });
+const cors = require("cors");
+
+app.use(cors({
+    origin: [
+        "https://twojadomena.pl",
+        "https://www.twojadomena.pl"
+    ],
+    methods: ["GET", "POST"],
+    allowedHeaders: ["Content-Type"]
+}));
 </script>
 
 

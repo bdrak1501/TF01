@@ -851,13 +851,13 @@ canvas#backgroundCanvas {
   margin-right: 50px;
   background: rgba(1, 1, 1, 0.896);
   border-radius: 30px;
-  padding: 60px;
+  padding: 40px;
   max-width: 1000px;
   width: 100%;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  gap: 60px;
+  gap: 90px;
   box-shadow: 0 25px 60px rgba(0, 0, 0, 0.4);
   position: relative;
   overflow: hidden;
@@ -885,6 +885,7 @@ canvas#backgroundCanvas {
   justify-content: center;
   animation: fadeInUp 1s ease-out;
   padding-right: 20px;
+  margin-bottom: 35px;
 }
 
 .tile-title {
@@ -932,6 +933,7 @@ canvas#backgroundCanvas {
   align-items: center;
   animation: fadeInUp 1s ease-out;
   flex-wrap: wrap;
+  margin-top: -30px;
 }
 
 .tile-image {
