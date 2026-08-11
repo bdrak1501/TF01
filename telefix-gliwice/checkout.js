@@ -85,13 +85,13 @@ const orderData = {
     address,
     products: cart,
     total: total,
-    deliveryMethod: selectedMethod // To musi pasować do req.body na serwerze
+    method: selectedMethod // To musi pasować do req.body na serwerze
 };
 
     try {
         // Jeśli InPost -> idziemy do Stripe
         if (selectedMethod === 'inpost') {
-            const res = await fetch("/create-checkout-session", {
+           const res = await fetch("https://telefix.onrender.com/create-checkout-session", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(orderData)
@@ -107,7 +107,7 @@ const orderData = {
         } 
         // Jeśli Odbiór/Pobranie -> wysyłamy do zwykłej bazy
         else {
-            const res = await fetch("/create-manual-order", {
+           const res = await fetch("https://telefix.onrender.com/create-manual-order", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(orderData)

@@ -97,7 +97,7 @@ app.use((req, res, next) => {
     if (req.originalUrl === "/webhook") next();
     else bodyParser.json()(req, res, next);
 });
-app.use(express.static("telefix-gliwice"));
+
 
 function auth(req, res, next) {
     if (req.headers.authorization !== process.env.ADMIN_PASSWORD) {
@@ -192,8 +192,8 @@ app.post("/create-checkout-session", async (req, res) => {
                 client_phone: phone,
                 client_address: address // Tutaj trafi nasz ciąg "Paczkomat: GLI01, 44-100 Gliwice"
             },
-            success_url: "https://telefix.onrender.com/success.html",
-            cancel_url: "https://telefix.onrender.com/cancel.html",
+            success_url: "https://telefixgliwice.pl/success.html",
+cancel_url: "https://telefixgliwice.pl/cancel.html",
         });
         res.json({ url: session.url });
     } catch (e) {
@@ -311,3 +311,10 @@ app.post("/create-skup-order", async (req, res) => {
         res.status(500).json({ error: "Błąd serwera podczas zapisywania zgłoszenia skupu." });
     }
 });
+
+app.use(cors({
+    origin:[
+        "https://telefixgliwice.pl",
+        "https://www.telefixgliwice.pl"
+    ]
+}));
