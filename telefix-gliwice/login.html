@@ -63,35 +63,34 @@ async function login(){
     const loginVal = document.getElementById("loginInput").value;
     const passVal = document.getElementById("passInput").value;
 
-    try{
+    try {
 
-        const res = await fetch("/login",{
-            method:"POST",
-            headers:{
-                "Content-Type":"application/json"
-            },
-            body: JSON.stringify({
-                login: loginVal,
-                password: passVal
-            })
-        });
+    const res = await fetch("https://telefix.onrender.com/login", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            login: loginVal,
+            password: passVal
+        })
+    });
 
-        const data = await res.json();
+    const data = await res.json();
 
-        if(!data.success){
-            alert("Błędne dane");
-            return;
-        }
-
-        localStorage.setItem("token", data.token);
-
-        window.location.href = "/admin.html";
-
-    }catch(e){
-        alert("Błąd połączenia z serwerem");
-        console.log(e);
+    if (!data.success) {
+        alert("Błędne dane");
+        return;
     }
 
+    localStorage.setItem("token", data.token);
+
+    window.location.href = "/admin.html";
+
+} catch(e) {
+    alert("Błąd połączenia z serwerem");
+    console.log(e);
+}
 }
 
 </script>

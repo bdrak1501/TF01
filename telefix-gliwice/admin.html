@@ -176,8 +176,10 @@
 
         async function load() {
             try {
-                const res = await fetch("/orders", {
-                    headers: { "Authorization": token }
+                const API = "https://telefix.onrender.com";
+
+                const res = await fetch(`${API}/orders`, {
+                headers: { "Authorization": token }
                 });
 
                 if (res.status === 401) { logout(); return; }
@@ -306,7 +308,7 @@
 
         async function changeStatus(id, status) {
             try {
-                const res = await fetch("/status", {
+                const res = await fetch(`${API}/status`, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",

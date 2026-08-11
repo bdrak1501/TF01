@@ -304,13 +304,13 @@
         };
 
         try {
-           const API_URL = "https://telefix.onrender.com";
+     const API_URL = "https://telefix.onrender.com";
 
 const endpoint = (selectedMethod === 'inpost') 
     ? "/create-checkout-session" 
     : "/create-manual-order";
 
-            const res = await fetch(API_URL + endpoint, {
+const res = await fetch(API_URL + endpoint, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(orderData)
